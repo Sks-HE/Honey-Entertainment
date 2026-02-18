@@ -1,186 +1,772 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Honey Entertainment | Sajeeb Saha</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Great+Vibes&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Honey Entertainment | sajeeb saha </title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root { --gold: #FFD700; --pink: #ff00ff; --cyan: #00ffff; --tiktok-red: #ff0050; --tiktok-blue: #00f2ea; --yt-red: #FF0000; }
-        body { margin: 0; padding: 0; background: #000; color: white; font-family: 'Montserrat', sans-serif; overflow-x: hidden; }
-
-        /* --- নতুন: ঝাপসা ফুল ও জমা হওয়া --- */
-        .flower {
-            position: fixed; top: -50px; z-index: -1;
-            user-select: none; pointer-events: none;
-            filter: blur(1.5px); /* হালকা ঘোলা */
-            animation: fall linear forwards;
-        }
-        @keyframes fall {
-            to { top: calc(100vh - 20px); transform: rotate(360deg); } /* নিচে এসে থামবে */
-        }
-        #flower-pile {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            height: 0; background: rgba(255, 20, 147, 0.1);
-            z-index: -2; transition: height 15s linear; /* ০.৫ সেমি পুরু হবে */
+        :root {
+            --bg-color: #050505;
+            --text-color: #ffffff;
+            --accent: #f472b6;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --frame-gradient: conic-gradient(from 0deg, #f472b6, #fb923c, #f472b6);
+            --wave-color: rgba(244, 114, 182, 0.2);
         }
 
-        /* হলুদ বিড়াল ব্যাকগ্রাউন্ড */
-        .bg-cat {
-            position: fixed; width: 480px; height: auto; z-index: -1;
-            filter: blur(2px) opacity(0.5); pointer-events: none;
-        }
-        .cat1 { top: 50%; left: -150px; animation: move1 22s infinite linear; }
-        .cat2 { bottom: 50%; right: -150px; animation: move2 28s infinite linear; }
-
-        @keyframes move1 {
-            0% { transform: translateX(0) rotate(0deg); }
-            50% { transform: translateX(120vw) rotate(10deg); }
-            100% { transform: translateX(0) rotate(0deg); }
-        }
-        @keyframes move2 {
-            0% { transform: translateX(0) rotate(0deg); }
-            50% { transform: translateX(-120vw) rotate(-10deg); }
-            100% { transform: translateX(0) rotate(0deg); }
+        body.light-mode {
+            --bg-color: #ffffff;
+            --text-color: #1a1a1a;
+            --accent: #db2777;
+            --card-bg: rgba(0, 0, 0, 0.05);
+            --frame-gradient: conic-gradient(from 0deg, #db2777, #f43f5e, #db2777);
+            --wave-color: rgba(219, 39, 119, 0.1);
         }
 
-        .container { padding: 40px 0; max-width: 600px; margin: auto; text-align: center; }
+        body.dark-mode {
+            --bg-color: #050505;
+            --text-color: #ffffff;
+            --accent: #f472b6;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --frame-gradient: conic-gradient(from 0deg, #f472b6, #fb923c, #f472b6);
+            --wave-color: rgba(244, 114, 182, 0.2);
+        }
 
-        /* অরিজিনাল ওয়েভ বার */
-        .wave-bar {
+        body.honey-mode {
+            --bg-color: #fdf2f2; 
+            --text-color: #78350f; 
+            --accent: #d97706; 
+            --card-bg: rgba(217, 119, 6, 0.1);
+            --frame-gradient: conic-gradient(from 0deg, #d97706, #f59e0b, #d97706);
+            --wave-color: rgba(217, 119, 6, 0.15);
+            background-image: radial-gradient(circle at center, #fffbeb, #fef3c7);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            transition: background 0.5s, color 0.5s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        /* WATER WAVE STYLING */
+        .waves-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .wave-svg {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .parallax-waves > use {
+            animation: move-forever 25s cubic-bezier(.55,.5,.45,.5) infinite;
+        }
+        .parallax-waves > use:nth-child(1) { animation-delay: -2s; animation-duration: 7s; }
+        .parallax-waves > use:nth-child(2) { animation-delay: -3s; animation-duration: 10s; }
+        .parallax-waves > use:nth-child(3) { animation-delay: -4s; animation-duration: 13s; }
+        .parallax-waves > use:nth-child(4) { animation-delay: -5s; animation-duration: 20s; }
+
+        @keyframes move-forever {
+            0% { transform: translate3d(-90px, 0, 0); }
+            100% { transform: translate3d(85px, 0, 0); }
+        }
+
+        .bubble-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -150px;
+            background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: riseAndSway 10s infinite ease-in-out;
+            filter: blur(8px);
+            opacity: 0.6;
+        }
+
+        @keyframes riseAndSway {
+            0% { transform: translateY(0) translateX(0) scale(0.5); opacity: 0; }
+            50% { opacity: 0.7; transform: translateY(-60vh) translateX(30px) scale(1.2); }
+            100% { transform: translateY(-130vh) translateX(-30px) scale(1.8); opacity: 0; }
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 40px 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            z-index: 10;
+        }
+
+        .menu-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .dots-btn {
+            background: var(--card-bg);
+            border: 1px solid rgba(128,128,128,0.2);
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            color: var(--text-color);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 50px;
+            background: var(--bg-color);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            width: 170px;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .dropdown-menu.active { display: flex; }
+
+        .menu-item {
+            padding: 14px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(128,128,128,0.1);
+        }
+
+        .menu-item:hover { background: var(--accent); color: #fff; }
+
+        .header-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .custom-logo-placeholder {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            border: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-bg);
+            flex-shrink: 0;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .custom-logo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(1.5);
+        }
+
+        .shimmer-text {
+            background: linear-gradient(90deg, var(--text-color), var(--accent), #fb923c, var(--text-color));
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 4s linear infinite;
+        }
+        @keyframes shine { to { background-position: 300% center; } }
+
+        .animated-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 900;
+            font-size: 18px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .animated-title span {
+            color: var(--accent);
+            display: inline-block;
+            animation: arrowBounce 1.5s infinite ease-in-out;
+        }
+
+        @keyframes arrowBounce {
+            0%, 100% { transform: translateX(0); opacity: 1; }
+            50% { transform: translateX(8px); opacity: 0.5; }
+        }
+
+        .social-box {
+            position: relative;
+            width: 65px; height: 65px;
             display: flex; align-items: center; justify-content: center;
-            width: 100vw; margin-left: calc(-50vw + 50%);
-            padding: 65px 0; margin-bottom: 50px;
-            text-decoration: none; color: #FFFFFF; font-size: 38px; font-weight: 900;
-            background: #000; position: relative; overflow: hidden;
-            transition: 0.4s ease;
-            clip-path: polygon(0 0, 50% 25%, 100% 0, 100% 100%, 50% 75%, 0 100%);
-            border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold);
+            border-radius: 20px;
+            background: var(--bg-color);
+            overflow: hidden;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
-        .wave-bar span { position: relative; z-index: 2; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
-        .wave-bar::before {
-            content: ""; position: absolute; top: 0; left: 0; width: 200%; height: 100%;
-            background: repeating-linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3) 5%, var(--gold) 10%, var(--cyan) 15%, transparent 20%);
-            animation: riverFlow 4s infinite linear; z-index: 1; opacity: 0.7;
+
+        .social-box:hover { transform: scale(1.1) rotate(5deg); }
+
+        .social-box::before {
+            content: '';
+            position: absolute;
+            width: 150%; height: 150%;
+            background: conic-gradient(#1877F2, #25F4EE, #FE2C55, #FF0000, #FFD700, #1877F2);
+            animation: rotateRGB 3s linear infinite;
         }
-        @keyframes riverFlow { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .wave-bar:hover { transform: scaleY(1.15); box-shadow: 0 0 50px var(--gold); }
-        .wave-bar:hover::before { animation-duration: 0.8s; opacity: 1; }
 
-        .social-side-bar {
-            display: flex; align-items: center; width: 280px; margin-left: -40px; 
-            padding: 15px 30px 15px 60px; margin-bottom: 15px;
-            text-decoration: none; color: white; font-weight: 800; font-size: 18px;
-            background: rgba(255, 255, 255, 0.05); border: 2px solid var(--cyan);
-            border-radius: 0 40px 40px 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        @keyframes rotateRGB { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .social-box::after {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            background: var(--bg-color);
+            border-radius: 17px;
+            z-index: 1;
         }
-        .tiktok-bar:hover { width: 320px; transform: translateX(25px); background: #010101; border-color: #fff; box-shadow: -4px 0 var(--tiktok-red), 4px 0 var(--tiktok-blue), 0 0 20px rgba(255,255,255,0.4); text-shadow: 2px 2px var(--tiktok-red), -2px -2px var(--tiktok-blue); }
-        .youtube-bar { border-color: var(--yt-red); }
-        .youtube-bar:hover { width: 320px; transform: translateX(25px); background: linear-gradient(90deg, #FF0000, #CC0000); color: #fff; border-color: #fff; box-shadow: 0 0 30px rgba(255, 0, 0, 0.6); }
 
-        /* অরিজিনাল Stay with us */
-        .stay-text {
-            font-family: 'Great Vibes', cursive; font-size: 60px; margin-top: 35px; margin-bottom: 0;
-            display: inline-block; background: linear-gradient(90deg, var(--pink), var(--cyan), var(--gold), var(--pink));
-            background-size: 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: glowText 10s linear infinite, slowFloat 6s ease-in-out infinite; transition: 0.5s; cursor: pointer;
+        .fb-color { color: #1877F2; position: relative; z-index: 10; }
+        .tt-logo { width: 32px; height: 32px; fill: var(--text-color); filter: drop-shadow(-1.5px -1px 0 #25F4EE) drop-shadow(1.5px 1px 0 #FE2C55); position: relative; z-index: 10; }
+        .yt-color { color: #FF0000; position: relative; z-index: 10; }
+
+        .btn-premium {
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 14px;
+            background: linear-gradient(90deg, var(--accent), #fb923c);
+            color: #fff;
+            animation: heartbeat 2s infinite ease-in-out;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex; align-items: center; gap: 12px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: fit-content;
         }
-        @keyframes glowText { 0% { background-position: 0%; } 100% { background-position: 300%; } }
-        @keyframes slowFloat { 0%, 100% { transform: translateY(0) rotate(-0.5deg); } 50% { transform: translateY(-8px) rotate(0.5deg); } }
-        .stay-text:hover { animation: glowText 3s linear infinite, gentleShake 0.5s ease-in-out infinite; filter: drop-shadow(0 0 15px var(--cyan)); }
 
-        .premium-divider { display: flex; align-items: center; justify-content: center; margin: 5px auto 40px auto; gap: 15px; }
-        .line { height: 2px; width: 80px; background: linear-gradient(to right, transparent, var(--gold), transparent); }
-        .diamond { color: var(--gold); font-size: 14px; transform: rotate(45deg); text-shadow: 0 0 10px var(--gold); }
-
-        .owner-container {
-            display: inline-flex; justify-content: center; align-items: center;
-            margin: 40px 0; position: relative; padding: 2px;
-            background: linear-gradient(90deg, var(--pink), var(--cyan), var(--gold), var(--pink));
-            background-size: 300%; animation: glowText 5s linear infinite;
-            border-radius: 30px; overflow: hidden;
+        .btn-premium:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2), 0 0 20px var(--accent);
         }
-        .owner-row { display: flex; background: #000; border-radius: 28px; overflow: hidden; }
-        .owner-part { padding: 15px 20px; text-decoration: none; border: none; font-size: 16px; }
-        .left-p { color: #ccc; background: rgba(255, 255, 255, 0.05); pointer-events: none; }
-        .right-p { color: white; font-weight: 800; background: rgba(255, 255, 255, 0.1); transition: 0.4s; position: relative; z-index: 5; }
-        .right-p:hover { transform: translateY(-5px) scale(1.05); background: var(--cyan); color: #000; box-shadow: 0 0 20px var(--cyan); }
 
-        .thank-you { 
-            padding: 18px 55px; 
-            border-radius: 20px 50px 20px 50px; 
-            border: none; 
-            background: linear-gradient(45deg, var(--pink), var(--cyan)); 
-            color: white; font-size: 24px; font-weight: bold; cursor: pointer; 
-            transition: all 0.4s ease; margin-top: 20px;
-            animation: floating 3s infinite ease-in-out; 
+        @keyframes heartbeat { 
+            0%, 100% { transform: scale(1); } 
+            50% { transform: scale(1.05); } 
         }
-        @keyframes floating { 0%, 100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-5px) rotate(1deg); } }
-        .thank-you:hover { transform: scale(1.15); animation: shake 0.3s infinite alternate; box-shadow: 0 0 30px var(--pink); }
 
-        .footer-text { font-size: 12px; color: rgba(255, 255, 255, 0.4); margin-top: 50px; margin-bottom: 20px; letter-spacing: 1px; }
+        .collection-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+        }
+
+        .collection-card {
+            position: relative;
+            aspect-ratio: 1/1;
+            border-radius: 15px;
+            padding: 4px; 
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-color);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .collection-card:hover { transform: scale(1.05); }
+
+        .collection-card::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: var(--frame-gradient);
+            animation: rotateFrame 4s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes rotateFrame {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .collection-card .inner-img {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .collection-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .thank-you-bar {
+            width: 85%;
+            max-width: 320px;
+            margin: 20px auto 40px auto;
+            padding: 12px 20px;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            align-self: center;
+        }
+        
+        .thank-you-bar::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(45deg, var(--accent), #fb923c, transparent, var(--accent));
+            background-size: 300% 300%;
+            z-index: -1;
+            border-radius: 100px;
+            animation: flowBorder 4s linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes flowBorder {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .thank-you-bar:active { transform: scale(0.92); }
+
+        .thank-you-text {
+            font-size: 16px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            background: linear-gradient(90deg, var(--text-color), var(--accent), #fb923c, var(--text-color));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s linear infinite;
+        }
+
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            border-radius: 50%;
+            z-index: 3000;
+        }
+
+        #fullscreenOverlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+        }
+
+        #fullscreenOverlay img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            animation: zoomIn 0.3s ease-out;
+            cursor: pointer; 
+        }
+
+        .dl-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 900;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            cursor: pointer;
+            z-index: 2100;
+            transition: all 0.3s;
+            border: none;
+        }
+        
+        .dl-btn:hover {
+            transform: scale(1.1);
+            filter: brightness(1.1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+            z-index: 2100;
+            cursor: pointer;
+            border: none;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
     </style>
 </head>
-<body>
+<body class="honey-mode">
 
-<div id="flower-pile"></div>
+    <!-- WATER WAVES -->
+    <div class="waves-container">
+        <svg class="wave-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+            <defs>
+                <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+            </defs>
+            <g class="parallax-waves">
+                <use href="#gentle-wave" x="48" y="0" fill="var(--wave-color)" style="opacity: 0.3" />
+                <use href="#gentle-wave" x="48" y="3" fill="var(--wave-color)" style="opacity: 0.5" />
+                <use href="#gentle-wave" x="48" y="5" fill="var(--wave-color)" style="opacity: 0.7" />
+                <use href="#gentle-wave" x="48" y="7" fill="var(--wave-color)" />
+            </g>
+        </svg>
+    </div>
 
-<img src="https://i.pinimg.com/736x/0f/29/54/0f295418af63e6113c6a349aa6b8d49e.jpg" class="bg-cat cat1" alt="cat">
-<img src="https://i.pinimg.com/1200x/46/2f/da/462fda1237589806606e5c935a1a3a42.jpg" class="bg-cat cat2" alt="cat">
+    <div class="bubble-container" id="bubbleContainer"></div>
 
-<div class="container">
-    <a href="https://www.facebook.com/share/1LdcdP5qkH/" class="wave-bar"><span>Honey Entertainment</span></a>
-    <a href="https://www.tiktok.com/@honey_owner_sajeeb?_r=1&_t=ZS-93N7RQiM6K1" class="social-side-bar tiktok-bar"><i class="fab fa-tiktok" style="margin-right: 12px;"></i> Honey Entertainment ✅ Follow</a>
-    <a href="https://youtube.com/@honey_sajeeb?si=j9_aeB17HTxleJQ5" class="social-side-bar youtube-bar"><i class="fab fa-youtube" style="margin-right: 12px;"></i> Honey Entertainment (HE) Subscribe</a>
-
-    <h2 class="stay-text">Stay with us</h2>
-    <div class="premium-divider"><div class="line"></div><div class="diamond">◆</div><div class="line"></div></div>
-
-    <div class="owner-container">
-        <div class="owner-row">
-            <div class="owner-part left-p">The sites are managed by</div>
-            <a href="https://www.facebook.com/share/1APs4hT9DY/" class="owner-part right-p">Sajeeb Saha</a>
+    <div class="menu-container">
+        <button class="dots-btn" onclick="toggleMenu()">
+            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+            </svg>
+        </button>
+        <div class="dropdown-menu" id="dropdown">
+            <div class="menu-item" onclick="setMode('honey')">🙂Honey Mode (Default)</div>
+            <div class="menu-item" onclick="setMode('dark')">🌑Dark Mode</div>
+            <div class="menu-item" onclick="setMode('light')">☀️Light Mode</div>
+            <div class="menu-item" onclick="toggleLang()" id="langBtn">🌐Language: EN 🇬🇧</div>
         </div>
     </div>
 
-    <br>
-    <button class="thank-you" onclick="celebrate()">Thank You</button>
-    <div class="footer-text">© sajeeb-honey entertainment</div>
-</div>
+    <div class="app-container">
+        <header class="header-wrapper">
+            <div class="custom-logo-placeholder">
+                <img src="https://i.pinimg.com/736x/96/5f/f8/965ff82713b7a1ef6e3ffb782fcdc412.jpg" alt="Honey Logo">
+            </div>
+            <h1 class="text-4xl font-black italic shimmer-text tracking-tighter leading-tight">
+                HONEY<br>ENTERTAINMENT
+            </h1>
+        </header>
 
-<script>
-    // ফুল তৈরির ফাংশন
-    function createFlower() {
-        const flower = document.createElement('div');
-        flower.className = 'flower';
-        flower.innerHTML = Math.random() > 0.5 ? '🌸' : '🌺';
-        flower.style.left = Math.random() * 100 + 'vw';
-        flower.style.fontSize = (Math.random() * 20 + 15) + 'px';
-        flower.style.animationDuration = (Math.random() * 5 + 5) + 's';
-        document.body.appendChild(flower);
-        
-        // নিচে জমানো শুরু (০.৫ সেমি = ১৯ পিক্সেল প্রায়)
-        setTimeout(() => {
-            document.getElementById('flower-pile').style.height = '19px';
-        }, 1000);
-    }
-    setInterval(createFlower, 800);
+        <section>
+            <p class="text-[13px] opacity-60 font-black uppercase tracking-[0.25em] mb-6" id="followTxt">▽ Follow us to stay connected ▽</p>
+            <div class="flex gap-6">
+                <!-- Facebook Page -->
+                <a href="https://www.facebook.com/share/1APsixLhgv/" target="_blank" class="social-box">
+                    <svg class="fb-color" style="width:32px; height:32px;" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                </a>
+                <!-- TikTok Account -->
+                <a href="https://www.tiktok.com/@honey_owner_sajeeb?_r=1&_t=ZS-940vHTzLtWi" target="_blank" class="social-box">
+                    <svg class="tt-logo" viewBox="0 0 448 512"><path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/></svg>
+                </a>
+                <!-- YouTube Channel -->
+                <a href="https://youtube.com/@honey_sajeeb?si=ctTodZGQ4F2-3rIx" target="_blank" class="social-box">
+                    <svg class="yt-color" style="width:32px; height:32px;" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                </a>
+            </div>
+        </section>
 
-    function celebrate() {
-        var count = 200;
-        var defaults = { origin: { y: 0.7 } };
-        function fire(particleRatio, opts) {
-            confetti(Object.assign({}, defaults, opts, { particleCount: Math.floor(count * particleRatio) }));
+        <section>
+            <h2 class="animated-title" id="fbGroupTxt"><span>▶</span> In our Facebook group :-</h2>
+            <button class="btn-premium" onclick="window.open('https://www.facebook.com/groups/honeysajeeb', '_blank')">
+                <svg width="24" height="24" fill="currentColor" viewBox="0 0 448 512">
+                    <path d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z"/>
+                </svg>
+                <span id="joinBtnText">Join Now</span>
+            </button>
+        </section>
+
+        <section>
+            <h2 class="animated-title" id="watchTxt"><span>▶</span> Watch cartoon videos :-</h2>
+            <button class="btn-premium" onclick="window.open('https://www.youtube.com/@HONEY_sajeeb/videos', '_blank')">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                <span id="watchBtnText">Watch Now</span>
+            </button>
+        </section>
+
+        <section>
+            <h2 class="animated-title"><span>▶</span> Owner Profile :-</h2>
+            <button class="btn-premium" onclick="window.open('https://www.facebook.com/SAJEEBSAHA.MS', '_blank')">
+                <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12c0-5.523-4.477-10-10-10z"/></svg>
+                <span id="ownerBtnText">Sajeeb Saha</span>
+            </button>
+        </section>
+
+        <section class="w-full">
+            <h2 class="animated-title" id="collTxt"><span>▶</span> Some of our collections :-</h2>
+            
+            <div class="collection-grid" id="gallery">
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/4a/8c/8c/4a8c8c07c3d576bace406c8ac1cd70f6.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/97/14/39/9714391c3817e3a1e4c81609205aeaaa.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/3b/be/32/3bbe3266885a996df89c9247cea8d853.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/13/0c/a4/130ca4f5c913c48d9889a78537690cb4.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/5f/e2/c6/5fe2c6cb0c048891ba30bf127b3fe1cf.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/e1/9c/4b/e19c4b6442c88eca22fb0e4314ba19a1.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/cf/83/4a/cf834a423b250c69c013aa1b6ea1e2c0.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/c5/3a/09/c53a09a52313287802ff333bcf5c52c0.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/f8/0a/7e/f80a7e743f74381a1446b41701e7fd56.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/58/af/cc/58afcc88f8bb1b1dc4cb713e829742fd.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/be/ab/68/beab68e9091b5f6f47497178c4adef2e.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/fe/fd/28/fefd288885897f9685dd503eb36f715d.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/78/36/2f/78362f364c254586f60a635d4f01552c.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/27/2e/ad/272ead7687ec5e0762802a1c9ee4aa90.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/1c/3c/bb/1c3cbb8bf6f92c50ec5fb2ff3d8f1124.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/29/bc/36/29bc36c72865567576c7de16f51fcabd.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/19/6d/8a/196d8a40bd7ca969db8b3bf6f0b5d8b2.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/e4/67/7b/e4677befb090b8aefd1b5859f5078f07.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/d3/c0/19/d3c01989ecaf42aece53c7c4f20e6a47.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/bb/db/2e/bbdb2ef7454d6281d79460916e57988f.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/5a/d9/20/5ad9203b193e198a268187ddbe4bdf15.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/d4/89/f1/d489f1c8f748df1bd166bc51c20335a0.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/5a/d2/e7/5ad2e7d630313e21d57cfb0b767e52c5.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/79/e2/f8/79e2f8642cb5e874c6e34176e4d37b9c.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/f8/ef/ac/f8efac5718c0be6a57e4f538a8b4ec0f.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/7e/3b/2c/7e3b2cdd5868ed9a8cf6fe7ca769be5d.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/16/35/84/1635848901e77d9b6552a8bd678630fe.jpg"></div></div>
+                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/eb/44/2a/eb442a51536dde53d52854027575b0a3.jpg"></div></div>
+            </div>
+        </section>
+
+        <!-- PREMIER THANK YOU BAR -->
+        <div class="thank-you-bar" id="thankYouBar" onclick="triggerFireworks(event)">
+            <div class="thank-you-text" id="thankYouTxt">Thank You For Visiting!</div>
+        </div>
+
+        <footer class="opacity-30 text-[10px] font-black uppercase tracking-[0.4em] py-8 text-center">
+            © @Honey_sajeeb
+        </footer>
+    </div>
+
+    <div id="fullscreenOverlay">
+        <button class="close-btn" onclick="closeFull()">×</button>
+        <button class="dl-btn" id="downloadBtn" onclick="downloadImg(event)">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+            <span id="dlText">Download</span>
+        </button>
+        <img id="fullImg" src="" alt="Fullscreen" onclick="closeFull()">
+    </div>
+
+    <script>
+        let currentLang = 'EN';
+        const translations = {
+            EN: { 
+                follow: '▽ Follow us to stay connected ▽', 
+                fbGroup: 'In our Facebook group :-', 
+                watch: 'Watch cartoon videos :-', 
+                coll: 'Some of our collections :-', 
+                join: 'Join Now', 
+                watchNow: 'Watch Now', 
+                lang: '🌐Language: ENGLISH 🇬🇧', 
+                dl: 'Download',
+                thanks: 'Thank You For Visiting!'
+            },
+            BN: { 
+                follow: '▽ যোগাযোগ রাখতে আমাদের ফলো করুন ▽', 
+                fbGroup: 'আমাদের ফেসবুক গ্রুপে :-', 
+                watch: 'কার্টুন ভিডিও দেখুন :-', 
+                coll: 'আমাদের কিছু কালেকশন :-', 
+                join: 'জয়েন করুন', 
+                watchNow: 'এখনই দেখুন', 
+                lang: '🌐ভাষা: বাংলা 🇧🇩', 
+                dl: 'ডাউনলোড',
+                thanks: 'পরিদর্শনের জন্য আপনাকে ধন্যবাদ!'
+            }
+        };
+
+        function toggleMenu() { document.getElementById('dropdown').classList.toggle('active'); }
+        function setMode(mode) { document.body.className = mode + '-mode'; toggleMenu(); }
+
+        function toggleLang() {
+            currentLang = currentLang === 'EN' ? 'BN' : 'EN';
+            const t = translations[currentLang];
+            
+            document.getElementById('followTxt').innerText = t.follow;
+            document.getElementById('fbGroupTxt').innerHTML = `<span>▶</span> ${t.fbGroup}`;
+            document.getElementById('watchTxt').innerHTML = `<span>▶</span> ${t.watch}`;
+            document.getElementById('collTxt').innerHTML = `<span>▶</span> ${t.coll}`;
+            
+            document.getElementById('joinBtnText').innerText = t.join;
+            document.getElementById('watchBtnText').innerText = t.watchNow;
+            document.getElementById('dlText').innerText = t.dl;
+            document.getElementById('langBtn').innerText = t.lang;
+            document.getElementById('thankYouTxt').innerText = t.thanks;
+            
+            toggleMenu();
         }
-        fire(0.25, { spread: 26, startVelocity: 55 });
-        fire(0.2, { spread: 60 });
-        fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
-        fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
-        fire(0.1, { spread: 120, startVelocity: 45 });
-    }
-</script>
 
+        function openFull(card) {
+            const imgSrc = card.querySelector('img').src;
+            const overlay = document.getElementById('fullscreenOverlay');
+            document.getElementById('fullImg').src = imgSrc;
+            overlay.style.display = 'flex';
+        }
+
+        function closeFull() {
+            document.getElementById('fullscreenOverlay').style.display = 'none';
+        }
+
+        async function downloadImg(e) {
+            e.stopPropagation(); 
+            const imgSrc = document.getElementById('fullImg').src;
+            try {
+                const response = await fetch(imgSrc);
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'honey-ent-collection.jpg';
+                a.click();
+                window.URL.revokeObjectURL(url);
+            } catch (err) {
+                const a = document.createElement('a');
+                a.href = imgSrc;
+                a.target = '_blank';
+                a.download = 'honey-entertainment-collection.jpg';
+                a.click();
+            }
+        }
+
+        function triggerFireworks(e) {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            const colors = ['#f472b6', '#fb923c', '#d97706', '#ffffff', '#25F4EE', '#FE2C55'];
+            
+            for (let i = 0; i < 40; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const size = Math.random() * 8 + 4;
+                
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.backgroundColor = color;
+                particle.style.boxShadow = `0 0 10px ${color}`;
+                particle.style.left = centerX + 'px';
+                particle.style.top = centerY + 'px';
+                
+                document.body.appendChild(particle);
+                
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 150 + 50;
+                const vx = Math.cos(angle) * velocity;
+                const vy = Math.sin(angle) * velocity - 50; 
+                
+                let opacity = 1;
+                let curX = centerX;
+                let curY = centerY;
+                
+                const animate = () => {
+                    curX += vx / 20;
+                    curY += vy / 20;
+                    opacity -= 0.02;
+                    
+                    particle.style.transform = `translate(${curX - centerX}px, ${curY - centerY}px)`;
+                    particle.style.opacity = opacity;
+                    
+                    if (opacity > 0) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        particle.remove();
+                    }
+                };
+                
+                requestAnimationFrame(animate);
+            }
+        }
+
+        function createBubbles() {
+            const container = document.getElementById('bubbleContainer');
+            if(!container) return;
+            for (let i = 0; i < 20; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                const size = Math.random() * 80 + 30 + 'px';
+                bubble.style.width = size; bubble.style.height = size;
+                bubble.style.left = Math.random() * 100 + 'vw';
+                bubble.style.animationDelay = Math.random() * 10 + 's';
+                container.appendChild(bubble);
+            }
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.closest('.menu-container')) {
+                const drop = document.getElementById('dropdown');
+                if(drop) drop.classList.remove('active');
+            }
+        }
+
+        window.onload = () => createBubbles();
+    </script>
 </body>
 </html>
