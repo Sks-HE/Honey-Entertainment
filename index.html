@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Honey Entertainment | sajeeb saha </title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #050505;
@@ -13,6 +14,7 @@
             --card-bg: rgba(255, 255, 255, 0.05);
             --frame-gradient: conic-gradient(from 0deg, #f472b6, #fb923c, #f472b6);
             --wave-color: rgba(244, 114, 182, 0.2);
+            --bubble-color: rgba(244, 114, 182, 0.4);
         }
 
         body.light-mode {
@@ -22,6 +24,7 @@
             --card-bg: rgba(0, 0, 0, 0.05);
             --frame-gradient: conic-gradient(from 0deg, #db2777, #f43f5e, #db2777);
             --wave-color: rgba(219, 39, 119, 0.1);
+            --bubble-color: rgba(219, 39, 119, 0.3);
         }
 
         body.dark-mode {
@@ -31,6 +34,7 @@
             --card-bg: rgba(255, 255, 255, 0.05);
             --frame-gradient: conic-gradient(from 0deg, #f472b6, #fb923c, #f472b6);
             --wave-color: rgba(244, 114, 182, 0.2);
+            --bubble-color: rgba(244, 114, 182, 0.4);
         }
 
         body.honey-mode {
@@ -40,6 +44,7 @@
             --card-bg: rgba(217, 119, 6, 0.1);
             --frame-gradient: conic-gradient(from 0deg, #d97706, #f59e0b, #d97706);
             --wave-color: rgba(217, 119, 6, 0.15);
+            --bubble-color: rgba(217, 119, 6, 0.3);
             background-image: radial-gradient(circle at center, #fffbeb, #fef3c7);
         }
 
@@ -58,425 +63,183 @@
             position: relative;
         }
 
-        /* WATER WAVE STYLING */
-        .waves-container {
+        /* --- BUBBLE ANIMATION --- */
+        .bubble {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
+            bottom: -50px;
+            background: var(--bubble-color);
+            border-radius: 50%;
             pointer-events: none;
-            z-index: 1;
+            z-index: 2;
+            animation: rise var(--duration) ease-in-out infinite;
         }
 
-        .wave-svg {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
+        @keyframes rise {
+            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+            10% { opacity: 0.6; }
+            25% { transform: translateY(-30vh) translateX(var(--drift-1)) scale(1.1); }
+            50% { transform: translateY(-60vh) translateX(var(--drift-2)) scale(1.2); }
+            75% { transform: translateY(-90vh) translateX(var(--drift-1)) scale(1.3); }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-130vh) translateX(var(--drift-2)) scale(1.5); opacity: 0; }
         }
 
-        .parallax-waves > use {
-            animation: move-forever 25s cubic-bezier(.55,.5,.45,.5) infinite;
+        /* --- ANIMATED HAMBURGER --- */
+        .menu-btn {
+            width: 45px;
+            height: 45px;
+            background: var(--card-bg);
+            border: 1px solid rgba(128,128,128,0.2);
+            border-radius: 50%;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            transition: 0.3s;
         }
+
+        .bar {
+            width: 20px;
+            height: 2px;
+            background-color: var(--text-color);
+            transition: 0.4s;
+            border-radius: 2px;
+        }
+
+        .menu-btn.active .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .menu-btn.active .bar:nth-child(2) { opacity: 0; }
+        .menu-btn.active .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        /* --- SOCIAL ICONS --- */
+        .social-container { display: flex; gap: 25px; perspective: 1000px; }
+        .social-box {
+            position: relative; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center;
+            border-radius: 22px; background: var(--bg-color); z-index: 10; cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            animation: floatingIcon 3s ease-in-out infinite;
+        }
+        .social-box:nth-child(2) { animation-delay: 0.5s; }
+        .social-box:nth-child(3) { animation-delay: 1s; }
+        @keyframes floatingIcon { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-10px) rotate(2deg); } }
+        .social-box::before {
+            content: ''; position: absolute; inset: -3px;
+            background: conic-gradient(from var(--angle), #1877F2, #25F4EE, #FE2C55, #FF0000, #FFD700, #1877F2);
+            border-radius: 25px; z-index: -1; animation: rotateRGB 4s linear infinite;
+        }
+        @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+        @keyframes rotateRGB { to { --angle: 360deg; } }
+        .social-box::after { content: ''; position: absolute; inset: 2px; background: var(--bg-color); border-radius: 20px; z-index: -1; transition: background 0.3s; }
+        .social-box:hover { transform: scale(1.15) rotate(-5deg); box-shadow: 0 0 30px rgba(244, 114, 182, 0.4); }
+        .social-box svg { transition: all 0.4s; filter: drop-shadow(0 0 5px rgba(0,0,0,0.2)); }
+        .social-box:hover svg { transform: scale(1.2) rotate(5deg); }
+
+        /* --- WAVES --- */
+        .waves-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 100px; pointer-events: none; z-index: 5; }
+        .wave-svg { width: 100%; height: 100%; }
+        .parallax-waves > use { animation: move-forever 25s cubic-bezier(.55,.5,.45,.5) infinite; }
         .parallax-waves > use:nth-child(1) { animation-delay: -2s; animation-duration: 7s; }
         .parallax-waves > use:nth-child(2) { animation-delay: -3s; animation-duration: 10s; }
         .parallax-waves > use:nth-child(3) { animation-delay: -4s; animation-duration: 13s; }
         .parallax-waves > use:nth-child(4) { animation-delay: -5s; animation-duration: 20s; }
+        @keyframes move-forever { 0% { transform: translate3d(-90px, 0, 0); } 100% { transform: translate3d(85px, 0, 0); } }
 
-        @keyframes move-forever {
-            0% { transform: translate3d(-90px, 0, 0); }
-            100% { transform: translate3d(85px, 0, 0); }
-        }
-
-        .bubble-container {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .bubble {
-            position: absolute;
-            bottom: -150px;
-            background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: riseAndSway 10s infinite ease-in-out;
-            filter: blur(8px);
-            opacity: 0.6;
-        }
-
-        @keyframes riseAndSway {
-            0% { transform: translateY(0) translateX(0) scale(0.5); opacity: 0; }
-            50% { opacity: 0.7; transform: translateY(-60vh) translateX(30px) scale(1.2); }
-            100% { transform: translateY(-130vh) translateX(-30px) scale(1.8); opacity: 0; }
-        }
-
-        .app-container {
-            width: 100%;
-            max-width: 450px;
-            padding: 40px 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
-            z-index: 10;
-        }
-
-        .menu-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
-        }
-
-        .dots-btn {
-            background: var(--card-bg);
-            border: 1px solid rgba(128,128,128,0.2);
-            padding: 10px;
-            border-radius: 50%;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            color: var(--text-color);
-        }
-
+        /* --- APP CORE --- */
+        .app-container { width: 100%; max-width: 450px; padding: 40px 25px; display: flex; flex-direction: column; gap: 40px; z-index: 10; }
+        .menu-container { position: fixed; top: 20px; right: 20px; z-index: 100; }
         .dropdown-menu {
-            position: absolute;
-            right: 0;
-            top: 50px;
-            background: var(--bg-color);
-            border: 1px solid var(--accent);
-            border-radius: 12px;
-            width: 170px;
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            position: absolute; right: 0; top: 55px; background: var(--bg-color);
+            border: 1px solid var(--accent); border-radius: 12px; width: 170px;
+            display: none; flex-direction: column; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
-
         .dropdown-menu.active { display: flex; }
-
-        .menu-item {
-            padding: 14px 18px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            border-bottom: 1px solid rgba(128,128,128,0.1);
-        }
-
+        .menu-item { padding: 14px 18px; font-size: 14px; font-weight: 600; cursor: pointer; border-bottom: 1px solid rgba(128,128,128,0.1); }
         .menu-item:hover { background: var(--accent); color: #fff; }
 
-        .header-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
+        .header-wrapper { display: flex; align-items: center; gap: 15px; }
         .custom-logo-placeholder {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            border: 2px solid var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--card-bg);
-            flex-shrink: 0;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 60px; height: 60px; border-radius: 12px; border: 2px solid var(--accent);
+            display: flex; align-items: center; justify-content: center; background: var(--card-bg);
+            flex-shrink: 0; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-
-        .custom-logo-placeholder img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transform: scale(1.5);
-        }
+        .custom-logo-placeholder img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.5); }
 
         .shimmer-text {
             background: linear-gradient(90deg, var(--text-color), var(--accent), #fb923c, var(--text-color));
-            background-size: 300% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            background-size: 300% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             animation: shine 4s linear infinite;
         }
         @keyframes shine { to { background-position: 300% center; } }
 
-        .animated-title {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 900;
-            font-size: 18px;
-            margin-bottom: 15px;
-            position: relative;
-        }
-
-        .animated-title span {
-            color: var(--accent);
-            display: inline-block;
-            animation: arrowBounce 1.5s infinite ease-in-out;
-        }
-
-        @keyframes arrowBounce {
-            0%, 100% { transform: translateX(0); opacity: 1; }
-            50% { transform: translateX(8px); opacity: 0.5; }
-        }
-
-        .social-box {
-            position: relative;
-            width: 65px; height: 65px;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 20px;
-            background: var(--bg-color);
-            overflow: hidden;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        .social-box:hover { transform: scale(1.1) rotate(5deg); }
-
-        .social-box::before {
-            content: '';
-            position: absolute;
-            width: 150%; height: 150%;
-            background: conic-gradient(#1877F2, #25F4EE, #FE2C55, #FF0000, #FFD700, #1877F2);
-            animation: rotateRGB 3s linear infinite;
-        }
-
-        @keyframes rotateRGB { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        .social-box::after {
-            content: '';
-            position: absolute;
-            inset: 3px;
-            background: var(--bg-color);
-            border-radius: 17px;
-            z-index: 1;
-        }
-
-        .fb-color { color: #1877F2; position: relative; z-index: 10; }
-        .tt-logo { width: 32px; height: 32px; fill: var(--text-color); filter: drop-shadow(-1.5px -1px 0 #25F4EE) drop-shadow(1.5px 1px 0 #FE2C55); position: relative; z-index: 10; }
-        .yt-color { color: #FF0000; position: relative; z-index: 10; }
+        .animated-title { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 18px; margin-bottom: 15px; position: relative; }
+        .animated-title span { color: var(--accent); display: inline-block; animation: arrowBounce 1.5s infinite ease-in-out; }
+        @keyframes arrowBounce { 0%, 100% { transform: translateX(0); opacity: 1; } 50% { transform: translateX(8px); opacity: 0.5; } }
 
         .btn-premium {
-            padding: 14px 28px;
-            border-radius: 50px;
-            font-weight: 900;
-            text-transform: uppercase;
-            font-size: 14px;
-            background: linear-gradient(90deg, var(--accent), #fb923c);
-            color: #fff;
-            animation: heartbeat 2s infinite ease-in-out;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            display: flex; align-items: center; gap: 12px;
-            border: none;
+            padding: 14px 28px; border-radius: 50px; font-weight: 900; text-transform: uppercase;
+            font-size: 14px; background: linear-gradient(90deg, var(--accent), #fb923c);
+            color: #fff; animation: heartbeat 2s infinite ease-in-out;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 12px;
+            border: none; cursor: pointer; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: fit-content;
+        }
+        .btn-premium:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 15px 30px rgba(0,0,0,0.2), 0 0 20px var(--accent); }
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+        .collection-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; }
+        
+        /* --- ANIMATED CAPTION CSS --- */
+        .post-caption {
+            font-size: 16px; background: var(--card-bg); padding: 10px 14px; border-radius: 12px;
+            border-left: 4px solid var(--accent); line-height: 1.6; color: var(--text-color);
+            font-family: 'Hind Siliguri', cursive, serif; letter-spacing: 0.5px;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             cursor: pointer;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            width: fit-content;
+            position: relative;
+            z-index: 50;
         }
-
-        .btn-premium:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2), 0 0 20px var(--accent);
-        }
-
-        @keyframes heartbeat { 
-            0%, 100% { transform: scale(1); } 
-            50% { transform: scale(1.05); } 
-        }
-
-        .collection-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            width: 100%;
+        
+        /* Floating state when clicked */
+        .post-caption.caption-active {
+            transform: translateY(-15px) scale(1.05);
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border-left-color: white;
         }
 
         .collection-card {
-            position: relative;
-            aspect-ratio: 1/1;
-            border-radius: 15px;
-            padding: 4px; 
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg-color);
-            cursor: pointer;
-            transition: transform 0.3s;
+            position: relative; aspect-ratio: 1/1; border-radius: 15px; padding: 4px; 
+            overflow: hidden; display: flex; align-items: center; justify-content: center;
+            background: var(--bg-color); cursor: pointer; transition: transform 0.3s;
         }
-
-        .collection-card:hover { transform: scale(1.05); }
-
         .collection-card::before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: var(--frame-gradient);
-            animation: rotateFrame 4s linear infinite;
-            z-index: 0;
+            content: ''; position: absolute; width: 200%; height: 200%;
+            background: var(--frame-gradient); animation: rotateFrame 4s linear infinite; z-index: 0;
         }
-
-        @keyframes rotateFrame {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .collection-card .inner-img {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-color);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .collection-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s;
-        }
+        @keyframes rotateFrame { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .collection-card .inner-img { position: relative; z-index: 1; width: 100%; height: 100%; background: var(--bg-color); border-radius: 12px; overflow: hidden; }
+        .collection-card img { width: 100%; height: 100%; object-fit: cover; }
 
         .thank-you-bar {
-            width: 85%;
-            max-width: 320px;
-            margin: 20px auto 40px auto;
-            padding: 12px 20px;
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 100px;
-            text-align: center;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            backdrop-filter: blur(15px);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            align-self: center;
+            width: 85%; margin: 20px auto; padding: 12px 20px; background: var(--card-bg);
+            border-radius: 100px; text-align: center; cursor: pointer; position: relative;
+            backdrop-filter: blur(15px); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); display: flex; align-items: center; justify-content: center;
         }
-        
-        .thank-you-bar::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            background: linear-gradient(45deg, var(--accent), #fb923c, transparent, var(--accent));
-            background-size: 300% 300%;
-            z-index: -1;
-            border-radius: 100px;
-            animation: flowBorder 4s linear infinite;
-            opacity: 0.6;
-        }
+        .thank-you-text { font-size: 16px; font-weight: 800; text-transform: uppercase; background: linear-gradient(90deg, var(--text-color), var(--accent), #fb923c, var(--text-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
 
-        @keyframes flowBorder {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .thank-you-bar:active { transform: scale(0.92); }
-
-        .thank-you-text {
-            font-size: 16px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            background: linear-gradient(90deg, var(--text-color), var(--accent), #fb923c, var(--text-color));
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine 3s linear infinite;
-        }
-
-        .particle {
-            position: fixed;
-            pointer-events: none;
-            border-radius: 50%;
-            z-index: 3000;
-        }
-
-        #fullscreenOverlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            backdrop-filter: blur(10px);
-        }
-
-        #fullscreenOverlay img {
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 10px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
-            animation: zoomIn 0.3s ease-out;
-            cursor: pointer; 
-        }
-
-        .dl-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: var(--accent);
-            color: white;
-            padding: 10px 18px;
-            border-radius: 12px;
-            font-weight: 900;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            cursor: pointer;
-            z-index: 2100;
-            transition: all 0.3s;
-            border: none;
-        }
-        
-        .dl-btn:hover {
-            transform: scale(1.1);
-            filter: brightness(1.1);
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px;
-            z-index: 2100;
-            cursor: pointer;
-            border: none;
-        }
-
-        @keyframes zoomIn {
-            from { transform: scale(0.5); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
+        #fullscreenOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(10px); cursor: pointer; }
+        #fullscreenOverlay img { max-width: 90%; max-height: 90%; border-radius: 10px; cursor: default; }
+        .dl-btn { position: absolute; top: 20px; right: 20px; background: var(--accent); color: white; padding: 10px 18px; border-radius: 12px; font-weight: 900; z-index: 2100; border: none; }
+        .close-btn { position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.2); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 2100; border: none; }
     </style>
 </head>
-<body class="honey-mode">
+<body class="honey-mode" onclick="resetAllCaptions(event)">
 
-    <!-- WATER WAVES -->
     <div class="waves-container">
-        <svg class="wave-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
-            <defs>
-                <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
-            </defs>
+        <svg class="wave-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 24 150 28" preserveAspectRatio="none">
+            <defs><path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" /></defs>
             <g class="parallax-waves">
                 <use href="#gentle-wave" x="48" y="0" fill="var(--wave-color)" style="opacity: 0.3" />
                 <use href="#gentle-wave" x="48" y="3" fill="var(--wave-color)" style="opacity: 0.5" />
@@ -486,16 +249,14 @@
         </svg>
     </div>
 
-    <div class="bubble-container" id="bubbleContainer"></div>
-
     <div class="menu-container">
-        <button class="dots-btn" onclick="toggleMenu()">
-            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-            </svg>
+        <button class="menu-btn" id="menuBtn" onclick="toggleMenu(); event.stopPropagation()">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
         </button>
         <div class="dropdown-menu" id="dropdown">
-            <div class="menu-item" onclick="setMode('honey')">🙂Honey Mode (Default)</div>
+            <div class="menu-item" onclick="setMode('honey')">🙂Honey Mode</div>
             <div class="menu-item" onclick="setMode('dark')">🌑Dark Mode</div>
             <div class="menu-item" onclick="setMode('light')">☀️Light Mode</div>
             <div class="menu-item" onclick="toggleLang()" id="langBtn">🌐Language: EN 🇬🇧</div>
@@ -505,31 +266,22 @@
     <div class="app-container">
         <header class="header-wrapper">
             <div class="custom-logo-placeholder">
-                <img src="https://i.pinimg.com/736x/96/5f/f8/965ff82713b7a1ef6e3ffb782fcdc412.jpg" alt="Honey Logo">
+                <img src="https://i.pinimg.com/736x/96/5f/f8/965ff82713b7a1ef6e3ffb782fcdc412.jpg" alt="Logo">
             </div>
-            <h1 class="text-4xl font-black italic shimmer-text tracking-tighter leading-tight">
-                HONEY<br>ENTERTAINMENT
-            </h1>
+            <h1 class="text-4xl font-black italic shimmer-text tracking-tighter leading-tight">HONEY<br>ENTERTAINMENT</h1>
         </header>
 
         <section>
             <p class="text-[13px] opacity-60 font-black uppercase tracking-[0.25em] mb-6" id="followTxt">▽ Follow us to stay connected ▽</p>
-            <div class="flex gap-6">
-                <!-- Facebook Page -->
+            <div class="social-container">
                 <a href="https://www.facebook.com/share/1APsixLhgv/" target="_blank" class="social-box">
-                    <svg class="fb-color" style="width:32px; height:32px;" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                    </svg>
+                    <svg width="32" height="32" fill="#1877F2" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                 </a>
-                <!-- TikTok Account -->
                 <a href="https://www.tiktok.com/@honey_owner_sajeeb?_r=1&_t=ZS-940vHTzLtWi" target="_blank" class="social-box">
-                    <svg class="tt-logo" viewBox="0 0 448 512"><path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/></svg>
+                    <svg width="32" height="32" fill="currentColor" viewBox="0 0 448 512"><path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/></svg>
                 </a>
-                <!-- YouTube Channel -->
-                <a href="https://youtube.com/@honey_sajeeb?si=ctTodZGQ4F2-3rIx" target="_blank" class="social-box">
-                    <svg class="yt-color" style="width:32px; height:32px;" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                    </svg>
+                <a href="https://www.instagram.com/honey_entertainment1?igsh=bzl5bTB4bWlqMWtj" target="_blank" class="social-box">
+                    <svg width="32" height="32" fill="#E4405F" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                 </a>
             </div>
         </section>
@@ -537,17 +289,15 @@
         <section>
             <h2 class="animated-title" id="fbGroupTxt"><span>▶</span> In our Facebook group :-</h2>
             <button class="btn-premium" onclick="window.open('https://www.facebook.com/groups/honeysajeeb', '_blank')">
-                <svg width="24" height="24" fill="currentColor" viewBox="0 0 448 512">
-                    <path d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z"/>
-                </svg>
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" class="mr-1"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                 <span id="joinBtnText">Join Now</span>
             </button>
         </section>
 
         <section>
-            <h2 class="animated-title" id="watchTxt"><span>▶</span> Watch cartoon videos :-</h2>
-            <button class="btn-premium" onclick="window.open('https://www.facebook.com/saved/?list_id=122152855106959514&referrer=SHARE_COLLECTION_GROUP_STORY', '_blank')">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <h2 class="animated-title" id="watchTxt"><span>▶</span> Watch full cartoon videos :-</h2>
+            <button class="btn-premium" onclick="window.open('https://vt.tiktok.com/ZS9eYTkvafmF9-osYZy/', '_blank')">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 448 512" class="mr-1"><path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/></svg>
                 <span id="watchBtnText">Watch Now</span>
             </button>
         </section>
@@ -555,222 +305,217 @@
         <section>
             <h2 class="animated-title"><span>▶</span> Owner Profile :-</h2>
             <button class="btn-premium" onclick="window.open('https://www.facebook.com/SAJEEBSAHA.MS', '_blank')">
-                <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12c0-5.523-4.477-10-10-10z"/></svg>
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" class="mr-1"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                 <span id="ownerBtnText">Sajeeb Saha</span>
             </button>
         </section>
 
         <section class="w-full">
             <h2 class="animated-title" id="collTxt"><span>▶</span> Some of our collections :-</h2>
-            
             <div class="collection-grid" id="gallery">
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/4a/8c/8c/4a8c8c07c3d576bace406c8ac1cd70f6.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/97/14/39/9714391c3817e3a1e4c81609205aeaaa.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/3b/be/32/3bbe3266885a996df89c9247cea8d853.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/13/0c/a4/130ca4f5c913c48d9889a78537690cb4.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/5f/e2/c6/5fe2c6cb0c048891ba30bf127b3fe1cf.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/e1/9c/4b/e19c4b6442c88eca22fb0e4314ba19a1.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/cf/83/4a/cf834a423b250c69c013aa1b6ea1e2c0.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/c5/3a/09/c53a09a52313287802ff333bcf5c52c0.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/f8/0a/7e/f80a7e743f74381a1446b41701e7fd56.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/58/af/cc/58afcc88f8bb1b1dc4cb713e829742fd.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/be/ab/68/beab68e9091b5f6f47497178c4adef2e.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/fe/fd/28/fefd288885897f9685dd503eb36f715d.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/78/36/2f/78362f364c254586f60a635d4f01552c.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/27/2e/ad/272ead7687ec5e0762802a1c9ee4aa90.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/1c/3c/bb/1c3cbb8bf6f92c50ec5fb2ff3d8f1124.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/29/bc/36/29bc36c72865567576c7de16f51fcabd.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/19/6d/8a/196d8a40bd7ca969db8b3bf6f0b5d8b2.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/e4/67/7b/e4677befb090b8aefd1b5859f5078f07.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/d3/c0/19/d3c01989ecaf42aece53c7c4f20e6a47.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/bb/db/2e/bbdb2ef7454d6281d79460916e57988f.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/5a/d9/20/5ad9203b193e198a268187ddbe4bdf15.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/d4/89/f1/d489f1c8f748df1bd166bc51c20335a0.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/5a/d2/e7/5ad2e7d630313e21d57cfb0b767e52c5.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/79/e2/f8/79e2f8642cb5e874c6e34176e4d37b9c.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/f8/ef/ac/f8efac5718c0be6a57e4f538a8b4ec0f.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/7e/3b/2c/7e3b2cdd5868ed9a8cf6fe7ca769be5d.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/16/35/84/1635848901e77d9b6552a8bd678630fe.jpg"></div></div>
-                <div class="collection-card" onclick="openFull(this)"><div class="inner-img"><img src="https://i.pinimg.com/736x/eb/44/2a/eb442a51536dde53d52854027575b0a3.jpg"></div></div>
+                <!-- Generated 44 Items -->
+                <script>
+                    const gallery = document.getElementById('gallery');
+                    const items = [
+                        { img: "https://i.pinimg.com/736x/4a/8c/8c/4a8c8c07c3d576bace406c8ac1cd70f6.jpg", cap: "মন্টুপুরের রাজা Honey 🤴🏻" },
+                        { img: "https://i.pinimg.com/736x/79/0f/9d/790f9dda89865fafd38656b72629a3ac.jpg", cap: "𝐻𝑜𝑛𝑒𝑦 𝑤𝑖𝑡ℎ 𝑚𝑒 😉" },
+                        { img: "https://i.pinimg.com/736x/53/55/1c/53551c55e2e9788dbf0448b8a2a9a733.jpg", cap: "mood 😠" },
+                        { img: "https://i.pinimg.com/736x/1c/d2/97/1cd29752e7286f36b6dc0a1197be0cb8.jpg", cap: "𝗧𝗶𝗿𝗲𝗱😪" },
+                        { img: "https://i.pinimg.com/736x/62/12/c5/6212c5662950807efe738efe37fe1b43.jpg", cap: "Party time 🍹🎊" },
+                        { img: "https://i.pinimg.com/736x/9b/87/ef/9b87ef48f59948af91e02689a9075963.jpg", cap: "𝙷𝚘𝚗𝚎𝚢 𝙱𝚞𝚗𝚗𝚢 𝙺𝚊 𝙹𝚑𝚘𝚕𝚖𝚊𝚊𝚕 ✌🏻" },
+                        { img: "https://i.pinimg.com/736x/1e/c4/4b/1ec44b813abccb229f4f6f837e7ea0a7.jpg", cap: "হানি যখন পিঠে চড়ে, ভালোবাসা তখন ফুলে ফলে ভরে!🌹" },
+                        { img: "https://i.pinimg.com/736x/31/2c/f2/312cf2f7ad9280f649bafe77592b8236.jpg", cap: "Honey is running on the treadmill 🏃🏻‍♂️" },
+                        { img: "https://i.pinimg.com/736x/5a/d2/e7/5ad2e7d630313e21d57cfb0b767e52c5.jpg", cap: "𝐇𝐨𝐧𝐞𝐲 𝐁𝐮𝐧𝐧𝐲 😺" },
+                        { img: "https://i.pinimg.com/736x/29/bc/36/29bc36c72865567576c7de16f51fcabd.jpg", cap: "Honey Dracula 🧛🏻" },
+                        { img: "https://i.pinimg.com/736x/5a/d9/20/5ad9203b193e198a268187ddbe4bdf15.jpg", cap: "🧟" },
+                        { img: "https://i.pinimg.com/736x/78/36/2f/78362f364c254586f60a635d4f01552c.jpg", cap: "🥹🥹" },
+                        { img: "https://i.pinimg.com/736x/bb/db/2e/bbdb2ef7454d6281d79460916e57988f.jpg", cap: "🙂পুলাপান" },
+                        { img: "https://i.pinimg.com/736x/d3/c0/19/d3c01989ecaf42aece53c7c4f20e6a47.jpg", cap: "কথা কস কেন 😒" },
+                        { img: "https://i.pinimg.com/736x/79/e2/f8/79e2f8642cb5e874c6e34176e4d37b9c.jpg", cap: "ᴛʜᴇɴ ʜᴏɴᴇʏ 🤕" },
+                        { img: "https://i.pinimg.com/736x/f8/ef/ac/f8efac5718c0be6a57e4f538a8b4ec0f.jpg", cap: "😫" },
+                        { img: "https://i.pinimg.com/736x/be/ab/68/beab68e9091b5f6f47497178c4adef2e.jpg", cap: "HONEY AS RADHE 😁" },
+                        { img: "https://i.pinimg.com/736x/16/35/84/1635848901e77d9b6552a8bd678630fe.jpg", cap: "Honey এর কৌতুক 🤡" },
+                        { img: "https://i.pinimg.com/736x/25/bc/98/25bc9843314e191f836bcc93777d91d4.jpg", cap: "হানির শীতের সকাল ❄️" },
+                        { img: "https://i.pinimg.com/736x/bc/fe/78/bcfe78af093b605410702517251f5fcf.jpg", cap: "ওরে ঠান্ডা 🥶" },
+                        { img: "https://i.pinimg.com/736x/5f/e2/c6/5fe2c6cb0c048891ba30bf127b3fe1cf.jpg", cap: "🆆🅾🆆 🅱🅴🅰🆄🆃🅸🅵🆄🅻 😍" },
+                        { img: "https://i.pinimg.com/736x/e1/9c/4b/e19c4b6442c88eca22fb0e4314ba19a1.jpg", cap: "ＨＯＮＥＹ : আমার কি দোষ 😶" },
+                        { img: "https://i.pinimg.com/736x/27/2e/ad/272ead7687ec5e0762802a1c9ee4aa90.jpg", cap: "ℍ𝕖𝕪 𝕐𝕠𝕦 🫵🏻 𝕤𝕠𝕞𝕖𝕥𝕙𝕚𝕟𝕘 𝕨𝕣𝕠𝕟𝕘 🧐" },
+                        { img: "https://i.pinimg.com/736x/cf/83/4a/cf834a423b250c69c013aa1b6ea1e2c0.jpg", cap: "😎" },
+                        { img: "https://i.pinimg.com/736x/28/49/20/2849207682dba7dfe5c2f006d70f349f.jpg", cap: "গাধা আর পাগল 😶" },
+                        { img: "https://i.pinimg.com/736x/4c/fc/1e/4cfc1e2c1a7a036bfa742ffc067b7ee3.jpg", cap: "তারা কাকে দেখছে 🤔❔" },
+                        { img: "https://i.pinimg.com/736x/13/0c/a4/130ca4f5c913c48d9889a78537690cb4.jpg", cap: "ছোট ভাই 🤗💟" },
+                        { img: "https://i.pinimg.com/736x/c5/3a/09/c53a09a52313287802ff333bcf5c52c0.jpg", cap: "😤" },
+                        { img: "https://i.pinimg.com/736x/3b/be/32/3bbe3266885a996df89c9247cea8d853.jpg", cap: " Honey is running 🏃🏻‍♂️‍➡️" },
+                        { img: "https://i.pinimg.com/736x/97/14/39/9714391c3817e3a1e4c81609205aeaaa.jpg", cap: "𝘉𝘳𝘦𝘢𝘬𝘧𝘢𝘴𝘵 🍳" },
+                        { img: "https://i.pinimg.com/736x/d4/89/f1/d489f1c8f748df1bd166bc51c20335a0.jpg", cap: "হ্যালোইন 😱🧟" },
+                        { img: "https://i.pinimg.com/736x/1c/3c/bb/1c3cbb8bf6f92c50ec5fb2ff3d8f1124.jpg", cap: "Honey তো অবাক 🫨" },
+                        { img: "https://i.pinimg.com/736x/eb/44/2a/eb442a51536dde53d52854027575b0a3.jpg", cap: "✊🏻🥳" },
+                        { img: "https://i.pinimg.com/736x/f8/0a/7e/f80a7e743f74381a1446b41701e7fd56.jpg", cap: "🐱ɢᴏᴏᴅ" },
+                        { img: "https://i.pinimg.com/736x/4a/5f/42/4a5f424d1601442344ca6cf57ddaf9d1.jpg", cap: "🎥" },
+                        { img: "https://i.pinimg.com/736x/58/af/cc/58afcc88f8bb1b1dc4cb713e829742fd.jpg", cap: "But................❕" },
+                        { img: "https://i.pinimg.com/736x/0a/58/f9/0a58f9c288f80720a0bcaa0d525ce1f2.jpg", cap: "𝐺𝑎𝑛𝑔 ✊🏻 👾" },
+                        { img: "https://i.pinimg.com/736x/b8/30/5e/b8305eb15a3aa4fc7fb4cdb22577bc79.jpg", cap: "Honey🤦🏻‍♂️" },
+                        { img: "https://i.pinimg.com/736x/b5/5b/24/b55b244325e7a55df6ee8a0eaa960c08.jpg", cap: "সুলতানের ছেলে Bad Monkey 🐒" },
+                        { img: "https://i.pinimg.com/736x/f3/d4/3e/f3d43e17c350b7b8675b67151236e672.jpg", cap: "😾👊🏻" },
+                        { img: "https://i.pinimg.com/736x/19/6d/8a/196d8a40bd7ca969db8b3bf6f0b5d8b2.jpg", cap: "what is your problem 🫥" },
+                        { img: "https://i.pinimg.com/736x/e4/67/7b/e4677befb090b8aefd1b5859f5078f07.jpg", cap: " Dancer🕺🏻" },
+                        { img: "https://i.pinimg.com/736x/7e/3b/2c/7e3b2cdd5868ed9a8cf6fe7ca769be5d.jpg", cap: "𝘉𝘳𝘦𝘢𝘬𝘧𝘢𝘴𝘵 🍳" },
+                        { img: "https://i.pinimg.com/736x/01/79/23/017923ceab52a900dccd3f98c9216e95.jpg", cap: "𝐻𝑜𝑛𝑒𝑦 𝑤𝑖𝑡ℎ 𝑚𝑒 🫱🏻‍🫲🏻" }
+                    ];
+
+                    items.forEach(item => {
+                        const html = `
+                            <div class="flex flex-col gap-2">
+                                <p class="post-caption" onclick="toggleCaption(this, event)">${item.cap}</p>
+                                <div class="collection-card" onclick="openFull(this); event.stopPropagation()">
+                                    <div class="inner-img">
+                                        <img src="${item.img}" alt="Coll" onerror="this.src='https://i.pinimg.com/736x/96/5f/f8/965ff82713b7a1ef6e3ffb782fcdc412.jpg'">
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        gallery.insertAdjacentHTML('beforeend', html);
+                    });
+                </script>
             </div>
         </section>
 
-        <!-- PREMIER THANK YOU BAR -->
-        <div class="thank-you-bar" id="thankYouBar" onclick="triggerFireworks(event)">
+        <div class="thank-you-bar" id="thankYouBar" onclick="triggerEffect(event); event.stopPropagation()">
             <div class="thank-you-text" id="thankYouTxt">Thank You For Visiting!</div>
         </div>
 
-        <footer class="opacity-30 text-[10px] font-black uppercase tracking-[0.4em] py-8 text-center">
-            © @Honey_sajeeb
-        </footer>
+        <footer class="opacity-30 text-[10px] font-black uppercase tracking-[0.4em] py-8 text-center">© @Honey_sajeeb</footer>
     </div>
 
-    <div id="fullscreenOverlay">
-        <button class="close-btn" onclick="closeFull()">×</button>
-        <button class="dl-btn" id="downloadBtn" onclick="downloadImg(event)">
-            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-            <span id="dlText">Download</span>
-        </button>
-        <img id="fullImg" src="" alt="Fullscreen" onclick="closeFull()">
+    <!-- Modified: Clicking the overlay closes the image -->
+    <div id="fullscreenOverlay" onclick="closeFull()">
+        <button class="close-btn" onclick="event.stopPropagation(); closeFull()">×</button>
+        <button class="dl-btn" id="dlBtn" onclick="event.stopPropagation(); downloadImg()">Download</button>
+        <img id="fullImg" src="" alt="Full" onclick="event.stopPropagation(); closeFull()">
     </div>
 
     <script>
         let currentLang = 'EN';
         const translations = {
-            EN: { 
-                follow: '▽ Follow us to stay connected ▽', 
-                fbGroup: 'In our Facebook group :-', 
-                watch: 'Watch cartoon videos :-', 
-                coll: 'Some of our collections :-', 
-                join: 'Join Now', 
-                watchNow: 'Watch Now', 
-                lang: '🌐Language: ENGLISH 🇬🇧', 
-                dl: 'Download',
-                thanks: 'Thank You For Visiting!'
-            },
-            BN: { 
-                follow: '▽ যোগাযোগ রাখতে আমাদের ফলো করুন ▽', 
-                fbGroup: 'আমাদের ফেসবুক গ্রুপে :-', 
-                watch: 'কার্টুন ভিডিও দেখুন :-', 
-                coll: 'আমাদের কিছু কালেকশন :-', 
-                join: 'জয়েন করুন', 
-                watchNow: 'এখনই দেখুন', 
-                lang: '🌐ভাষা: বাংলা 🇧🇩', 
-                dl: 'ডাউনলোড',
-                thanks: 'পরিদর্শনের জন্য আপনাকে ধন্যবাদ!'
-            }
+            EN: { follow: '▽ Follow us to stay connected ▽', fbGroup: 'In our Facebook group :-', watch: 'Watch full cartoon videos :-', coll: 'Some of our collections :-', join: 'Join Now', watchNow: 'Watch Now', lang: '🌐Language: ENGLISH 🇬🇧', dl: 'Download', thanks: 'Thank You For Visiting!' },
+            BN: { follow: '▽ যোগাযোগ রাখতে আমাদের ফলো করুন ▽', fbGroup: 'আমাদের ফেসবুক গ্রুপে :-', watch: 'সম্পূর্ণ কার্টুন ভিডিও দেখুন :-', coll: 'আমাদের কিছু কালেকশন :-', join: 'জয়েন করুন', watchNow: 'এখনই দেখুন', lang: '🌐ভাষা: বাংলা 🇧🇩', dl: 'ডাউনলোড', thanks: 'পরিদর্শনের জন্য আপনাকে ধন্যবাদ!' }
         };
 
-        function toggleMenu() { document.getElementById('dropdown').classList.toggle('active'); }
-        function setMode(mode) { document.body.className = mode + '-mode'; toggleMenu(); }
+        /* --- NEW CAPTION ANIMATION LOGIC --- */
+        function toggleCaption(element, event) {
+            event.stopPropagation(); // Prevents body click from firing immediately
+            const isActive = element.classList.contains('caption-active');
+            
+            // Close all other captions first
+            document.querySelectorAll('.post-caption').forEach(cap => {
+                cap.classList.remove('caption-active');
+            });
+
+            // Toggle the clicked one
+            if (!isActive) {
+                element.classList.add('caption-active');
+            }
+        }
+
+        function resetAllCaptions(event) {
+            // If we clicked outside any caption, reset them all
+            if (!event.target.closest('.post-caption')) {
+                document.querySelectorAll('.post-caption').forEach(cap => {
+                    cap.classList.remove('caption-active');
+                });
+            }
+        }
+
+        function toggleMenu() { 
+            const dropdown = document.getElementById('dropdown');
+            const menuBtn = document.getElementById('menuBtn');
+            dropdown.classList.toggle('active'); 
+            menuBtn.classList.toggle('active');
+        }
+
+        function setMode(mode) { 
+            document.body.className = mode + '-mode'; 
+            toggleMenu(); 
+        }
 
         function toggleLang() {
             currentLang = currentLang === 'EN' ? 'BN' : 'EN';
             const t = translations[currentLang];
-            
             document.getElementById('followTxt').innerText = t.follow;
+            
             document.getElementById('fbGroupTxt').innerHTML = `<span>▶</span> ${t.fbGroup}`;
             document.getElementById('watchTxt').innerHTML = `<span>▶</span> ${t.watch}`;
             document.getElementById('collTxt').innerHTML = `<span>▶</span> ${t.coll}`;
-            
+
             document.getElementById('joinBtnText').innerText = t.join;
             document.getElementById('watchBtnText').innerText = t.watchNow;
-            document.getElementById('dlText').innerText = t.dl;
+            document.getElementById('dlBtn').innerText = t.dl;
             document.getElementById('langBtn').innerText = t.lang;
             document.getElementById('thankYouTxt').innerText = t.thanks;
-            
             toggleMenu();
         }
 
         function openFull(card) {
             const imgSrc = card.querySelector('img').src;
-            const overlay = document.getElementById('fullscreenOverlay');
             document.getElementById('fullImg').src = imgSrc;
-            overlay.style.display = 'flex';
+            document.getElementById('fullscreenOverlay').style.display = 'flex';
         }
 
-        function closeFull() {
-            document.getElementById('fullscreenOverlay').style.display = 'none';
+        function closeFull() { 
+            document.getElementById('fullscreenOverlay').style.display = 'none'; 
         }
 
-        async function downloadImg(e) {
-            e.stopPropagation(); 
-            const imgSrc = document.getElementById('fullImg').src;
-            try {
-                const response = await fetch(imgSrc);
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'honey-ent-collection.jpg';
-                a.click();
-                window.URL.revokeObjectURL(url);
-            } catch (err) {
-                const a = document.createElement('a');
-                a.href = imgSrc;
-                a.target = '_blank';
-                a.download = 'honey-entertainment-collection.jpg';
-                a.click();
-            }
-        }
-
-        function triggerFireworks(e) {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            
-            const colors = ['#f472b6', '#fb923c', '#d97706', '#ffffff', '#25F4EE', '#FE2C55'];
-            
-            for (let i = 0; i < 40; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                const size = Math.random() * 8 + 4;
-                
-                particle.style.width = size + 'px';
-                particle.style.height = size + 'px';
-                particle.style.backgroundColor = color;
-                particle.style.boxShadow = `0 0 10px ${color}`;
-                particle.style.left = centerX + 'px';
-                particle.style.top = centerY + 'px';
-                
-                document.body.appendChild(particle);
-                
-                const angle = Math.random() * Math.PI * 2;
-                const velocity = Math.random() * 150 + 50;
-                const vx = Math.cos(angle) * velocity;
-                const vy = Math.sin(angle) * velocity - 50; 
-                
-                let opacity = 1;
-                let curX = centerX;
-                let curY = centerY;
-                
-                const animate = () => {
-                    curX += vx / 20;
-                    curY += vy / 20;
-                    opacity -= 0.02;
-                    
-                    particle.style.transform = `translate(${curX - centerX}px, ${curY - centerY}px)`;
-                    particle.style.opacity = opacity;
-                    
-                    if (opacity > 0) {
-                        requestAnimationFrame(animate);
-                    } else {
-                        particle.remove();
-                    }
-                };
-                
-                requestAnimationFrame(animate);
-            }
+        function downloadImg() {
+            const link = document.createElement('a');
+            link.href = document.getElementById('fullImg').src;
+            link.download = 'honey-collection.jpg';
+            link.click();
         }
 
         function createBubbles() {
-            const container = document.getElementById('bubbleContainer');
-            if(!container) return;
-            for (let i = 0; i < 20; i++) {
-                const bubble = document.createElement('div');
-                bubble.className = 'bubble';
-                const size = Math.random() * 80 + 30 + 'px';
-                bubble.style.width = size; bubble.style.height = size;
-                bubble.style.left = Math.random() * 100 + 'vw';
-                bubble.style.animationDelay = Math.random() * 10 + 's';
-                container.appendChild(bubble);
+            const bubbleCount = 10;
+            for (let i = 0; i < bubbleCount; i++) {
+                setTimeout(() => {
+                    const b = document.createElement('div');
+                    b.className = 'bubble';
+                    const size = Math.random() * 12 + 4 + 'px';
+                    b.style.width = size;
+                    b.style.height = size;
+                    b.style.left = Math.random() * 100 + 'vw';
+                    b.style.setProperty('--duration', Math.random() * 4 + 8 + 's');
+                    const drift1 = (Math.random() - 0.5) * 60 + 'px';
+                    const drift2 = (Math.random() - 0.5) * 60 + 'px';
+                    b.style.setProperty('--drift-1', drift1);
+                    b.style.setProperty('--drift-2', drift2);
+                    document.body.appendChild(b);
+                    setTimeout(() => b.remove(), 13000);
+                }, i * 800);
             }
         }
+        setInterval(createBubbles, 6000);
+        createBubbles();
 
-        window.onclick = function(event) {
-            if (!event.target.closest('.menu-container')) {
-                const drop = document.getElementById('dropdown');
-                if(drop) drop.classList.remove('active');
+        function triggerEffect(e) {
+            const colors = ['#f472b6', '#fb923c', '#d97706', '#ffffff'];
+            for (let i = 0; i < 30; i++) {
+                const p = document.createElement('div');
+                p.style.position = 'fixed';
+                p.style.width = '8px';
+                p.style.height = '8px';
+                p.style.background = colors[Math.floor(Math.random() * colors.length)];
+                p.style.left = e.clientX + 'px';
+                p.style.top = e.clientY + 'px';
+                p.style.borderRadius = '50%';
+                p.style.pointerEvents = 'none';
+                document.body.appendChild(p);
+                const angle = Math.random() * Math.PI * 2;
+                const dist = Math.random() * 100 + 50;
+                p.animate([
+                    { transform: 'translate(0,0)', opacity: 1 },
+                    { transform: `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px)`, opacity: 0 }
+                ], { duration: 1000, easing: 'ease-out' }).onfinish = () => p.remove();
             }
         }
-
-        window.onload = () => createBubbles();
     </script>
 </body>
 </html>
-
-
-
-
