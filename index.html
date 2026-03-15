@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Honey Entertainment | sajeeb saha </title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&family=Playfair+Display:ital,wght@1,700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #050505;
@@ -16,7 +16,6 @@
             --wave-color: rgba(244, 114, 182, 0.2);
             --bubble-color: rgba(244, 114, 182, 0.4);
         }
-
         body.light-mode {
             --bg-color: #ffffff;
             --text-color: #1a1a1a;
@@ -26,7 +25,6 @@
             --wave-color: rgba(219, 39, 119, 0.1);
             --bubble-color: rgba(219, 39, 119, 0.3);
         }
-
         body.dark-mode {
             --bg-color: #050505;
             --text-color: #ffffff;
@@ -36,18 +34,16 @@
             --wave-color: rgba(244, 114, 182, 0.2);
             --bubble-color: rgba(244, 114, 182, 0.4);
         }
-
         body.honey-mode {
-            --bg-color: #fdf2f2; 
-            --text-color: #78350f; 
-            --accent: #d97706; 
-            --card-bg: rgba(217, 119, 6, 0.1);
+            --bg-color: #fdf2f2;
+            --text-color: #78350f;
+            --accent: #d97706;
+            --card-bg: rgba(217, 119, 6,0.1);
             --frame-gradient: conic-gradient(from 0deg, #d97706, #f59e0b, #d97706);
             --wave-color: rgba(217, 119, 6, 0.15);
             --bubble-color: rgba(217, 119, 6, 0.3);
             background-image: radial-gradient(circle at center, #fffbeb, #fef3c7);
         }
-
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
@@ -62,8 +58,84 @@
             align-items: center;
             position: relative;
         }
+        /* STYLISH DIGITAL UNIQUE PREMIERE FONT & ANIMATION */
+        .ai-status-text, .visit-status-text {
+            font-family: 'Orbitron', sans-serif; /* Digital & Premium Look */
+            font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, var(--text-color), var(--accent), #fb923c, var(--text-color));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: digitalPulse 3s infinite ease-in-out, shimmer 3s linear infinite;
+            display: block;
+            margin-bottom: 5px;
+        }
+        /* Specific style for the AI word to make it bigger */
+        .ai-status-text .highlight-ai {
+            font-size: 20px;
+            vertical-align: middle;
+            display: inline-block;
+            margin-right: 2px;
+        }
+        .ai-status-text {
+            margin-top: 10px;
+        }
+        .visit-status-text {
+            margin-bottom: -15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        /* Bell Animation */
+        .bell-icon {
+            fill: var(--accent);
+            animation: ring 2s infinite ease-in-out;
+            transform-origin: top center;
+        }
+        @keyframes ring {
+            0%, 100% { transform: rotate(0); }
+            10% { transform: rotate(15deg); }
+            20% { transform: rotate(-15deg); }
+            30% { transform: rotate(10deg); }
+            40% { transform: rotate(-10deg); }
+            50% { transform: rotate(0); }
+        }
 
-        /* --- BUBBLE ANIMATION --- */
+        /* Digital Down Arrow (Replacing Emoji) */
+        .scroll-indicator {
+            width: 20px;
+            height: 20px;
+            border-bottom: 3px solid var(--accent);
+            border-right: 3px solid var(--accent);
+            transform: rotate(45deg);
+            margin: 25px auto 0;
+            animation: arrowDown 1.5s infinite ease-in-out;
+            opacity: 0.8;
+        }
+        @keyframes arrowDown {
+            0% { transform: translateY(0) rotate(45deg); opacity: 0.3; }
+            50% { transform: translateY(10px) rotate(45deg); opacity: 1; }
+            100% { transform: translateY(0) rotate(45deg); opacity: 0.3; }
+        }
+        /* Pulse Animation */
+        @keyframes digitalPulse {
+            0%, 100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 0px transparent);
+            }
+            50% {
+                transform: scale(1.05);
+                filter: drop-shadow(0 0 8px var(--accent));
+            }
+        }
+        @keyframes shimmer {
+            to { background-position: 200% center; }
+        }
         .bubble {
             position: fixed;
             bottom: -50px;
@@ -73,7 +145,6 @@
             z-index: 2;
             animation: rise var(--duration) ease-in-out infinite;
         }
-
         @keyframes rise {
             0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
             10% { opacity: 0.6; }
@@ -83,8 +154,6 @@
             90% { opacity: 0.6; }
             100% { transform: translateY(-130vh) translateX(var(--drift-2)) scale(1.5); opacity: 0; }
         }
-
-        /* --- ANIMATED HAMBURGER --- */
         .menu-btn {
             width: 45px;
             height: 45px;
@@ -100,7 +169,6 @@
             gap: 5px;
             transition: 0.3s;
         }
-
         .bar {
             width: 20px;
             height: 2px;
@@ -108,12 +176,9 @@
             transition: 0.4s;
             border-radius: 2px;
         }
-
         .menu-btn.active .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
         .menu-btn.active .bar:nth-child(2) { opacity: 0; }
         .menu-btn.active .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-        /* --- SOCIAL ICONS --- */
         .social-container { display: flex; gap: 25px; perspective: 1000px; }
         .social-box {
             position: relative; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center;
@@ -135,8 +200,6 @@
         .social-box:hover { transform: scale(1.15) rotate(-5deg); box-shadow: 0 0 30px rgba(244, 114, 182, 0.4); }
         .social-box svg { transition: all 0.4s; filter: drop-shadow(0 0 5px rgba(0,0,0,0.2)); }
         .social-box:hover svg { transform: scale(1.2) rotate(5deg); }
-
-        /* --- WAVES --- */
         .waves-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 100px; pointer-events: none; z-index: 5; }
         .wave-svg { width: 100%; height: 100%; }
         .parallax-waves > use { animation: move-forever 25s cubic-bezier(.55,.5,.45,.5) infinite; }
@@ -145,8 +208,6 @@
         .parallax-waves > use:nth-child(3) { animation-delay: -4s; animation-duration: 13s; }
         .parallax-waves > use:nth-child(4) { animation-delay: -5s; animation-duration: 20s; }
         @keyframes move-forever { 0% { transform: translate3d(-90px, 0, 0); } 100% { transform: translate3d(85px, 0, 0); } }
-
-        /* --- APP CORE --- */
         .app-container { width: 100%; max-width: 450px; padding: 40px 25px; display: flex; flex-direction: column; gap: 40px; z-index: 10; }
         .menu-container { position: fixed; top: 20px; right: 20px; z-index: 100; }
         .dropdown-menu {
@@ -157,7 +218,6 @@
         .dropdown-menu.active { display: flex; }
         .menu-item { padding: 14px 18px; font-size: 14px; font-weight: 600; cursor: pointer; border-bottom: 1px solid rgba(128,128,128,0.1); }
         .menu-item:hover { background: var(--accent); color: #fff; }
-
         .header-wrapper { display: flex; align-items: center; gap: 15px; }
         .custom-logo-placeholder {
             width: 60px; height: 60px; border-radius: 12px; border: 2px solid var(--accent);
@@ -165,18 +225,15 @@
             flex-shrink: 0; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         .custom-logo-placeholder img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.5); }
-
         .shimmer-text {
             background: linear-gradient(90deg, var(--text-color), var(--accent), #fb923c, var(--text-color));
             background-size: 300% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             animation: shine 4s linear infinite;
         }
         @keyframes shine { to { background-position: 300% center; } }
-
         .animated-title { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 18px; margin-bottom: 15px; position: relative; }
         .animated-title span { color: var(--accent); display: inline-block; animation: arrowBounce 1.5s infinite ease-in-out; }
         @keyframes arrowBounce { 0%, 100% { transform: translateX(0); opacity: 1; } 50% { transform: translateX(8px); opacity: 0.5; } }
-
         .btn-premium {
             padding: 14px 28px; border-radius: 50px; font-weight: 900; text-transform: uppercase;
             font-size: 14px; background: linear-gradient(90deg, var(--accent), #fb923c);
@@ -186,10 +243,8 @@
         }
         .btn-premium:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 15px 30px rgba(0,0,0,0.2), 0 0 20px var(--accent); }
         @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-
         .collection-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; }
         
-        /* --- ANIMATED CAPTION CSS --- */
         .post-caption {
             font-size: 16px; background: var(--card-bg); padding: 10px 14px; border-radius: 12px;
             border-left: 4px solid var(--accent); line-height: 1.6; color: var(--text-color);
@@ -200,7 +255,6 @@
             z-index: 50;
         }
         
-        /* Floating state when clicked */
         .post-caption.caption-active {
             transform: translateY(-15px) scale(1.05);
             background: var(--accent);
@@ -208,9 +262,8 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
             border-left-color: white;
         }
-
         .collection-card {
-            position: relative; aspect-ratio: 1/1; border-radius: 15px; padding: 4px; 
+            position: relative; aspect-ratio: 1/1; border-radius: 15px; padding: 4px;
             overflow: hidden; display: flex; align-items: center; justify-content: center;
             background: var(--bg-color); cursor: pointer; transition: transform 0.3s;
         }
@@ -221,14 +274,12 @@
         @keyframes rotateFrame { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .collection-card .inner-img { position: relative; z-index: 1; width: 100%; height: 100%; background: var(--bg-color); border-radius: 12px; overflow: hidden; }
         .collection-card img { width: 100%; height: 100%; object-fit: cover; }
-
         .thank-you-bar {
             width: 85%; margin: 20px auto; padding: 12px 20px; background: var(--card-bg);
             border-radius: 100px; text-align: center; cursor: pointer; position: relative;
             backdrop-filter: blur(15px); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); display: flex; align-items: center; justify-content: center;
         }
         .thank-you-text { font-size: 16px; font-weight: 800; text-transform: uppercase; background: linear-gradient(90deg, var(--text-color), var(--accent), #fb923c, var(--text-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
-
         #fullscreenOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(10px); cursor: pointer; }
         #fullscreenOverlay img { max-width: 90%; max-height: 90%; border-radius: 10px; cursor: default; }
         .dl-btn { position: absolute; top: 20px; right: 20px; background: var(--accent); color: white; padding: 10px 18px; border-radius: 12px; font-weight: 900; z-index: 2100; border: none; }
@@ -236,7 +287,6 @@
     </style>
 </head>
 <body class="honey-mode" onclick="resetAllCaptions(event)">
-
     <div class="waves-container">
         <svg class="wave-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 24 150 28" preserveAspectRatio="none">
             <defs><path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" /></defs>
@@ -248,7 +298,6 @@
             </g>
         </svg>
     </div>
-
     <div class="menu-container">
         <button class="menu-btn" id="menuBtn" onclick="toggleMenu(); event.stopPropagation()">
             <div class="bar"></div>
@@ -262,7 +311,6 @@
             <div class="menu-item" onclick="toggleLang()" id="langBtn">🌐Language: EN 🇬🇧</div>
         </div>
     </div>
-
     <div class="app-container">
         <header class="header-wrapper">
             <div class="custom-logo-placeholder">
@@ -270,7 +318,6 @@
             </div>
             <h1 class="text-4xl font-black italic shimmer-text tracking-tighter leading-tight">HONEY<br>ENTERTAINMENT</h1>
         </header>
-
         <section>
             <p class="text-[13px] opacity-60 font-black uppercase tracking-[0.25em] mb-6" id="followTxt">⤹ Follow us to stay connected ⤸</p>
             <div class="social-container">
@@ -285,7 +332,6 @@
                 </a>
             </div>
         </section>
-
         <section>
             <h2 class="animated-title" id="fbGroupTxt"><span>▶</span> In our Facebook group :-</h2>
             <button class="btn-premium" onclick="window.open('https://www.facebook.com/groups/honeysajeeb', '_blank')">
@@ -293,7 +339,6 @@
                 <span id="joinBtnText">Join Now</span>
             </button>
         </section>
-
         <section>
             <h2 class="animated-title" id="watchTxt"><span>▶</span> Watch full cartoon videos :-</h2>
             <button class="btn-premium" onclick="window.open('https://vt.tiktok.com/ZS9eYTkvafmF9-osYZy/', '_blank')">
@@ -301,7 +346,6 @@
                 <span id="watchBtnText">Watch Now</span>
             </button>
         </section>
-
         <section>
             <h2 class="animated-title"><span>▶</span> Owner Profile :-</h2>
             <button class="btn-premium" onclick="window.open('https://www.facebook.com/SAJEEBSAHA.MS', '_blank')">
@@ -309,11 +353,28 @@
                 <span id="ownerBtnText">Sajeeb Saha</span>
             </button>
         </section>
-
+        <!-- STYLISH AI STATUS SECTION -->
+        <div class="flex flex-col items-center">
+            <span class="ai-status-text" id="aiStatusTxt"><span class="highlight-ai">AI</span> content is currently running on Honey Entertainment</span>
+            <div class="visit-status-text">
+                <span id="visitStatusTxt">Subscribe</span>
+                <svg class="bell-icon" width="20" height="20" viewBox="0 0 24 24">
+                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                </svg>
+            </div>
+            <!-- CLEAN CSS SCROLL INDICATOR ARROW -->
+            <div class="scroll-indicator"></div>
+        </div>
+        <section>
+            <h2 class="animated-title" id="newTxt"><span>▶</span> NEW :-</h2>
+            <button class="btn-premium" onclick="window.open('https://youtube.com/@ai-sks1?si=FAUNNlRYvc9dbPqs', '_blank')">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" class="mr-1"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                <span>AI</span>
+            </button>
+        </section>
         <section class="w-full">
             <h2 class="animated-title" id="collTxt"><span>▶</span> Some of our collections :-</h2>
             <div class="collection-grid" id="gallery">
-                <!-- Generated 44 Items -->
                 <script>
                     const gallery = document.getElementById('gallery');
                     const items = [
@@ -384,7 +445,6 @@
                         { img: "https://i.pinimg.com/736x/7e/3b/2c/7e3b2cdd5868ed9a8cf6fe7ca769be5d.jpg", cap: "𝘉𝘳𝘦𝘢𝘬𝘧𝘢𝘴𝘵 🍳" },
                         { img: "https://i.pinimg.com/736x/01/79/23/017923ceab52a900dccd3f98c9216e95.jpg", cap: "𝐻𝑜𝑛𝑒𝑦 𝑤𝑖𝑡ℎ 𝑚𝑒 🫱🏻‍🫲🏻" }
                     ];
-
                     items.forEach(item => {
                         const html = `
                             <div class="flex flex-col gap-2">
@@ -401,74 +461,53 @@
                 </script>
             </div>
         </section>
-
         <div class="thank-you-bar" id="thankYouBar" onclick="triggerEffect(event); event.stopPropagation()">
             <div class="thank-you-text" id="thankYouTxt">Thank You For Visiting!</div>
         </div>
-
         <footer class="opacity-30 text-[10px] font-black uppercase tracking-[0.4em] py-8 text-center">© @Honey_sajeeb</footer>
     </div>
-
-    <!-- Modified: Clicking the overlay closes the image -->
     <div id="fullscreenOverlay" onclick="closeFull()">
         <button class="close-btn" onclick="event.stopPropagation(); closeFull()">×</button>
         <button class="dl-btn" id="dlBtn" onclick="event.stopPropagation(); downloadImg()">Download</button>
         <img id="fullImg" src="" alt="Full" onclick="event.stopPropagation(); closeFull()">
     </div>
-
     <script>
         let currentLang = 'EN';
         const translations = {
-            EN: { follow: '▽ Follow us to stay connected ▽', fbGroup: 'In our Facebook group :-', watch: 'Watch full cartoon videos :-', coll: 'Some of our collections :-', join: 'Join Now', watchNow: 'Watch Now', lang: '🌐Language: ENGLISH 🇬🇧', dl: 'Download', thanks: 'Thank You For Visiting!' },
-            BN: { follow: '▽ যোগাযোগ রাখতে আমাদের ফলো করুন ▽', fbGroup: 'আমাদের ফেসবুক গ্রুপে :-', watch: 'সম্পূর্ণ কার্টুন ভিডিও দেখুন :-', coll: 'আমাদের কিছু কালেকশন :-', join: 'জয়েন করুন', watchNow: 'এখনই দেখুন', lang: '🌐ভাষা: বাংলা 🇧🇩', dl: 'ডাউনলোড', thanks: 'পরিদর্শনের জন্য আপনাকে ধন্যবাদ!' }
+            EN: { follow: '⤹ Follow us to stay connected ⤸', fbGroup: 'In our Facebook group :-', watch: 'Watch full cartoon videos :-', coll: 'Some of our collections :-', join: 'Join Now', watchNow: 'Watch Now', lang: '🌐Language: ENGLISH 🇬🇧', dl: 'Download', thanks: 'Thank You For Visiting!', new: 'NEW :-', ai: '<span class="highlight-ai">AI</span> content is currently running on Honey Entertainment', visit: 'Subscribe' },
+            BN: { follow: '⤹ যোগাযোগ রাখতে আমাদের ফলো করুন ⤸', fbGroup: 'আমাদের ফেসবুক গ্রুপে :-', watch: 'সম্পূর্ণ কার্টুন ভিডিও দেখুন :-', coll: 'আমাদের কিছু কালেকশন :-', join: 'জয়েন করুন', watchNow: 'এখনই দেখুন', lang: '🌐ভাষা: বাংলা 🇧🇩', dl: 'ডাউনলোড', thanks: 'পরিদর্শনের জন্য আপনাকে ধন্যবাদ!', new: 'নতুন :-', ai: 'Honey Entertainment এ বর্তমান চলছে <span class="highlight-ai">AI</span> কনটেন্ট', visit: 'সাবস্ক্রাইব করুন' }
         };
-
-        /* --- NEW CAPTION ANIMATION LOGIC --- */
         function toggleCaption(element, event) {
-            event.stopPropagation(); // Prevents body click from firing immediately
+            event.stopPropagation();
             const isActive = element.classList.contains('caption-active');
-            
-            // Close all other captions first
-            document.querySelectorAll('.post-caption').forEach(cap => {
-                cap.classList.remove('caption-active');
-            });
-
-            // Toggle the clicked one
-            if (!isActive) {
-                element.classList.add('caption-active');
-            }
+            document.querySelectorAll('.post-caption').forEach(cap => cap.classList.remove('caption-active'));
+            if (!isActive) element.classList.add('caption-active');
         }
-
         function resetAllCaptions(event) {
-            // If we clicked outside any caption, reset them all
             if (!event.target.closest('.post-caption')) {
-                document.querySelectorAll('.post-caption').forEach(cap => {
-                    cap.classList.remove('caption-active');
-                });
+                document.querySelectorAll('.post-caption').forEach(cap => cap.classList.remove('caption-active'));
             }
         }
-
-        function toggleMenu() { 
+        function toggleMenu() {
             const dropdown = document.getElementById('dropdown');
             const menuBtn = document.getElementById('menuBtn');
-            dropdown.classList.toggle('active'); 
+            dropdown.classList.toggle('active');
             menuBtn.classList.toggle('active');
         }
-
-        function setMode(mode) { 
-            document.body.className = mode + '-mode'; 
-            toggleMenu(); 
+        function setMode(mode) {
+            document.body.className = mode + '-mode';
+            toggleMenu();
         }
-
         function toggleLang() {
             currentLang = currentLang === 'EN' ? 'BN' : 'EN';
             const t = translations[currentLang];
             document.getElementById('followTxt').innerText = t.follow;
-            
             document.getElementById('fbGroupTxt').innerHTML = `<span>▶</span> ${t.fbGroup}`;
             document.getElementById('watchTxt').innerHTML = `<span>▶</span> ${t.watch}`;
             document.getElementById('collTxt').innerHTML = `<span>▶</span> ${t.coll}`;
-
+            document.getElementById('newTxt').innerHTML = `<span>▶</span> ${t.new}`;
+            document.getElementById('aiStatusTxt').innerHTML = t.ai;
+            document.getElementById('visitStatusTxt').innerText = t.visit;
             document.getElementById('joinBtnText').innerText = t.join;
             document.getElementById('watchBtnText').innerText = t.watchNow;
             document.getElementById('dlBtn').innerText = t.dl;
@@ -476,24 +515,20 @@
             document.getElementById('thankYouTxt').innerText = t.thanks;
             toggleMenu();
         }
-
         function openFull(card) {
             const imgSrc = card.querySelector('img').src;
             document.getElementById('fullImg').src = imgSrc;
             document.getElementById('fullscreenOverlay').style.display = 'flex';
         }
-
-        function closeFull() { 
-            document.getElementById('fullscreenOverlay').style.display = 'none'; 
+        function closeFull() {
+            document.getElementById('fullscreenOverlay').style.display = 'none';
         }
-
         function downloadImg() {
             const link = document.createElement('a');
             link.href = document.getElementById('fullImg').src;
             link.download = 'honey-collection.jpg';
             link.click();
         }
-
         function createBubbles() {
             const bubbleCount = 10;
             for (let i = 0; i < bubbleCount; i++) {
@@ -516,7 +551,6 @@
         }
         setInterval(createBubbles, 6000);
         createBubbles();
-
         function triggerEffect(e) {
             const colors = ['#f472b6', '#fb923c', '#d97706', '#ffffff'];
             for (let i = 0; i < 30; i++) {
@@ -541,14 +575,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
