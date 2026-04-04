@@ -283,10 +283,103 @@
             backdrop-filter: blur(15px); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); display: flex; align-items: center; justify-content: center;
         }
         .thank-you-text { font-size: 16px; font-weight: 800; text-transform: uppercase; background: linear-gradient(90deg, var(--text-color), var(--accent), #fb923c, var(--text-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
-        #fullscreenOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(10px); cursor: pointer; }
-        #fullscreenOverlay img { max-width: 90%; max-height: 90%; border-radius: 10px; cursor: default; }
-        .dl-btn { position: absolute; top: 20px; right: 20px; background: var(--accent); color: white; padding: 10px 18px; border-radius: 12px; font-weight: 900; z-index: 2100; border: none; }
-        .close-btn { position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.2); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 2100; border: none; }
+        
+        /* ===== FULLSCREEN OVERLAY NEW STYLES ===== */
+        #fullscreenOverlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.95); display: none; justify-content: center; 
+            align-items: center; z-index: 2000; backdrop-filter: blur(10px); 
+            cursor: pointer; 
+        }
+        #fullscreenOverlay img { 
+            max-width: 90%; max-height: 80%; border-radius: 10px; 
+            cursor: default; object-fit: contain; 
+        }
+        #fullscreenOverlay .caption-overlay {
+            position: absolute;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.75);
+            color: white;
+            padding: 14px 22px;
+            border-radius: 16px;
+            font-size: 15px;
+            font-family: 'Hind Siliguri', cursive, serif;
+            text-align: center;
+            max-width: 85%;
+            z-index: 2100;
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--accent);
+            animation: fadeInUp 0.4s ease-out;
+            line-height: 1.5;
+            letter-spacing: 0.3px;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(15px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        #fullscreenOverlay .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: 2px solid var(--accent);
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            font-size: 26px;
+            cursor: pointer;
+            z-index: 2100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        #fullscreenOverlay .nav-btn:hover {
+            background: var(--accent);
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 0 20px var(--accent);
+        }
+        #fullscreenOverlay .nav-btn:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+        #fullscreenOverlay .nav-btn.prev { left: 15px; }
+        #fullscreenOverlay .nav-btn.next { right: 15px; }
+        
+        .dl-btn { 
+            position: absolute; top: 20px; right: 20px; 
+            background: var(--accent); color: white; 
+            padding: 10px 18px; border-radius: 12px; 
+            font-weight: 900; z-index: 2100; border: none; 
+        }
+        .close-btn { 
+            position: absolute; top: 20px; left: 20px; 
+            background: rgba(255,255,255,0.2); color: white; 
+            width: 40px; height: 40px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            z-index: 2100; border: none; 
+        }
+        
+        @media (max-width: 600px) {
+            #fullscreenOverlay .nav-btn {
+                width: 44px;
+                height: 44px;
+                font-size: 22px;
+            }
+            #fullscreenOverlay .caption-overlay {
+                bottom: 75px;
+                font-size: 14px;
+                padding: 12px 18px;
+                max-width: 90%;
+            }
+            #fullscreenOverlay img {
+                max-height: 75%;
+            }
+        }
     </style>
 </head>
 <body class="honey-mode" onclick="resetAllCaptions(event)">
@@ -380,9 +473,10 @@
             <div class="collection-grid" id="gallery">
                 <script>
                     const gallery = document.getElementById('gallery');
-                    const items = [
+                    // Global array for fullscreen navigation
+                    window.galleryItems = [
                         { img: "https://i.pinimg.com/736x/a8/ef/dc/a8efdc1d439a41f23b4a20fdd8629350.jpg", cap: "রঙিন Comic, সাদাকালো স্মৃতি আমার 🖍️🖼️" },
-                        { img: "https://i.pinimg.com/736x/ca/de/f6/cadef65bdb2be8e12dcafbc619b9a6da.jpg", cap: "খবরে ভরা দেয়ালে আমিই সেরা খবর! 📰😎" },
+                        { img: "https://i.pinimg.com/736x/ca/de/f6/cadef65bdb2be8e12dcafbc619b9a6da.jpg", cap: "খবরে ভরা দেয়ালে আমিই সেরা খবর! 📰😎" },
                         { img: "https://i.pinimg.com/736x/5b/d8/9b/5bd89bebefecdf2c474c843ff0833e02.jpg", cap: "চারিদিকে শুধুই ভালোবাসার হাসি 💖" },
                         { img: "https://i.pinimg.com/736x/fd/0a/1d/fd0a1d295158b68864e117a6f51e2230.jpg", cap: "Hero সেজেছি, এখন Villain কই? 🧭" },
                         { img: "https://i.pinimg.com/736x/cf/33/36/cf333697f81a1216664f8d2af4d0d65e.jpg", cap: "লাল রঙে আমি হলাম রাজা তাতে বাকি সব ভাজা ভাজা🍎" },
@@ -402,10 +496,10 @@
                         { img: "https://i.pinimg.com/736x/95/cd/c9/95cdc923d31456655aa8a612e1a4c42e.jpg", cap: "Honey প্রদেশ 😱😱" },
                         { img: "https://i.pinimg.com/736x/9d/e4/0e/9de40e3a1e615b8a3ffcbd7e0aba496c.jpg", cap: "🤟🏻YoY" },
                         { img: "https://i.pinimg.com/736x/35/8d/be/358dbe0abd72870c2c0eeafb147c5b66.jpg", cap: "চশমাটা Just Look এর জন্য না, Attitude ধরে রাখার জন্য!🙂" },
-                        { img: "https://i.pinimg.com/736x/07/0c/d9/070cd9ce863ad45d5067af110073aa44.jpg", cap: " Tips একটাই—সবসময় নিজের ওপর বিশ্বাস রাখো 👍" },
+                        { img: "https://i.pinimg.com/736x/07/0c/d9/070cd9ce863ad45d5067af110073aa44.jpg", cap: " Tips একটাই—সবসময় নিজের ওপর বিশ্বাস রাখো 👍" },
                         { img: "https://i.pinimg.com/736x/20/32/24/20322447b1aef1bf25945e1765ad6e96.jpg", cap: "কথা কম, কাজ বেশি—এটাই আমার Style🤨" },
                         { img: "https://i.pinimg.com/736x/3a/82/86/3a82864922b6bde73c3617f63721352e.jpg", cap: "শহরে নতুন Don, নাম তার Honey! 🧥" },
-                        { img: "https://i.pinimg.com/736x/86/ca/d2/86cad2ad629bb7839ea91a9940f919a6.jpg", cap: "মায়াবী আয়না 😱—   সত্যিটা এখানেই ধরা পড়ে" },
+                        { img: "https://i.pinimg.com/736x/86/ca/d2/86cad2ad629bb7839ea91a9940f919a6.jpg", cap: "মায়াবী আয়না 😱—   সত্যিটা এখানেই ধরা পড়ে" },
                         { img: "https://i.pinimg.com/736x/62/04/42/62044256f7758ed7b95ac2fc841f926a.jpg", cap: "Smoking is injurious to health, it causes cancer 🚭" },
                         { img: "https://i.pinimg.com/736x/51/ed/de/51edde23f7f78a7f6795e6c2a7b2eb00.jpg", cap: "Sorry 𝙺𝚒𝚝𝚢 🫥" },
                         { img: "https://i.pinimg.com/736x/b6/b9/76/b6b976a9f2d5f5648ed15130ac1995f9.jpg", cap: "Just fun 😁" },
@@ -419,7 +513,7 @@
                         { img: "https://i.pinimg.com/736x/1c/d2/97/1cd29752e7286f36b6dc0a1197be0cb8.jpg", cap: "𝗧𝗶𝗿𝗲𝗱😪" },
                         { img: "https://i.pinimg.com/736x/62/12/c5/6212c5662950807efe738efe37fe1b43.jpg", cap: "Party time 🍹🎊" },
                         { img: "https://i.pinimg.com/736x/9b/87/ef/9b87ef48f59948af91e02689a9075963.jpg", cap: "𝙷𝚘𝚗𝚎𝚢 𝙱𝚞𝚗𝚗𝚢 𝙺𝚊 𝙹𝚑𝚘𝚕𝚖𝚊𝚊𝚕 ✌🏻" },
-                        { img: "https://i.pinimg.com/736x/1e/c4/4b/1ec44b813abccb229f4f6f837e7ea0a7.jpg", cap: "হানি যখন পিঠে চড়ে, ভালোবাসা তখন ফুলে ফলে ভরে!🌹" },
+                        { img: "https://i.pinimg.com/736x/1e/c4/4b/1ec44b813abccb229f4f6f837e7ea0a7.jpg", cap: "হানি যখন পিঠে চড়ে, ভালোবাসা তখন ফুলে ফলে ভরে!🌹" },
                         { img: "https://i.pinimg.com/736x/31/2c/f2/312cf2f7ad9280f649bafe77592b8236.jpg", cap: "Honey is running on the treadmill 🏃🏻‍♂️" },
                         { img: "https://i.pinimg.com/736x/5a/d2/e7/5ad2e7d630313e21d57cfb0b767e52c5.jpg", cap: "𝐇𝐨𝐧𝐞𝐲 𝐁𝐮𝐧𝐧𝐲 😺" },
                         { img: "https://i.pinimg.com/736x/29/bc/36/29bc36c72865567576c7de16f51fcabd.jpg", cap: "Honey Dracula 🧛🏻" },
@@ -458,11 +552,14 @@
                         { img: "https://i.pinimg.com/736x/7e/3b/2c/7e3b2cdd5868ed9a8cf6fe7ca769be5d.jpg", cap: "𝘉𝘳𝘦𝘢𝘬𝘧𝘢𝘴𝘵 🍳" },
                         { img: "https://i.pinimg.com/736x/01/79/23/017923ceab52a900dccd3f98c9216e95.jpg", cap: "𝐻𝑜𝑛𝑒𝑦 𝑤𝑖𝑡ℎ 𝑚𝑒 🫱🏻‍🫲🏻" }
                     ];
-                    items.forEach(item => {
+                    
+                    let currentGalleryIndex = 0;
+                    
+                    window.galleryItems.forEach((item, index) => {
                         const html = `
                             <div class="flex flex-col gap-2">
                                 <p class="post-caption" onclick="toggleCaption(this, event)">${item.cap}</p>
-                                <div class="collection-card" onclick="openFull(this); event.stopPropagation()">
+                                <div class="collection-card" onclick="openFull(${index}); event.stopPropagation()">
                                     <div class="inner-img">
                                         <img src="${item.img}" alt="Coll" onerror="this.src='https://i.pinimg.com/736x/96/5f/f8/965ff82713b7a1ef6e3ffb782fcdc412.jpg'">
                                     </div>
@@ -479,11 +576,17 @@
         </div>
         <footer class="opacity-30 text-[10px] font-black uppercase tracking-[0.4em] py-8 text-center">© @Honey_sajeeb</footer>
     </div>
+    
+    <!-- UPDATED FULLSCREEN OVERLAY WITH CAPTION & NAVIGATION -->
     <div id="fullscreenOverlay" onclick="closeFull()">
         <button class="close-btn" onclick="event.stopPropagation(); closeFull()">×</button>
         <button class="dl-btn" id="dlBtn" onclick="event.stopPropagation(); downloadImg()">Download</button>
-        <img id="fullImg" src="" alt="Full" onclick="event.stopPropagation(); closeFull()">
+        <button class="nav-btn prev" onclick="event.stopPropagation(); navigateImage(-1)" aria-label="Previous">❮</button>
+        <button class="nav-btn next" onclick="event.stopPropagation(); navigateImage(1)" aria-label="Next">❯</button>
+        <img id="fullImg" src="" alt="Full" onclick="event.stopPropagation()">
+        <div id="fullscreenCaption" class="caption-overlay"></div>
     </div>
+    
     <script>
         let currentLang = 'EN';
         const translations = {
@@ -528,20 +631,93 @@
             document.getElementById('thankYouTxt').innerText = t.thanks;
             toggleMenu();
         }
-        function openFull(card) {
-            const imgSrc = card.querySelector('img').src;
-            document.getElementById('fullImg').src = imgSrc;
+        
+        // ===== UPDATED FULLSCREEN FUNCTIONS =====
+        function openFull(index) {
+            currentGalleryIndex = index;
+            const item = window.galleryItems[index];
+            document.getElementById('fullImg').src = item.img;
+            
+            // Show caption in fullscreen
+            const captionOverlay = document.getElementById('fullscreenCaption');
+            captionOverlay.innerHTML = item.cap;
+            captionOverlay.style.display = 'block';
+            
             document.getElementById('fullscreenOverlay').style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Prevent background scroll
         }
+        
         function closeFull() {
             document.getElementById('fullscreenOverlay').style.display = 'none';
+            document.body.style.overflow = '';
         }
+        
+        function navigateImage(direction) {
+            currentGalleryIndex += direction;
+            // Loop navigation
+            if (currentGalleryIndex < 0) {
+                currentGalleryIndex = window.galleryItems.length - 1;
+            } else if (currentGalleryIndex >= window.galleryItems.length) {
+                currentGalleryIndex = 0;
+            }
+            
+            const item = window.galleryItems[currentGalleryIndex];
+            document.getElementById('fullImg').src = item.img;
+            document.getElementById('fullscreenCaption').innerHTML = item.cap;
+        }
+        
         function downloadImg() {
             const link = document.createElement('a');
             link.href = document.getElementById('fullImg').src;
             link.download = 'honey-collection.jpg';
             link.click();
         }
+        
+        // ===== SWIPE/TOUCH NAVIGATION =====
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        const overlay = document.getElementById('fullscreenOverlay');
+        
+        overlay.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, {passive: true});
+        
+        overlay.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, {passive: true});
+        
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            if (touchStartX - touchEndX > swipeThreshold) {
+                navigateImage(1); // Swipe left → next image
+            }
+            if (touchEndX - touchStartX > swipeThreshold) {
+                navigateImage(-1); // Swipe right → previous image
+            }
+        }
+        
+        // ===== KEYBOARD NAVIGATION =====
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('fullscreenOverlay').style.display === 'flex') {
+                if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    navigateImage(-1);
+                }
+                if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    navigateImage(1);
+                }
+                if (e.key === 'Escape') {
+                    closeFull();
+                }
+            }
+        });
+        
+        // Prevent image drag on fullscreen
+        document.getElementById('fullImg').addEventListener('dragstart', (e) => e.preventDefault());
+        
         function createBubbles() {
             const bubbleCount = 10;
             for (let i = 0; i < bubbleCount; i++) {
