@@ -355,6 +355,7 @@
             background: var(--accent); color: white; 
             padding: 10px 18px; border-radius: 12px; 
             font-weight: 900; z-index: 2100; border: none; 
+            display: flex; align-items: center; justify-content: center;
         }
         .close-btn { 
             position: absolute; top: 20px; left: 20px; 
@@ -580,7 +581,9 @@
     <!-- UPDATED FULLSCREEN OVERLAY WITH CAPTION & NAVIGATION -->
     <div id="fullscreenOverlay" onclick="closeFull()">
         <button class="close-btn" onclick="event.stopPropagation(); closeFull()">×</button>
-        <button class="dl-btn" id="dlBtn" onclick="event.stopPropagation(); downloadImg()">Download</button>
+        <button class="dl-btn" id="dlBtn" onclick="event.stopPropagation(); downloadImg()">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        </button>
         <button class="nav-btn prev" onclick="event.stopPropagation(); navigateImage(-1)" aria-label="Previous">❮</button>
         <button class="nav-btn next" onclick="event.stopPropagation(); navigateImage(1)" aria-label="Next">❯</button>
         <img id="fullImg" src="" alt="Full" onclick="event.stopPropagation()">
@@ -626,7 +629,7 @@
             document.getElementById('visitStatusTxt').innerText = t.visit;
             document.getElementById('joinBtnText').innerText = t.join;
             document.getElementById('watchBtnText').innerText = t.watchNow;
-            document.getElementById('dlBtn').innerText = t.dl;
+            // document.getElementById('dlBtn').innerText = t.dl; // Removed since using universal icon
             document.getElementById('langBtn').innerText = t.lang;
             document.getElementById('thankYouTxt').innerText = t.thanks;
             toggleMenu();
