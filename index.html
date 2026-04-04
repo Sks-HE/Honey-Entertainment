@@ -61,6 +61,236 @@
             align-items: center;
             position: relative;
         }
+        
+        /* ===== ENTRANCE ANIMATIONS ===== */
+        @keyframes slideFromLeft {
+            0% {
+                opacity: 0;
+                transform: translateX(-100px) scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+        
+        @keyframes slideFromRight {
+            0% {
+                opacity: 0;
+                transform: translateX(100px) scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+        
+        @keyframes barFlyIn1 {
+            0% {
+                opacity: 0;
+                transform: translate(-50px, -50px) rotate(-180deg) scale(0);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(0, 0) rotate(0deg) scale(1);
+            }
+        }
+        
+        @keyframes barFlyIn2 {
+            0% {
+                opacity: 0;
+                transform: translate(50px, -30px) rotate(180deg) scale(0);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(0, 0) rotate(0deg) scale(1);
+            }
+        }
+        
+        @keyframes barFlyIn3 {
+            0% {
+                opacity: 0;
+                transform: translate(-40px, 50px) rotate(-180deg) scale(0);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(0, 0) rotate(0deg) scale(1);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(60px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes fadeInScale {
+            0% {
+                opacity: 0;
+                transform: scale(0) rotate(-10deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+        
+        @keyframes zoomInBounce {
+            0% {
+                opacity: 0;
+                transform: scale(0) translateY(-30px);
+            }
+            60% {
+                transform: scale(1.1) translateY(5px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        @keyframes slideInFromBottom {
+            0% {
+                opacity: 0;
+                transform: translateY(80px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Apply entrance animations */
+        .custom-logo-placeholder {
+            animation: slideFromLeft 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 0.1s;
+            opacity: 0;
+        }
+        
+        .header-wrapper h1 {
+            animation: slideFromRight 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 0.2s;
+            opacity: 0;
+        }
+        
+        .menu-btn {
+            animation: zoomInBounce 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 0.3s;
+            opacity: 0;
+        }
+        
+        .menu-btn .bar:nth-child(1) {
+            animation: barFlyIn1 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 0.5s;
+            opacity: 0;
+        }
+        
+        .menu-btn .bar:nth-child(2) {
+            animation: barFlyIn2 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 0.6s;
+            opacity: 0;
+        }
+        
+        .menu-btn .bar:nth-child(3) {
+            animation: barFlyIn3 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 0.7s;
+            opacity: 0;
+        }
+        
+        .app-container > section:nth-of-type(1) {
+            animation: fadeInUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 0.4s;
+            opacity: 0;
+        }
+        
+        .app-container > section:nth-of-type(2) {
+            animation: fadeInUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 0.5s;
+            opacity: 0;
+        }
+        
+        .app-container > section:nth-of-type(3) {
+            animation: fadeInUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 0.6s;
+            opacity: 0;
+        }
+        
+        .app-container > section:nth-of-type(4) {
+            animation: fadeInUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 0.7s;
+            opacity: 0;
+        }
+        
+        .social-box:nth-child(1) {
+            animation: fadeInScale 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 0.5s;
+            opacity: 0;
+        }
+        
+        .social-box:nth-child(2) {
+            animation: fadeInScale 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 0.65s;
+            opacity: 0;
+        }
+        
+        .social-box:nth-child(3) {
+            animation: fadeInScale 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 0.8s;
+            opacity: 0;
+        }
+        
+        .ai-status-text {
+            animation: fadeInUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, digitalPulse 3s infinite ease-in-out 1.2s, shimmer 3s linear infinite 1.2s;
+            animation-delay: 0.8s;
+            opacity: 0;
+        }
+        
+        .visit-status-text {
+            animation: fadeInUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 0.9s;
+            opacity: 0;
+        }
+        
+        .scroll-indicator {
+            animation: fadeInUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, arrowDown 1.5s infinite ease-in-out 1.4s;
+            animation-delay: 1s;
+            opacity: 0;
+        }
+        
+        .app-container > section:nth-of-type(5) {
+            animation: fadeInUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 1s;
+            opacity: 0;
+        }
+        
+        .app-container > section:nth-of-type(6) {
+            animation: fadeInUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 1.1s;
+            opacity: 0;
+        }
+        
+        .thank-you-bar {
+            animation: slideInFromBottom 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 1.3s;
+            opacity: 0;
+        }
+        
+        footer {
+            animation: fadeInUp 0.6s ease-out forwards;
+            animation-delay: 1.5s;
+            opacity: 0;
+        }
+        
+        .collection-grid .flex {
+            animation: fadeInScale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            opacity: 0;
+        }
+        
         /* STYLISH DIGITAL UNIQUE PREMIERE FONT & ANIMATION */
         .ai-status-text, .visit-status-text {
             font-family: 'Orbitron', sans-serif; /* Digital & Premium Look */
@@ -73,7 +303,6 @@
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: digitalPulse 3s infinite ease-in-out, shimmer 3s linear infinite;
             display: block;
             margin-bottom: 5px;
         }
@@ -117,7 +346,6 @@
             border-right: 3px solid var(--accent);
             transform: rotate(45deg);
             margin: 25px auto 0;
-            animation: arrowDown 1.5s infinite ease-in-out;
             opacity: 0.8;
         }
         @keyframes arrowDown {
@@ -187,7 +415,6 @@
             position: relative; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center;
             border-radius: 22px; background: var(--bg-color); z-index: 10; cursor: pointer;
             transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-            animation: floatingIcon 3s ease-in-out infinite;
         }
         .social-box:nth-child(2) { animation-delay: 0.5s; }
         .social-box:nth-child(3) { animation-delay: 1s; }
@@ -314,10 +541,6 @@
             animation: fadeInUp 0.4s ease-out;
             line-height: 1.5;
             letter-spacing: 0.3px;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateX(-50%) translateY(15px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
         #fullscreenOverlay .nav-btn {
             position: absolute;
@@ -501,7 +724,7 @@
                         { img: "https://i.pinimg.com/736x/3a/82/86/3a82864922b6bde73c3617f63721352e.jpg", cap: "শহরে নতুন Don, নাম তার Honey! 🧥" },
                         { img: "https://i.pinimg.com/736x/86/ca/d2/86cad2ad629bb7839ea91a9940f919a6.jpg", cap: "মায়াবী আয়না 😱—   সত্যিটা এখানেই ধরা পড়ে" },
                         { img: "https://i.pinimg.com/736x/62/04/42/62044256f7758ed7b95ac2fc841f926a.jpg", cap: "Smoking is injurious to health, it causes cancer 🚭" },
-                        { img: "https://i.pinimg.com/736x/51/ed/de/51edde23f7f78a7f6795e6c2a7b2eb00.jpg", cap: "Sorry 𝙺𝚒𝚝𝚢 🫥" },
+                        { img: "https://i.pinimg.com/736x/51/ed/de/51edde23f7f78a7f6795e6c2a7b2eb00.jpg", cap: "Sorry 𝙺𝚒𝚝𝚝𝚢 🫥" },
                         { img: "https://i.pinimg.com/736x/b6/b9/76/b6b976a9f2d5f5648ed15130ac1995f9.jpg", cap: "Just fun 😁" },
                         { img: "https://i.pinimg.com/736x/3a/52/8e/3a528e17d8b0160b839f51766dab7115.jpg", cap: " Party তো সবে শুরু! উৎসব চলুক পুরোদমে🕺" },
                         { img: "https://i.pinimg.com/736x/21/d5/6a/21d56abc1c3f5373cf63f4ac98048337.jpg", cap: "আজকের রাতটা শুধু Enjoy করার জন্য Just chill! 🥂" },
@@ -557,7 +780,7 @@
                     
                     window.galleryItems.forEach((item, index) => {
                         const html = `
-                            <div class="flex flex-col gap-2">
+                            <div class="flex flex-col gap-2" style="animation-delay: ${1.2 + (index * 0.05)}s;">
                                 <p class="post-caption" onclick="toggleCaption(this, event)">${item.cap}</p>
                                 <div class="collection-card" onclick="openFull(${index}); event.stopPropagation()">
                                     <div class="inner-img">
