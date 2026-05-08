@@ -8,7 +8,7 @@
     <link rel="icon" type="image/jpg" href="https://i.pinimg.com/736x/9c/53/79/9c53799148e32a70de21cf82ce1b0207.jpg">
     <link rel="apple-touch-icon" href="https://i.pinimg.com/736x/9c/53/79/9c53799148e32a70de21cf82ce1b0207.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&family=Playfair+Display:ital,wght,1,700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&family=Playfair+Display:ital,wght,1,700&family=Orbitron:wght@400;700&family=Caveat:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #050505;
@@ -173,18 +173,269 @@
         /* ===== FULLSCREEN OVERLAY STYLES ===== */
         #fullscreenOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(10px); cursor: pointer; }
         #fullscreenOverlay img { max-width: 90%; max-height: 80%; border-radius: 10px; cursor: default; object-fit: contain; }
-        #fullscreenOverlay .caption-overlay { position: absolute; bottom: 90px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.75); color: white; padding: 14px 22px; border-radius: 16px; font-size: 15px; font-family: 'Hind Siliguri', cursive, serif; text-align: center; max-width: 85%; z-index: 2100; backdrop-filter: blur(12px); border: 1px solid var(--accent); animation: fadeInUp 0.4s ease-out; line-height: 1.5; letter-spacing: 0.3px; }
-        #fullscreenOverlay .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0, 0, 0, 0.6); color: white; border: 2px solid var(--accent); width: 52px; height: 52px; border-radius: 50%; font-size: 26px; cursor: pointer; z-index: 2100; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; user-select: none; -webkit-tap-highlight-color: transparent; }
-        #fullscreenOverlay .nav-btn:hover { background: var(--accent); transform: translateY(-50%) scale(1.1); box-shadow: 0 0 20px var(--accent); }
-        #fullscreenOverlay .nav-btn:active { transform: translateY(-50%) scale(0.95); }
-        #fullscreenOverlay .nav-btn.prev { left: 15px; }
-        #fullscreenOverlay .nav-btn.next { right: 15px; }
         
-        /* Three Dot Menu Button */
-        .three-dot-btn { position: absolute; bottom: 25px; left: 20px; width: 40px; height: 40px; background: rgba(0, 0, 0, 0.6); border: 1px solid var(--accent); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; z-index: 2150; transition: all 0.3s ease; backdrop-filter: blur(8px); }
-        .three-dot-btn:hover { background: var(--accent); transform: scale(1.1); }
-        .three-dot-btn .dot { width: 4px; height: 4px; background: var(--text-color); border-radius: 50%; transition: background 0.3s; }
-        .three-dot-btn:hover .dot { background: white; }
+        /* ===== UPDATED CAPTION OVERLAY - TOP CENTER WITH SMALLER FONT ===== */
+        #fullscreenOverlay .caption-overlay {
+            position: absolute;
+            top: 28px;
+            left: 72px;
+            right: 72px;
+            padding: 6px 15px;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            z-index: 2100;
+            line-height: 1.5;
+            letter-spacing: 0.3px;
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+            font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 18px;
+            backdrop-filter: blur(10px);
+            display: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* ===== FALLING ANIMATION FOR CAPTION WORDS ===== */
+        @keyframes wordFall {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px) rotate(-10deg);
+            }
+            60% {
+                transform: translateY(4px) rotate(3deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+        
+        #fullscreenOverlay .caption-overlay .fall-word {
+            display: inline-block;
+            opacity: 0;
+            animation: wordFall 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            margin: 0 1px;
+        }
+        
+        /* English text within caption gets handwritten font */
+        #fullscreenOverlay .caption-overlay .en-text,
+        #fullscreenOverlay .caption-overlay span[lang="en"] {
+            font-family: 'Caveat', cursive;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        
+        /* ===== CHANGED: THINNER/SLENDER ARROWS ===== */
+        #fullscreenOverlay .nav-btn { 
+            position: absolute; 
+            top: 50%; 
+            transform: translateY(-50%) scaleX(0.6); 
+            background: transparent; 
+            color: rgba(255, 255, 255, 0.7); 
+            border: none; 
+            width: auto; 
+            height: auto; 
+            font-size: 28px; 
+            cursor: pointer; 
+            z-index: 2100; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: all 0.3s ease; 
+            user-select: none; 
+            -webkit-tap-highlight-color: transparent; 
+            padding: 15px;
+            font-weight: 200;
+        }
+        #fullscreenOverlay .nav-btn:hover { 
+            color: var(--accent); 
+            transform: translateY(-50%) scaleX(0.6) scaleY(1.15); 
+            text-shadow: 0 0 20px var(--accent);
+        }
+        #fullscreenOverlay .nav-btn:active { 
+            transform: translateY(-50%) scaleX(0.6) scaleY(0.95); 
+        }
+        #fullscreenOverlay .nav-btn.prev { 
+            left: 15px; 
+        }
+        #fullscreenOverlay .nav-btn.next { 
+            right: 15px; 
+        }
+        
+        /* ===== SWIPE HINT INDICATOR ===== */
+        .swipe-hint-container {
+            position: absolute;
+            right: 15px;
+            top: calc(50% + 45px);
+            transform: translateY(-50%);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            z-index: 2100;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .swipe-hint-container.visible {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .swipe-hint-container.hidden {
+            opacity: 0;
+        }
+        
+        .swipe-text {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 11px;
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #555, #fff, #555);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmerSwipe 3s infinite linear;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        @keyframes shimmerSwipe {
+            to {
+                background-position: 200% center;
+            }
+        }
+        
+        .arrow-wrapper {
+            position: relative;
+            width: 32px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .arrow-icon {
+            position: absolute;
+            animation: slideArrowSwipe 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            color: #ffffff;
+        }
+        
+        @keyframes slideArrowSwipe {
+            0% {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            30% {
+                transform: translateX(0%);
+                opacity: 1;
+            }
+            70% {
+                transform: translateX(0%);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(150%);
+                opacity: 0;
+            }
+        }
+        
+        /* ===== CLOSE BUTTON STYLES ===== */
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(244, 114, 182, 0.3), rgba(251, 146, 60, 0.3));
+            border: 2px solid var(--accent);
+            color: white;
+            font-size: 28px;
+            font-weight: 300;
+            cursor: pointer;
+            z-index: 2100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 20px rgba(244, 114, 182, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .close-btn:hover {
+            transform: scale(1.15) rotate(90deg);
+            background: linear-gradient(135deg, var(--accent), #fb923c);
+            box-shadow: 0 0 30px var(--accent), 0 0 50px rgba(244, 114, 182, 0.5);
+            border-color: white;
+        }
+        
+        .close-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* ===== THREE DOT MENU BUTTON - MATCHED STYLE WITH CLOSE BUTTON ===== */
+        .three-dot-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(244, 114, 182, 0.3), rgba(251, 146, 60, 0.3));
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            z-index: 2150;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 20px rgba(244, 114, 182, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .three-dot-btn:hover {
+            transform: scale(1.15);
+            background: linear-gradient(135deg, var(--accent), #fb923c);
+            box-shadow: 0 0 30px var(--accent), 0 0 50px rgba(244, 114, 182, 0.5);
+            border-color: white;
+        }
+        
+        .three-dot-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .three-dot-btn .dot {
+            width: 5px;
+            height: 5px;
+            background: var(--text-color);
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+        
+        .three-dot-btn:hover .dot {
+            background: white;
+        }
+        
+        /* ===== DECORATIVE THIN BAR BELOW TOP BUTTONS ===== */
+        .top-decorative-bar {
+            position: absolute;
+            top: 70px;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, transparent 0%, var(--accent) 20%, #fb923c 50%, var(--accent) 80%, transparent 100%);
+            z-index: 2050;
+            opacity: 0.5;
+            pointer-events: none;
+        }
         
         /* ===== CLEANER & CLEARER MENU ANIMATIONS ===== */
         @keyframes menuSlideIn {
@@ -280,6 +531,7 @@
         .photo-details-menu.active .detail-item:nth-child(2) { animation-delay: 0.2s; }
         .photo-details-menu.active .detail-item:nth-child(3) { animation-delay: 0.3s; }
         .photo-details-menu.active .detail-item:nth-child(4) { animation-delay: 0.4s; }
+        .photo-details-menu.active .detail-item:nth-child(5) { animation-delay: 0.5s; }
         
         .detail-item:hover {
             border-left-width: 5px;
@@ -325,20 +577,57 @@
             opacity: 0.8;
         }
         
-        .dl-btn { position: absolute; top: 20px; right: 20px; background: var(--accent); color: white; padding: 10px 18px; border-radius: 12px; font-weight: 900; z-index: 2100; border: none; }
-        .close-btn { position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.2); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 2100; border: none; }
+        /* Download Button Style in Menu */
+        .detail-item.download-item {
+            cursor: pointer;
+            border-left-color: #22c55e;
+            transition: all 0.3s ease;
+        }
         
-        .menu-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2180; display: none; background: rgba(0, 0, 0, 0); transition: background 0.3s ease; }
-        .menu-backdrop.active { display: block; background: rgba(0, 0, 0, 0.4); }
+        .detail-item.download-item:hover {
+            background: rgba(34, 197, 94, 0.15);
+            border-left-color: #22c55e;
+        }
+        
+        .detail-value.download-val {
+            color: #22c55e;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .download-icon {
+            width: 14px;
+            height: 14px;
+            fill: #22c55e;
+        }
         
         @media (max-width: 600px) {
-            #fullscreenOverlay .nav-btn { width: 44px; height: 44px; font-size: 22px; }
-            #fullscreenOverlay .caption-overlay { bottom: 75px; font-size: 14px; padding: 12px 18px; max-width: 90%; }
+            #fullscreenOverlay .nav-btn { 
+                font-size: 22px; 
+                padding: 12px;
+                font-weight: 200;
+            }
+            #fullscreenOverlay .caption-overlay { 
+                top: 24px; 
+                left: 62px; 
+                right: 62px; 
+                font-size: 11px;
+                padding: 5px 12px;
+            }
             #fullscreenOverlay img { max-height: 75%; }
             .photo-details-menu { width: 180px; max-width: 60vw; }
-            .three-dot-btn { bottom: 20px; left: 15px; }
+            .three-dot-btn { width: 46px; height: 46px; top: 15px; right: 15px; }
+            .three-dot-btn .dot { width: 4px; height: 4px; }
+            .three-dot-btn { gap: 4px; }
             .detail-label { font-size: 8px; }
             .detail-value { font-size: 11px; }
+            .close-btn { width: 46px; height: 46px; font-size: 24px; top: 15px; left: 15px; }
+            .top-decorative-bar { top: 58px; height: 5px; }
+            .swipe-hint-container { right: 10px; top: calc(50% + 40px); }
+            .swipe-text { font-size: 9px; letter-spacing: 2px; }
+            .arrow-wrapper { width: 26px; height: 14px; }
         }
     </style>
 </head>
@@ -560,18 +849,30 @@
     <!-- UPDATED FULLSCREEN OVERLAY WITH CAPTION & NAVIGATION -->
     <div id="fullscreenOverlay" onclick="handleOverlayClick(event)">
         <button class="close-btn" onclick="event.stopPropagation(); closeFull()">×</button>
-        <button class="dl-btn" id="dlBtn" onclick="event.stopPropagation(); downloadImg()">Download</button>
         <button class="nav-btn prev" onclick="event.stopPropagation(); navigateImage(-1)" aria-label="Previous">❮</button>
         <button class="nav-btn next" onclick="event.stopPropagation(); navigateImage(1)" aria-label="Next">❯</button>
         <img id="fullImg" src="" alt="Full" onclick="event.stopPropagation()">
         <div id="fullscreenCaption" class="caption-overlay"></div>
         
-        <!-- Three Dot Menu Button -->
+        <!-- Swipe Hint Indicator -->
+        <div class="swipe-hint-container" id="swipeHint">
+            <span class="swipe-text">Swipe</span>
+            <div class="arrow-wrapper">
+                <svg class="arrow-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </div>
+        
+        <!-- Three Dot Menu Button - Matched Style with Close Button -->
         <button class="three-dot-btn" onclick="event.stopPropagation(); togglePhotoMenu()" aria-label="Photo Details">
             <span class="dot"></span>
             <span class="dot"></span>
             <span class="dot"></span>
         </button>
+        
+        <!-- Decorative Thin Bar Below Top Buttons -->
+        <div class="top-decorative-bar"></div>
         
         <!-- Menu Backdrop -->
         <div class="menu-backdrop" id="menuBackdrop" onclick="closePhotoMenu()"></div>
@@ -583,7 +884,7 @@
             <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
             </svg>
-            <span id="photoDetailsHeaderText">Photo Details</span>
+            <span id="photoDetailsHeaderText">More</span>
         </div>
         <div class="photo-details-content">
             <div class="detail-item">
@@ -602,6 +903,13 @@
                 <span class="detail-label" id="detailSizeLabel">Image Size</span>
                 <span class="detail-value size-val" id="detailSize">Loading...</span>
             </div>
+            <div class="detail-item download-item" onclick="downloadImg()">
+                <span class="detail-label" id="detailDownloadLabel">Download</span>
+                <span class="detail-value download-val" id="detailDownloadVal">
+                    <svg class="download-icon" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                    <span id="downloadTapText">save</span>
+                </span>
+            </div>
         </div>
     </div>
     
@@ -616,11 +924,10 @@
                 join: 'Join Now', 
                 watchNow: 'Watch Now', 
                 lang: '🌐Language: ENGLISH 🇬🇧', 
-                dl: 'Download', 
                 thanks: 'Thank You For Visiting!', 
                 new: 'NEW :-',
                 visit: 'Subscribe',
-                photoDetails: 'Photo Details',
+                photoDetails: 'More',
                 dateLabel: 'Date',
                 timeLabel: 'Time',
                 dayLabel: 'Day',
@@ -628,6 +935,8 @@
                 loading: 'Loading...',
                 notFound: 'Not found',
                 loadFailed: 'Load failed',
+                downloadLabel: 'Download',
+                downloadTap: 'save',
                 days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
             },
             BN: { 
@@ -638,11 +947,10 @@
                 join: 'জয়েন করুন', 
                 watchNow: 'এখনই দেখুন', 
                 lang: '🌐ভাষা: বাংলা 🇧🇩', 
-                dl: 'ডাউনলোড', 
                 thanks: 'পরিদর্শনের জন্য আপনাকে ধন্যবাদ!', 
                 new: 'নতুন :-',
                 visit: 'সাবস্ক্রাইব করুন',
-                photoDetails: 'ছবির বিবরণ',
+                photoDetails: 'আরও',
                 dateLabel: 'তারিখ',
                 timeLabel: 'সময়',
                 dayLabel: 'বার',
@@ -650,6 +958,8 @@
                 loading: 'লোড হচ্ছে...',
                 notFound: 'পাওয়া যায়নি',
                 loadFailed: 'লোড ব্যর্থ',
+                downloadLabel: 'ডাউনলোড',
+                downloadTap: 'সংরক্ষণ',
                 days: ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার']
             }
         };
@@ -670,7 +980,6 @@
             document.getElementById('visitStatusTxt').innerText = t.visit; 
             document.getElementById('joinBtnText').innerText = t.join; 
             document.getElementById('watchBtnText').innerText = t.watchNow; 
-            document.getElementById('dlBtn').innerText = t.dl; 
             document.getElementById('langBtn').innerText = t.lang; 
             document.getElementById('thankYouTxt').innerText = t.thanks;
             // Photo details labels
@@ -679,7 +988,106 @@
             document.getElementById('detailTimeLabel').innerText = t.timeLabel;
             document.getElementById('detailDayLabel').innerText = t.dayLabel;
             document.getElementById('detailSizeLabel').innerText = t.sizeLabel;
+            document.getElementById('detailDownloadLabel').innerText = t.downloadLabel;
+            document.getElementById('downloadTapText').innerText = t.downloadTap;
             toggleMenu(); 
+        }
+        
+        // ===== FALLING CAPTION ANIMATION FUNCTION =====
+        function animateCaption(text) {
+            const captionOverlay = document.getElementById('fullscreenCaption');
+            
+            // Split text into tokens: words and emojis separately
+            const emojiRegex = /[\p{Emoji_Presentation}\p{Extended_Pictographic}\p{Emoji}]/gu;
+            const tokens = [];
+            let remaining = text;
+            
+            while (remaining.length > 0) {
+                const match = remaining.match(emojiRegex);
+                if (match) {
+                    const emojiIndex = remaining.indexOf(match[0]);
+                    
+                    // Add text before emoji (if any)
+                    if (emojiIndex > 0) {
+                        const before = remaining.substring(0, emojiIndex);
+                        // Split by spaces and add each word
+                        before.split(/(\s+)/).forEach(part => {
+                            if (part.trim()) tokens.push({ type: 'word', value: part });
+                            else if (part) tokens.push({ type: 'space', value: part });
+                        });
+                    }
+                    
+                    // Add the emoji
+                    tokens.push({ type: 'emoji', value: match[0] });
+                    remaining = remaining.substring(emojiIndex + match[0].length);
+                } else {
+                    // No more emojis, add remaining text
+                    remaining.split(/(\s+)/).forEach(part => {
+                        if (part.trim()) tokens.push({ type: 'word', value: part });
+                        else if (part) tokens.push({ type: 'space', value: part });
+                    });
+                    remaining = '';
+                }
+            }
+            
+            let html = '';
+            let delay = 0;
+            
+            tokens.forEach(token => {
+                if (token.type === 'space') {
+                    html += token.value;
+                } else {
+                    html += `<span class="fall-word" style="animation-delay: ${delay}ms">${token.value}</span>`;
+                    delay += 80; // 80ms delay between each word/emoji
+                }
+            });
+            
+            captionOverlay.innerHTML = html;
+            captionOverlay.style.display = 'block';
+        }
+        
+        // ===== SWIPE HINT TIMER VARIABLES =====
+        let swipeHintTimer = null;
+        let swipeHideTimer = null;
+        let swipeCycleTimer = null;
+        
+        function resetSwipeHintTimers() {
+            // Clear all existing timers
+            if (swipeHintTimer) { clearTimeout(swipeHintTimer); swipeHintTimer = null; }
+            if (swipeHideTimer) { clearTimeout(swipeHideTimer); swipeHideTimer = null; }
+            if (swipeCycleTimer) { clearTimeout(swipeCycleTimer); swipeCycleTimer = null; }
+            
+            // Hide the hint immediately
+            const swipeHint = document.getElementById('swipeHint');
+            swipeHint.classList.remove('visible');
+            swipeHint.classList.add('hidden');
+        }
+        
+        function showSwipeHint() {
+            const swipeHint = document.getElementById('swipeHint');
+            swipeHint.classList.remove('hidden');
+            swipeHint.classList.add('visible');
+            
+            // Hide after 5 seconds
+            swipeHideTimer = setTimeout(() => {
+                swipeHint.classList.remove('visible');
+                swipeHint.classList.add('hidden');
+                
+                // Cycle again after 5 seconds
+                swipeCycleTimer = setTimeout(() => {
+                    showSwipeHint();
+                }, 5000);
+            }, 5000);
+        }
+        
+        function startSwipeHintTimer() {
+            // Reset all timers first
+            resetSwipeHintTimers();
+            
+            // Start new timer - show hint after 5 seconds
+            swipeHintTimer = setTimeout(() => {
+                showSwipeHint();
+            }, 5000);
         }
         
         // Fullscreen Functions
@@ -709,19 +1117,24 @@
             // Set source
             img.src = item.img;
             
-            const captionOverlay = document.getElementById('fullscreenCaption');
-            captionOverlay.innerHTML = item.cap;
-            captionOverlay.style.display = 'block';
+            // Use the new falling animation for caption
+            animateCaption(item.cap);
             
             updatePhotoDetails(item);
             document.getElementById('fullscreenOverlay').style.display = 'flex';
             document.body.style.overflow = 'hidden';
+            
+            // Start swipe hint timer
+            startSwipeHintTimer();
         }
         
         function closeFull() { 
             document.getElementById('fullscreenOverlay').style.display = 'none'; 
             document.body.style.overflow = ''; 
-            closePhotoMenu(); 
+            closePhotoMenu();
+            
+            // Reset swipe hint timers when closing
+            resetSwipeHintTimers();
         }
         
         function handleOverlayClick(event) { 
@@ -767,16 +1180,51 @@
             // Set source
             img.src = item.img;
             
-            document.getElementById('fullscreenCaption').innerHTML = item.cap;
+            // Use the new falling animation for caption
+            animateCaption(item.cap);
+            
             updatePhotoDetails(item);
             closePhotoMenu();
+            
+            // Reset and restart swipe hint timer on navigation
+            startSwipeHintTimer();
         }
         
-        function downloadImg() { 
-            const link = document.createElement('a'); 
-            link.href = document.getElementById('fullImg').src; 
-            link.download = 'honey-collection.jpg'; 
-            link.click(); 
+        // ===== UPDATED DOWNLOAD FUNCTION - Direct Download to File Manager =====
+        async function downloadImg() { 
+            const imgSrc = document.getElementById('fullImg').src;
+            const t = translations[currentLang];
+            
+            try {
+                // Fetch the image as blob
+                const response = await fetch(imgSrc);
+                const blob = await response.blob();
+                
+                // Create blob URL
+                const blobUrl = URL.createObjectURL(blob);
+                
+                // Create download link
+                const link = document.createElement('a'); 
+                link.href = blobUrl; 
+                link.download = 'honey-collection.jpg'; 
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click(); 
+                document.body.removeChild(link);
+                
+                // Clean up blob URL
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+                
+            } catch (error) {
+                // Fallback: try direct download approach
+                const link = document.createElement('a'); 
+                link.href = imgSrc; 
+                link.download = 'honey-collection.jpg'; 
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click(); 
+                document.body.removeChild(link);
+            }
         }
         
         // Photo Details Menu Functions
