@@ -1140,14 +1140,16 @@
             resetSwipeHintTimers();
         }
         
+        // ===== CHANGED: Only close menu on empty space click, NOT the fullscreen view =====
         function handleOverlayClick(event) { 
             if (event.target.id === 'fullscreenOverlay') { 
                 const menu = document.getElementById('photoDetailsMenu');
                 if (menu.classList.contains('active')) { 
                     closePhotoMenu(); 
-                } else { 
-                    closeFull(); 
-                } 
+                }
+                // Removed: else { closeFull(); } 
+                // Now clicking on empty space will NOT close the fullscreen view
+                // Only the close button (×) will close it
             } 
         }
         
