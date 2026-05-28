@@ -171,8 +171,39 @@
         .thank-you-text { font-size: 16px; font-weight: 800; text-transform: uppercase; background: linear-gradient(90deg, var(--text-color), var(--accent), #fb923c, var(--text-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
         
         /* ===== FULLSCREEN OVERLAY STYLES ===== */
-        #fullscreenOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(10px); cursor: pointer; }
-        #fullscreenOverlay img { max-width: 90%; max-height: 80%; border-radius: 10px; cursor: default; object-fit: contain; }
+        #fullscreenOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(10px); cursor: pointer; overflow: hidden; }
+        
+        /* ===== ZOOMABLE IMAGE CONTAINER ===== */
+        .zoom-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        #fullImg { 
+            max-width: 90%; 
+            max-height: 80%; 
+            border-radius: 10px; 
+            cursor: default; 
+            object-fit: contain;
+            transition: transform 0.15s ease-out;
+            transform-origin: center center;
+            user-select: none;
+            -webkit-user-drag: none;
+            touch-action: none;
+        }
+        
+        #fullImg.zoomed {
+            cursor: grab;
+            transition: none;
+        }
+        
+        #fullImg.zoomed:active {
+            cursor: grabbing;
+        }
         
         /* ===== UPDATED CAPTION OVERLAY - TOP CENTER WITH SMALLER FONT ===== */
         #fullscreenOverlay .caption-overlay {
@@ -603,6 +634,30 @@
             fill: #22c55e;
         }
         
+        /* ===== ZOOM INDICATOR ===== */
+        .zoom-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-family: 'Orbitron', sans-serif;
+            z-index: 2100;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .zoom-indicator.visible {
+            opacity: 1;
+        }
+        
         @media (max-width: 600px) {
             #fullscreenOverlay .nav-btn { 
                 font-size: 22px; 
@@ -628,6 +683,7 @@
             .swipe-hint-container { right: 10px; top: calc(50% + 40px); }
             .swipe-text { font-size: 9px; letter-spacing: 2px; }
             .arrow-wrapper { width: 26px; height: 14px; }
+            .zoom-indicator { bottom: 20px; font-size: 11px; padding: 6px 12px; }
         }
     </style>
 </head>
@@ -854,8 +910,15 @@
         <button class="close-btn" onclick="event.stopPropagation(); closeFull()">×</button>
         <button class="nav-btn prev" onclick="event.stopPropagation(); navigateImage(-1)" aria-label="Previous">❮</button>
         <button class="nav-btn next" onclick="event.stopPropagation(); navigateImage(1)" aria-label="Next">❯</button>
-        <img id="fullImg" src="" alt="Full" onclick="event.stopPropagation()">
+        
+        <div class="zoom-container" id="zoomContainer">
+            <img id="fullImg" src="" alt="Full" onclick="event.stopPropagation()">
+        </div>
+        
         <div id="fullscreenCaption" class="caption-overlay"></div>
+        
+        <!-- Zoom Indicator -->
+        <div class="zoom-indicator" id="zoomIndicator">100%</div>
         
         <!-- Swipe Hint Indicator -->
         <div class="swipe-hint-container" id="swipeHint">
@@ -1093,12 +1156,199 @@
             }, 5000);
         }
         
+        // ===== ZOOM & PAN FUNCTIONALITY =====
+        let zoomScale = 1;
+        let panX = 0;
+        let panY = 0;
+        let isDragging = false;
+        let startX = 0;
+        let startY = 0;
+        let lastTouchDistance = 0;
+        let zoomIndicatorTimeout = null;
+        
+        const MIN_ZOOM = 0.5;
+        const MAX_ZOOM = 5;
+        
+        function updateImageTransform() {
+            const img = document.getElementById('fullImg');
+            img.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomScale})`;
+            
+            // Update zoom indicator
+            const indicator = document.getElementById('zoomIndicator');
+            indicator.textContent = Math.round(zoomScale * 100) + '%';
+            indicator.classList.add('visible');
+            
+            // Hide indicator after 1.5 seconds
+            if (zoomIndicatorTimeout) clearTimeout(zoomIndicatorTimeout);
+            zoomIndicatorTimeout = setTimeout(() => {
+                indicator.classList.remove('visible');
+            }, 1500);
+            
+            // Update cursor based on zoom level
+            if (zoomScale > 1.1) {
+                img.classList.add('zoomed');
+            } else {
+                img.classList.remove('zoomed');
+            }
+        }
+        
+        function resetZoom() {
+            zoomScale = 1;
+            panX = 0;
+            panY = 0;
+            updateImageTransform();
+        }
+        
+        function showZoomIndicator() {
+            const indicator = document.getElementById('zoomIndicator');
+            indicator.classList.add('visible');
+            if (zoomIndicatorTimeout) clearTimeout(zoomIndicatorTimeout);
+            zoomIndicatorTimeout = setTimeout(() => {
+                indicator.classList.remove('visible');
+            }, 1500);
+        }
+        
+        // Mouse Wheel Zoom
+        function handleWheelZoom(e) {
+            if (document.getElementById('fullscreenOverlay').style.display !== 'flex') return;
+            
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -0.15 : 0.15;
+            const newScale = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoomScale + delta));
+            
+            // Zoom towards mouse position
+            if (newScale !== zoomScale) {
+                const rect = e.target.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left - rect.width / 2;
+                const mouseY = e.clientY - rect.top - rect.height / 2;
+                
+                const scaleRatio = newScale / zoomScale;
+                panX = mouseX - (mouseX - panX) * scaleRatio;
+                panY = mouseY - (mouseY - panY) * scaleRatio;
+                
+                zoomScale = newScale;
+                updateImageTransform();
+            }
+        }
+        
+        // Mouse Drag for Panning
+        function handleMouseDown(e) {
+            if (zoomScale <= 1.1) return;
+            if (e.target.closest('.close-btn, .nav-btn, .three-dot-btn, .photo-details-menu')) return;
+            
+            isDragging = true;
+            startX = e.clientX - panX;
+            startY = e.clientY - panY;
+            document.getElementById('fullImg').style.cursor = 'grabbing';
+        }
+        
+        function handleMouseMove(e) {
+            if (!isDragging) return;
+            
+            panX = e.clientX - startX;
+            panY = e.clientY - startY;
+            updateImageTransform();
+        }
+        
+        function handleMouseUp() {
+            isDragging = false;
+            const img = document.getElementById('fullImg');
+            if (img) img.style.cursor = zoomScale > 1.1 ? 'grab' : 'default';
+        }
+        
+        // Touch Events for Pinch Zoom & Pan
+        function handleTouchStart(e) {
+            if (e.touches.length === 1 && zoomScale > 1.1) {
+                isDragging = true;
+                startX = e.touches[0].clientX - panX;
+                startY = e.touches[0].clientY - panY;
+            } else if (e.touches.length === 2) {
+                isDragging = false;
+                lastTouchDistance = getTouchDistance(e.touches);
+            }
+        }
+        
+        function handleTouchMove(e) {
+            if (e.touches.length === 1 && isDragging) {
+                // Pan
+                e.preventDefault();
+                panX = e.touches[0].clientX - startX;
+                panY = e.touches[0].clientY - startY;
+                updateImageTransform();
+            } else if (e.touches.length === 2) {
+                // Pinch zoom
+                e.preventDefault();
+                const distance = getTouchDistance(e.touches);
+                const scale = distance / lastTouchDistance;
+                
+                zoomScale = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoomScale * scale));
+                lastTouchDistance = distance;
+                updateImageTransform();
+            }
+        }
+        
+        function handleTouchEnd(e) {
+            isDragging = false;
+            lastTouchDistance = 0;
+        }
+        
+        function getTouchDistance(touches) {
+            const dx = touches[0].clientX - touches[1].clientX;
+            const dy = touches[0].clientY - touches[1].clientY;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+        
+        // Double Click/Tap to Zoom
+        function handleDoubleClick(e) {
+            e.preventDefault();
+            if (zoomScale > 1.5) {
+                // Reset to original
+                resetZoom();
+            } else {
+                // Zoom to 2.5x
+                zoomScale = 2.5;
+                panX = 0;
+                panY = 0;
+                updateImageTransform();
+            }
+        }
+        
+        // Attach event listeners
+        const overlay = document.getElementById('fullscreenOverlay');
+        const fullImg = document.getElementById('fullImg');
+        
+        // Mouse events
+        overlay.addEventListener('wheel', handleWheelZoom, { passive: false });
+        fullImg.addEventListener('mousedown', handleMouseDown);
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+        fullImg.addEventListener('dblclick', handleDoubleClick);
+        
+        // Touch events
+        fullImg.addEventListener('touchstart', handleTouchStart, { passive: true });
+        fullImg.addEventListener('touchmove', handleTouchMove, { passive: false });
+        fullImg.addEventListener('touchend', handleTouchEnd, { passive: true });
+        
+        // Double tap detection for mobile
+        let lastTapTime = 0;
+        fullImg.addEventListener('touchend', function(e) {
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTapTime;
+            if (tapLength < 300 && tapLength > 0) {
+                handleDoubleClick(e);
+            }
+            lastTapTime = currentTime;
+        });
+        
         // Fullscreen Functions
         function openFull(index) { 
             currentGalleryIndex = index; 
             const item = window.galleryItems[index];
             const img = document.getElementById('fullImg');
             const t = translations[currentLang];
+            
+            // Reset zoom state
+            resetZoom();
             
             // Set size loading state
             document.getElementById('detailSize').textContent = t.loading;
@@ -1136,13 +1386,16 @@
             document.body.style.overflow = ''; 
             closePhotoMenu();
             
+            // Reset zoom state
+            resetZoom();
+            
             // Reset swipe hint timers when closing
             resetSwipeHintTimers();
         }
         
         // ===== CHANGED: Only close menu on empty space click, NOT the fullscreen view =====
         function handleOverlayClick(event) { 
-            if (event.target.id === 'fullscreenOverlay') { 
+            if (event.target.id === 'fullscreenOverlay' || event.target.id === 'zoomContainer') { 
                 const menu = document.getElementById('photoDetailsMenu');
                 if (menu.classList.contains('active')) { 
                     closePhotoMenu(); 
@@ -1164,6 +1417,9 @@
             const item = window.galleryItems[currentGalleryIndex];
             const img = document.getElementById('fullImg');
             const t = translations[currentLang];
+            
+            // Reset zoom state when navigating
+            resetZoom();
             
             // Reset size display
             document.getElementById('detailSize').textContent = t.loading;
@@ -1285,15 +1541,40 @@
             }
         }
         
-        // Swipe/Touch Navigation
+        // Swipe/Touch Navigation (only when NOT zoomed)
         let touchStartX = 0; let touchEndX = 0;
-        const overlay = document.getElementById('fullscreenOverlay');
-        overlay.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
-        overlay.addEventListener('touchend', (e) => { touchEndX = e.changedTouches[0].screenX; handleSwipe(); }, {passive: true});
+        overlay.addEventListener('touchstart', (e) => { 
+            if (zoomScale <= 1.1) {
+                touchStartX = e.changedTouches[0].screenX; 
+            }
+        }, {passive: true});
+        overlay.addEventListener('touchend', (e) => { 
+            if (zoomScale <= 1.1) {
+                touchEndX = e.changedTouches[0].screenX; 
+                handleSwipe(); 
+            }
+        }, {passive: true});
         function handleSwipe() { const swipeThreshold = 50; if (touchStartX - touchEndX > swipeThreshold) { navigateImage(1); } if (touchEndX - touchStartX > swipeThreshold) { navigateImage(-1); } }
         
         // Keyboard Navigation
-        document.addEventListener('keydown', (e) => { if (document.getElementById('fullscreenOverlay').style.display === 'flex') { if (e.key === 'ArrowLeft') { e.preventDefault(); navigateImage(-1); } if (e.key === 'ArrowRight') { e.preventDefault(); navigateImage(1); } if (e.key === 'Escape') { closeFull(); } } });
+        document.addEventListener('keydown', (e) => { 
+            if (document.getElementById('fullscreenOverlay').style.display === 'flex') { 
+                if (e.key === 'ArrowLeft') { e.preventDefault(); navigateImage(-1); } 
+                if (e.key === 'ArrowRight') { e.preventDefault(); navigateImage(1); } 
+                if (e.key === 'Escape') { closeFull(); } 
+                if (e.key === '+' || e.key === '=') { 
+                    zoomScale = Math.min(MAX_ZOOM, zoomScale + 0.25); 
+                    updateImageTransform(); 
+                }
+                if (e.key === '-') { 
+                    zoomScale = Math.max(MIN_ZOOM, zoomScale - 0.25); 
+                    updateImageTransform(); 
+                }
+                if (e.key === '0') { 
+                    resetZoom(); 
+                }
+            } 
+        });
         document.getElementById('fullImg').addEventListener('dragstart', (e) => e.preventDefault());
         
         function createBubbles() { const bubbleCount = 10; for (let i = 0; i < bubbleCount; i++) { setTimeout(() => { const b = document.createElement('div'); b.className = 'bubble'; const size = Math.random() * 12 + 4 + 'px'; b.style.width = size; b.style.height = size; b.style.left = Math.random() * 100 + 'vw'; b.style.setProperty('--duration', Math.random() * 4 + 8 + 's'); const drift1 = (Math.random() - 0.5) * 60 + 'px'; const drift2 = (Math.random() - 0.5) * 60 + 'px'; b.style.setProperty('--drift-1', drift1); b.style.setProperty('--drift-2', drift2); document.body.appendChild(b); setTimeout(() => b.remove(), 13000); }, i * 800); } }
