@@ -8,7 +8,7 @@
     <link rel="icon" type="image/jpg" href="https://i.pinimg.com/736x/9c/53/79/9c53799148e32a70de21cf82ce1b0207.jpg">
     <link rel="apple-touch-icon" href="https://i.pinimg.com/736x/9c/53/79/9c53799148e32a70de21cf82ce1b0207.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&family=Playfair+Display:ital,wght,1,700&family=Orbitron:wght@400;700&family=Caveat:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&family=Playfair+Display:ital,wght@1,700&family=Orbitron:wght@400;700&family=Caveat:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #050505;
@@ -18,6 +18,11 @@
             --frame-gradient: conic-gradient(from 0deg, #f472b6, #fb923c, #f472b6);
             --wave-color: rgba(244, 114, 182, 0.2);
             --bubble-color: rgba(244, 114, 182, 0.4);
+            /* ===== FIFA 2026 VIBE - NEW VARIABLES ===== */
+            --fifa-gold: #d4af37;
+            --fifa-red: #c8102e;
+            --fifa-blue: #002868;
+            --fifa-white: #ffffff;
         }
         body.light-mode {
             --bg-color: #ffffff;
@@ -61,7 +66,274 @@
             align-items: center;
             position: relative;
         }
-        
+
+        /* =========================================================
+           FIFA WORLD CUP 2026 VIBE - ADDITIVE DECORATIVE LAYERS
+           (No existing element/class/setting has been modified)
+           ========================================================= */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(212, 175, 55, 0.08) 0%, transparent 35%),
+                radial-gradient(circle at 85% 80%, rgba(200, 16, 46, 0.07) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(0, 40, 104, 0.05) 0%, transparent 50%);
+            animation: fifaAmbientPulse 9s ease-in-out infinite;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.06;
+            background-image:
+                linear-gradient(0deg, transparent 24%, rgba(212, 175, 55, 0.4) 25%, rgba(212, 175, 55, 0.4) 26%, transparent 27%, transparent 74%, rgba(212, 175, 55, 0.4) 75%, rgba(212, 175, 55, 0.4) 76%, transparent 77%),
+                linear-gradient(90deg, transparent 24%, rgba(212, 175, 55, 0.4) 25%, rgba(212, 175, 55, 0.4) 26%, transparent 27%, transparent 74%, rgba(212, 175, 55, 0.4) 75%, rgba(212, 175, 55, 0.4) 76%, transparent 77%);
+            background-size: 60px 60px;
+            animation: fieldGridShift 20s linear infinite;
+        }
+        @keyframes fifaAmbientPulse {
+            0%, 100% { opacity: 1; filter: hue-rotate(0deg); }
+            50% { opacity: 0.75; filter: hue-rotate(15deg); }
+        }
+        @keyframes fieldGridShift {
+            0% { background-position: 0 0, 0 0; }
+            100% { background-position: 60px 60px, -60px 60px; }
+        }
+
+        /* FIFA Stadium Spotlight Sweep */
+        .fifa-spotlight {
+            position: fixed;
+            top: -20%;
+            left: 50%;
+            width: 140vw;
+            height: 140vh;
+            pointer-events: none;
+            z-index: 2;
+            background: conic-gradient(
+                from 0deg at 50% 0%,
+                transparent 0deg,
+                rgba(212, 175, 55, 0.08) 15deg,
+                transparent 30deg,
+                transparent 180deg,
+                rgba(200, 16, 46, 0.06) 195deg,
+                transparent 210deg
+            );
+            transform: translateX(-50%);
+            animation: stadiumSpotlightSweep 14s linear infinite;
+            mix-blend-mode: screen;
+        }
+        @keyframes stadiumSpotlightSweep {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            100% { transform: translateX(-50%) rotate(360deg); }
+        }
+
+        /* Floating Football Particles */
+        .fifa-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 3;
+            font-size: 22px;
+            user-select: none;
+            will-change: transform, opacity;
+            filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.5));
+        }
+        .fifa-particle.ball {
+            animation: fifaBallFloat var(--dur) ease-in-out infinite;
+            animation-delay: var(--delay);
+        }
+        .fifa-particle.trophy {
+            animation: fifaTrophyFloat var(--dur) ease-in-out infinite;
+            animation-delay: var(--delay);
+            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.7));
+        }
+        .fifa-particle.flag {
+            animation: fifaFlagFloat var(--dur) ease-in-out infinite;
+            animation-delay: var(--delay);
+        }
+        @keyframes fifaBallFloat {
+            0% { transform: translate(0, 110vh) rotate(0deg) scale(0.6); opacity: 0; }
+            10% { opacity: 0.9; }
+            50% { transform: translate(var(--drift), 50vh) rotate(540deg) scale(1); }
+            90% { opacity: 0.9; }
+            100% { transform: translate(calc(var(--drift) * -1), -20vh) rotate(1080deg) scale(0.7); opacity: 0; }
+        }
+        @keyframes fifaTrophyFloat {
+            0% { transform: translate(0, 110vh) scale(0.5); opacity: 0; }
+            15% { opacity: 1; }
+            50% { transform: translate(var(--drift), 45vh) scale(1.1); filter: drop-shadow(0 0 14px rgba(212, 175, 55, 0.9)); }
+            85% { opacity: 1; }
+            100% { transform: translate(calc(var(--drift) * -0.5), -20vh) scale(0.6); opacity: 0; }
+        }
+        @keyframes fifaFlagFloat {
+            0% { transform: translate(0, 110vh) rotate(-15deg) scale(0.7); opacity: 0; }
+            15% { opacity: 0.85; }
+            50% { transform: translate(var(--drift), 50vh) rotate(15deg) scale(1); }
+            85% { opacity: 0.85; }
+            100% { transform: translate(calc(var(--drift) * -1), -20vh) rotate(-15deg) scale(0.7); opacity: 0; }
+        }
+
+        /* FIFA 2026 Entry Banner (appears once on load, then fades) */
+        .fifa-entry-banner {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            background: radial-gradient(circle at center, rgba(0, 40, 104, 0.85) 0%, rgba(5, 5, 5, 0.95) 70%);
+            animation: fifaBannerLife 3.2s ease-in-out forwards;
+        }
+        .fifa-entry-banner .trophy-entrance {
+            font-size: 90px;
+            animation: trophyBounceIn 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, trophyGlow 1.5s ease-in-out 1.2s infinite;
+            opacity: 0;
+            filter: drop-shadow(0 0 25px rgba(212, 175, 55, 0.9));
+        }
+        .fifa-entry-banner .fifa-title {
+            margin-top: 18px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #d4af37, #ffffff, #c8102e, #ffffff, #d4af37);
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fifaTitleShine 2.5s linear infinite, fifaTitleFade 1s ease-out 0.6s forwards;
+            opacity: 0;
+            text-align: center;
+            padding: 0 20px;
+        }
+        .fifa-entry-banner .fifa-subtitle {
+            margin-top: 10px;
+            font-family: 'Caveat', cursive;
+            font-size: 20px;
+            color: #d4af37;
+            letter-spacing: 2px;
+            animation: fifaTitleFade 1s ease-out 1s forwards;
+            opacity: 0;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+        }
+        .fifa-entry-banner .ball-kick {
+            position: absolute;
+            bottom: 15%;
+            font-size: 40px;
+            animation: ballKickAcross 2s cubic-bezier(0.5, 0, 0.5, 1) 0.8s forwards;
+            opacity: 0;
+        }
+        @keyframes trophyBounceIn {
+            0% { opacity: 0; transform: scale(0) rotate(-180deg); }
+            60% { opacity: 1; transform: scale(1.2) rotate(10deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+        @keyframes trophyGlow {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.7)); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 40px rgba(212, 175, 55, 1)); transform: scale(1.05); }
+        }
+        @keyframes fifaTitleShine {
+            to { background-position: 300% center; }
+        }
+        @keyframes fifaTitleFade {
+            to { opacity: 1; }
+        }
+        @keyframes ballKickAcross {
+            0% { opacity: 0; transform: translate(-50vw, 0) rotate(0deg) scale(0.5); }
+            20% { opacity: 1; }
+            50% { transform: translate(0, -30px) rotate(720deg) scale(1.2); }
+            80% { opacity: 1; }
+            100% { opacity: 0; transform: translate(50vw, 0) rotate(1440deg) scale(0.5); }
+        }
+        @keyframes fifaBannerLife {
+            0% { opacity: 0; }
+            15% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+
+        /* FIFA Gold Accent Glow on existing header logo (additive, no change to original) */
+        .custom-logo-placeholder {
+            position: relative;
+        }
+        .custom-logo-placeholder::after {
+            content: '⚽';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            font-size: 18px;
+            background: var(--bg-color);
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid var(--fifa-gold);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+            animation: miniBallSpin 4s linear infinite;
+            z-index: 5;
+        }
+        @keyframes miniBallSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* FIFA 2026 shimmer override for title (additive) */
+        .shimmer-text {
+            background: linear-gradient(90deg, var(--text-color), #d4af37, #c8102e, #ffffff, #002868, #d4af37, var(--text-color)) !important;
+            background-size: 400% auto !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            animation: shine 4s linear infinite !important;
+        }
+
+        /* Subtle golden glow on premium buttons during FIFA vibe */
+        .btn-premium {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-premium::before {
+            content: '⚽';
+            position: absolute;
+            right: 12px;
+            font-size: 14px;
+            opacity: 0.85;
+            animation: btnBallBounce 1.8s ease-in-out infinite;
+        }
+        @keyframes btnBallBounce {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            50% { transform: translateX(-6px) rotate(180deg); }
+        }
+
+        /* FIFA corner flags decoration */
+        .fifa-corner-flag {
+            position: fixed;
+            font-size: 28px;
+            pointer-events: none;
+            z-index: 4;
+            opacity: 0.7;
+            animation: flagWave 3s ease-in-out infinite;
+        }
+        .fifa-corner-flag.tl { top: 80px; left: 15px; }
+        .fifa-corner-flag.tr { top: 80px; right: 15px; transform: scaleX(-1); }
+        @keyframes flagWave {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+        .fifa-corner-flag.tr {
+            animation: flagWaveReverse 3s ease-in-out infinite;
+        }
+        @keyframes flagWaveReverse {
+            0%, 100% { transform: scaleX(-1) rotate(-5deg); }
+            50% { transform: scaleX(-1) rotate(5deg); }
+        }
+
         /* ===== ENTRANCE ANIMATIONS ===== */
         @keyframes slideFromLeft {
             0% { opacity: 0; transform: translateX(-100px) scale(0.8); }
@@ -684,10 +956,28 @@
             .swipe-text { font-size: 9px; letter-spacing: 2px; }
             .arrow-wrapper { width: 26px; height: 14px; }
             .zoom-indicator { bottom: 20px; font-size: 11px; padding: 6px 12px; }
+            .fifa-entry-banner .trophy-entrance { font-size: 70px; }
+            .fifa-entry-banner .fifa-title { font-size: 16px; letter-spacing: 3px; }
+            .fifa-entry-banner .fifa-subtitle { font-size: 16px; }
+            .fifa-corner-flag { font-size: 22px; }
         }
     </style>
 </head>
 <body class="honey-mode" onclick="resetAllCaptions(event)">
+
+    <!-- ===== FIFA 2026 VIBE - ADDITIVE DECORATIVE LAYERS ===== -->
+    <div class="fifa-spotlight"></div>
+    <div class="fifa-corner-flag tl">🚩</div>
+    <div class="fifa-corner-flag tr">🚩</div>
+
+    <!-- FIFA 2026 Entry Banner (shows once on load) -->
+    <div class="fifa-entry-banner" id="fifaEntryBanner">
+        <div class="trophy-entrance">🏆</div>
+        <div class="fifa-title">FIFA WORLD CUP 2026</div>
+        <div class="fifa-subtitle">✦ The Beautiful Game ✦</div>
+        <div class="ball-kick">⚽</div>
+    </div>
+
     <div class="waves-container">
         <svg class="wave-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 24 150 28" preserveAspectRatio="none">
             <defs><path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" /></defs>
@@ -791,14 +1081,14 @@
                         { img: "https://i.pinimg.com/736x/0c/d3/19/0cd31972548ecbf5898e6ae1123c0a8d.jpg", cap: "Saudi Arabia 🇸🇦 🏆", date: "2026-06-21", time: "7:50 PM" },
                         { img: "https://i.pinimg.com/736x/ca/3e/16/ca3e1618de8cd10c12b1a22f0a5f51c0.jpg", cap: "Netherlands 🇳🇱 🏆", date: "2026-06-21", time: "7:50 PM" },
                         { img: "https://i.pinimg.com/736x/5e/9a/99/5e9a9948dbcb263d2caac6db417e16eb.jpg", cap: "কাগজের পরিবার 😄", date: "2026-06-02", time: "7:04 PM" },
-                        { img: "https://i.pinimg.com/736x/fe/ce/b1/feceb168f5aaa7dd3b2955891a7dbe7d.jpg", cap: "ধোয়াটে হাসি 🤠", date: "2026-05-27", time: "8:16 PM" },
+                        { img: "https://i.pinimg.com/736x/fe/ce/b1/feceb168f5aaa7dd3b2955891a7dbe7d.jpg", cap: "ধোয়াটে হাসি 🤠", date: "2026-05-27", time: "8:16 PM" },
                         { img: "https://i.pinimg.com/736x/da/21/a1/da21a1614f611881af21905b320dcd05.jpg", cap: "Facebook ⓕ", date: "2026-05-10", time: "4:30 PM" },
                         { img: "https://i.pinimg.com/736x/ef/a2/38/efa23820bfb26f1ea58dc215e54afba4.jpg", cap: "Capture 😎", date: "2026-05-10", time: "4:26 PM" },
                         { img: "https://i.pinimg.com/736x/53/32/5b/53325b96aa3e5f60873df6badcfce238.jpg", cap: "বাংলাদেশ ❤️🇧🇩", date: "2026-05-04", time: "7:50 PM" },
                         { img: "https://i.pinimg.com/736x/5b/e4/c4/5be4c4d40cff53155050d4b4b12ea1f9.jpg", cap: "এই জিল্লু মাল দে 🍺", date: "2026-05-04", time: "7:46 PM" },
                         { img: "https://i.pinimg.com/736x/36/fe/db/36fedb4c312d01d757112c7b7709a57a.jpg", cap: "Hello Bro 😎", date: "2026-04-21", time: "6:56 PM" },
                         { img: "https://i.pinimg.com/736x/a9/24/00/a9240002141a026062c774dc52721844.jpg", cap: "ENTERTAINMENT WITH HONEY 🥰", date: "2026-04-21", time: "6:51 PM" },
-                        { img: "https://i.pinimg.com/736x/a0/67/5e/a0675eddf5e2e90f746db7ac32c38479.jpg", cap: "গাড়ি ছুটছে 🚗", date: "2026-04-16", time: "5:56 PM" },
+                        { img: "https://i.pinimg.com/736x/a0/67/5e/a0675eddf5e2e90f746db7ac32c38479.jpg", cap: "গাড়ি ছুটছে 🚗", date: "2026-04-16", time: "5:56 PM" },
                         { img: "https://i.pinimg.com/736x/aa/df/d4/aadfd4e83db176ef864c0c6d8a6e74a0.jpg", cap: "কল্পনা যখন canvas এ😀", date: "2026-04-16", time: "5:45 PM" },
                         { img: "https://i.pinimg.com/736x/a8/ef/dc/a8efdc1d439a41f23b4a20fdd8629350.jpg", cap: "রঙিন Comic, সাদাকালো স্মৃতি আমার 🖍️🖼️", date: "2026-04-02", time: "11:00 AM" },
                         { img: "https://i.pinimg.com/736x/ca/de/f6/cadef65bdb2be8e12dcafbc619b9a6da.jpg", cap: "খবরে ভরা দেয়ালে আমিই সেরা খবর! 📰😎", date: "2026-03-31", time: "8:20 PM" },
@@ -1591,6 +1881,61 @@
         function createBubbles() { const bubbleCount = 10; for (let i = 0; i < bubbleCount; i++) { setTimeout(() => { const b = document.createElement('div'); b.className = 'bubble'; const size = Math.random() * 12 + 4 + 'px'; b.style.width = size; b.style.height = size; b.style.left = Math.random() * 100 + 'vw'; b.style.setProperty('--duration', Math.random() * 4 + 8 + 's'); const drift1 = (Math.random() - 0.5) * 60 + 'px'; const drift2 = (Math.random() - 0.5) * 60 + 'px'; b.style.setProperty('--drift-1', drift1); b.style.setProperty('--drift-2', drift2); document.body.appendChild(b); setTimeout(() => b.remove(), 13000); }, i * 800); } }
         setInterval(createBubbles, 6000); createBubbles();
         function triggerEffect(e) { const colors = ['#f472b6', '#fb923c', '#d97706', '#ffffff']; for (let i = 0; i < 30; i++) { const p = document.createElement('div'); p.style.position = 'fixed'; p.style.width = '8px'; p.style.height = '8px'; p.style.background = colors[Math.floor(Math.random() * colors.length)]; p.style.left = e.clientX + 'px'; p.style.top = e.clientY + 'px'; p.style.borderRadius = '50%'; p.style.pointerEvents = 'none'; document.body.appendChild(p); const angle = Math.random() * Math.PI * 2; const dist = Math.random() * 100 + 50; p.animate([ { transform: 'translate(0,0)', opacity: 1 }, { transform: `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px)`, opacity: 0 } ], { duration: 1000, easing: 'ease-out' }).onfinish = () => p.remove(); } }
+
+        /* =========================================================
+           FIFA WORLD CUP 2026 VIBE - ADDITIVE JS (no existing
+           function/variable has been modified)
+           ========================================================= */
+        // Floating football/trophy/flag particles
+        function createFifaParticles() {
+            const emojis = [
+                { ch: '⚽', cls: 'ball', weight: 6 },
+                { ch: '🏆', cls: 'trophy', weight: 2 },
+                { ch: '🥅', cls: 'ball', weight: 1 },
+                { ch: '🇦🇷', cls: 'flag', weight: 1 },
+                { ch: '🇧🇷', cls: 'flag', weight: 1 },
+                { ch: '🇫🇷', cls: 'flag', weight: 1 },
+                { ch: '🇩🇪', cls: 'flag', weight: 1 },
+                { ch: '🇪🇸', cls: 'flag', weight: 1 },
+                { ch: '🇬🇧', cls: 'flag', weight: 1 },
+                { ch: '🇵🇹', cls: 'flag', weight: 1 }
+            ];
+            const pool = [];
+            emojis.forEach(e => { for (let i = 0; i < e.weight; i++) pool.push(e); });
+
+            const count = 3;
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const pick = pool[Math.floor(Math.random() * pool.length)];
+                    const p = document.createElement('div');
+                    p.className = 'fifa-particle ' + pick.cls;
+                    p.textContent = pick.ch;
+                    const size = 16 + Math.random() * 18;
+                    p.style.fontSize = size + 'px';
+                    p.style.left = (Math.random() * 95 + 2) + 'vw';
+                    const dur = 10 + Math.random() * 10;
+                    p.style.setProperty('--dur', dur + 's');
+                    p.style.setProperty('--delay', (Math.random() * 2) + 's');
+                    const drift = (Math.random() - 0.5) * 120;
+                    p.style.setProperty('--drift', drift + 'px');
+                    document.body.appendChild(p);
+                    setTimeout(() => p.remove(), (dur + 3) * 1000);
+                }, i * 1200);
+            }
+        }
+        // Initial burst (synced with entry banner)
+        setTimeout(createFifaParticles, 400);
+        setTimeout(createFifaParticles, 1500);
+        setTimeout(createFifaParticles, 2600);
+        // Continuous ambient particles
+        setInterval(createFifaParticles, 4500);
+
+        // Remove entry banner from DOM after animation finishes
+        setTimeout(() => {
+            const banner = document.getElementById('fifaEntryBanner');
+            if (banner) banner.remove();
+        }, 3500);
     </script>
 </body>
 </html>
+
