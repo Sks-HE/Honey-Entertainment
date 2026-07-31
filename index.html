@@ -59,19 +59,62 @@
             min-height: 100vh;
             margin: 0;
             padding: 0;
-            transition: background 0.5s, color 0.5s;
+            transition: background 0.6s cubic-bezier(0.4, 0, 0.2, 1), color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             align-items: center;
             position: relative;
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        /* ===== GLASS OVERLAY EFFECT ===== */
+        .glass-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 3;
+            background: linear-gradient(
+                180deg,
+                rgba(255, 255, 255, 0.03) 0%,
+                transparent 20%,
+                transparent 80%,
+                rgba(255, 255, 255, 0.02) 100%
+            );
+            backdrop-filter: blur(0.3px);
+            -webkit-backdrop-filter: blur(0.3px);
+        }
+        body.light-mode .glass-overlay {
+            background: linear-gradient(
+                180deg,
+                rgba(255, 255, 255, 0.08) 0%,
+                transparent 15%,
+                transparent 85%,
+                rgba(0, 0, 0, 0.02) 100%
+            );
+        }
+        body.honey-mode .glass-overlay {
+            background: linear-gradient(
+                180deg,
+                rgba(255, 251, 235, 0.15) 0%,
+                transparent 20%,
+                transparent 80%,
+                rgba(254, 243, 199, 0.08) 100%
+            );
         }
 
         /* ===== PREMIUM SCROLLBAR ===== */
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-color); }
         ::-webkit-scrollbar-thumb {
             background: linear-gradient(180deg, var(--accent), #fb923c);
             border-radius: 10px;
+            transition: background 0.3s;
         }
         ::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(180deg, #fb923c, var(--accent));
@@ -98,6 +141,7 @@
             transition: opacity 0.3s ease;
             mix-blend-mode: screen;
             filter: blur(40px);
+            will-change: transform;
         }
         @media (max-width: 768px) {
             .cursor-glow { display: none; }
@@ -154,10 +198,10 @@
         @keyframes arrowDown { 0% { transform: translateY(0) rotate(45deg); opacity: 0.3; } 50% { transform: translateY(10px) rotate(45deg); opacity: 1; } 100% { transform: translateY(0) rotate(45deg); opacity: 0.3; } }
         @keyframes digitalPulse { 0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0px transparent); } 50% { transform: scale(1.05); filter: drop-shadow(0 0 8px var(--accent)); } }
         @keyframes shimmer { to { background-position: 200% center; } }
-        .bubble { position: fixed; bottom: -50px; background: var(--bubble-color); border-radius: 50%; pointer-events: none; z-index: 2; animation: rise var(--duration) ease-in-out infinite; }
+        .bubble { position: fixed; bottom: -50px; background: var(--bubble-color); border-radius: 50%; pointer-events: none; z-index: 2; animation: rise var(--duration) ease-in-out infinite; will-change: transform, opacity; }
         @keyframes rise { 0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; } 10% { opacity: 0.6; } 25% { transform: translateY(-30vh) translateX(var(--drift-1)) scale(1.1); } 50% { transform: translateY(-60vh) translateX(var(--drift-2)) scale(1.2); } 75% { transform: translateY(-90vh) translateX(var(--drift-1)) scale(1.3); } 90% { opacity: 0.6; } 100% { transform: translateY(-130vh) translateX(var(--drift-2)) scale(1.5); opacity: 0; } }
-        .menu-btn { width: 45px; height: 45px; background: var(--card-bg); border: 1px solid rgba(128,128,128,0.2); border-radius: 50%; cursor: pointer; backdrop-filter: blur(10px); display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px; transition: 0.3s; }
-        .bar { width: 20px; height: 2px; background-color: var(--text-color); transition: 0.4s; border-radius: 2px; }
+        .menu-btn { width: 45px; height: 45px; background: var(--card-bg); border: 1px solid rgba(128,128,128,0.2); border-radius: 50%; cursor: pointer; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .bar { width: 20px; height: 2px; background-color: var(--text-color); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 2px; }
         .menu-btn.active .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
         .menu-btn.active .bar:nth-child(2) { opacity: 0; }
         .menu-btn.active .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
@@ -170,7 +214,7 @@
         @keyframes rotateRGB { to { --angle: 360deg; } }
         .social-box::after { content: ''; position: absolute; inset: 2px; background: var(--bg-color); border-radius: 20px; z-index: -1; transition: background 0.3s; }
         .social-box:hover { transform: scale(1.15) rotate(-5deg); box-shadow: 0 0 30px rgba(244, 114, 182, 0.4); }
-        .social-box svg { transition: all 0.4s; filter: drop-shadow(0 0 5px rgba(0,0,0,0.2)); }
+        .social-box svg { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); filter: drop-shadow(0 0 5px rgba(0,0,0,0.2)); }
         .social-box:hover svg { transform: scale(1.2) rotate(5deg); }
         .waves-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 100px; pointer-events: none; z-index: 5; }
         .wave-svg { width: 100%; height: 100%; }
@@ -182,10 +226,10 @@
         @keyframes move-forever { 0% { transform: translate3d(-90px, 0, 0); } 100% { transform: translate3d(85px, 0, 0); } }
         .app-container { width: 100%; max-width: 450px; padding: 40px 25px; display: flex; flex-direction: column; gap: 40px; z-index: 10; }
         .menu-container { position: fixed; top: 20px; right: 20px; z-index: 100; }
-        .dropdown-menu { position: absolute; right: 0; top: 55px; background: var(--bg-color); border: 1px solid var(--accent); border-radius: 12px; width: 200px; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.3); backdrop-filter: blur(20px); }
-        .dropdown-menu.active { display: flex; animation: menuFadeIn 0.3s ease-out; }
-        @keyframes menuFadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        .menu-item { padding: 14px 18px; font-size: 14px; font-weight: 600; cursor: pointer; border-bottom: 1px solid rgba(128,128,128,0.1); transition: all 0.3s ease; display: flex; align-items: center; justify-content: space-between; gap: 10px; position: relative; overflow: hidden; }
+        .dropdown-menu { position: absolute; right: 0; top: 55px; background: var(--bg-color); border: 1px solid var(--accent); border-radius: 12px; width: 200px; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.3); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        .dropdown-menu.active { display: flex; animation: menuFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes menuFadeIn { from { opacity: 0; transform: translateY(-10px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .menu-item { padding: 14px 18px; font-size: 14px; font-weight: 600; cursor: pointer; border-bottom: 1px solid rgba(128,128,128,0.1); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: space-between; gap: 10px; position: relative; overflow: hidden; }
         .menu-item:hover { background: var(--accent); color: #fff; padding-left: 22px; }
         .menu-item::before {
             content: '';
@@ -219,7 +263,7 @@
             background: white;
             border-radius: 50%;
             left: 2px;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         .menu-item.sound-on .sound-toggle {
@@ -229,15 +273,15 @@
             transform: translateX(16px);
         }
         .header-wrapper { display: flex; align-items: center; gap: 15px; }
-        .custom-logo-placeholder { width: 60px; height: 60px; border-radius: 12px; border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; background: var(--card-bg); flex-shrink: 0; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.4s ease, box-shadow 0.4s ease; }
+        .custom-logo-placeholder { width: 60px; height: 60px; border-radius: 12px; border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; background: var(--card-bg); flex-shrink: 0; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease; }
         .custom-logo-placeholder:hover { transform: scale(1.05) rotate(-3deg); box-shadow: 0 8px 20px var(--glow-color); }
-        .custom-logo-placeholder img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.5); }
+        .custom-logo-placeholder img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.5); transition: transform 0.4s ease; }
         .shimmer-text { background: linear-gradient(90deg, var(--text-color), var(--accent), #fb923c, var(--text-color)); background-size: 300% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 4s linear infinite; }
         @keyframes shine { to { background-position: 300% center; } }
         .animated-title { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 18px; margin-bottom: 15px; position: relative; }
         .animated-title span { color: var(--accent); display: inline-block; animation: arrowBounce 1.5s infinite ease-in-out; }
         @keyframes arrowBounce { 0%, 100% { transform: translateX(0); opacity: 1; } 50% { transform: translateX(8px); opacity: 0.5; } }
-        .btn-premium { padding: 14px 28px; border-radius: 50px; font-weight: 900; text-transform: uppercase; font-size: 14px; background: linear-gradient(90deg, var(--accent), #fb923c); color: #fff; animation: heartbeat 2s infinite ease-in-out; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 12px; border: none; cursor: pointer; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease; width: fit-content; position: relative; overflow: hidden; }
+        .btn-premium { padding: 14px 28px; border-radius: 50px; font-weight: 900; text-transform: uppercase; font-size: 14px; background: linear-gradient(90deg, var(--accent), #fb923c); color: #fff; animation: heartbeat 2s infinite ease-in-out; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 12px; border: none; cursor: pointer; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease; width: fit-content; position: relative; overflow: hidden; will-change: transform; }
         .btn-premium::before {
             content: '';
             position: absolute;
@@ -257,18 +301,18 @@
         .post-date { font-size: 11px; font-family: 'Hind Siliguri', sans-serif; color: var(--text-color); opacity: 0.6; font-weight: 500; letter-spacing: 0.3px; }
         .post-time { font-size: 10px; font-family: 'Orbitron', sans-serif; color: var(--accent); opacity: 0.5; font-weight: 400; letter-spacing: 0.5px; }
         .post-caption.caption-active { transform: translateY(-15px) scale(1.05); background: var(--accent); color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.3); border-left-color: white; }
-        .collection-card { position: relative; aspect-ratio: 1/1; border-radius: 15px; padding: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--bg-color); cursor: pointer; transition: transform 0.3s; }
+        .collection-card { position: relative; aspect-ratio: 1/1; border-radius: 15px; padding: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--bg-color); cursor: pointer; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .collection-card::before { content: ''; position: absolute; width: 200%; height: 200%; background: var(--frame-gradient); animation: rotateFrame 4s linear infinite; z-index: 0; }
         @keyframes rotateFrame { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .collection-card .inner-img { position: relative; z-index: 1; width: 100%; height: 100%; background: var(--bg-color); border-radius: 12px; overflow: hidden; }
-        .collection-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .collection-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
         .collection-card:hover img { transform: scale(1.08); }
-        .thank-you-bar { width: 85%; margin: 20px auto; padding: 12px 20px; background: var(--card-bg); border-radius: 100px; text-align: center; cursor: pointer; position: relative; backdrop-filter: blur(15px); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); display: flex; align-items: center; justify-content: center; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .thank-you-bar { width: 85%; margin: 20px auto; padding: 12px 20px; background: var(--card-bg); border-radius: 100px; text-align: center; cursor: pointer; position: relative; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); display: flex; align-items: center; justify-content: center; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease; }
         .thank-you-bar:hover { transform: translateY(-3px); box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.3), 0 0 20px var(--glow-color); }
         .thank-you-text { font-size: 16px; font-weight: 800; text-transform: uppercase; background: linear-gradient(90deg, var(--text-color), var(--accent), #fb923c, var(--text-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
         
         /* ===== FULLSCREEN OVERLAY STYLES ===== */
-        #fullscreenOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(10px); cursor: pointer; overflow: hidden; }
+        #fullscreenOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); cursor: pointer; overflow: hidden; }
         
         /* ===== ZOOMABLE IMAGE CONTAINER ===== */
         .zoom-container {
@@ -291,6 +335,7 @@
             user-select: none;
             -webkit-user-drag: none;
             touch-action: none;
+            will-change: transform;
         }
         
         #fullImg.zoomed {
@@ -321,6 +366,7 @@
             background: rgba(0, 0, 0, 0.5);
             border-radius: 18px;
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             display: none;
             white-space: nowrap;
             overflow: hidden;
@@ -373,7 +419,7 @@
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            transition: all 0.3s ease; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
             user-select: none; 
             -webkit-tap-highlight-color: transparent; 
             padding: 15px;
@@ -491,6 +537,7 @@
             align-items: center;
             justify-content: center;
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             box-shadow: 0 0 20px rgba(244, 114, 182, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.1);
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
@@ -524,6 +571,7 @@
             justify-content: center;
             gap: 5px;
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             box-shadow: 0 0 20px rgba(244, 114, 182, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.1);
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
@@ -748,6 +796,7 @@
             transition: opacity 0.3s ease;
             pointer-events: none;
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
@@ -787,7 +836,189 @@
             0%, 100% { transform: scaleY(0.3); }
             50% { transform: scaleY(1); }
         }
-        
+
+        /* ===== BACK TO TOP BUTTON - GLASS MORPHISM ===== */
+        .back-to-top-btn {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 0 0 0 var(--accent);
+            cursor: pointer;
+            z-index: 998;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px) scale(0.8);
+            transition: 
+                opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                background 0.3s ease,
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .back-to-top-btn.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        .back-to-top-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .back-to-top-btn::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, var(--accent), #fb923c, var(--accent));
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.3s ease;
+            animation: rotateRGB 3s linear infinite;
+        }
+
+        .back-to-top-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--accent);
+            box-shadow: 
+                0 12px 40px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                0 0 20px rgba(244, 114, 182, 0.3);
+            transform: translateY(-3px) scale(1.08);
+        }
+
+        .back-to-top-btn:hover::after {
+            opacity: 1;
+        }
+
+        .back-to-top-btn:active {
+            transform: translateY(0) scale(0.95);
+            transition-duration: 0.1s;
+        }
+
+        .back-to-top-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: var(--accent);
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 0 4px var(--glow-color));
+        }
+
+        .back-to-top-btn:hover svg {
+            stroke: var(--text-color);
+            transform: translateY(-2px);
+            filter: drop-shadow(0 0 8px var(--accent));
+        }
+
+        /* Light mode adjustments */
+        body.light-mode .back-to-top-btn {
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        body.light-mode .back-to-top-btn::before {
+            background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 50%);
+        }
+        body.light-mode .back-to-top-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+            border-color: var(--accent);
+            box-shadow: 
+                0 12px 40px rgba(0, 0, 0, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                0 0 20px rgba(219, 39, 119, 0.2);
+        }
+
+        /* Honey mode adjustments */
+        body.honey-mode .back-to-top-btn {
+            background: rgba(120, 53, 15, 0.06);
+            border: 1px solid rgba(217, 119, 6, 0.2);
+            box-shadow: 
+                0 8px 32px rgba(217, 119, 6, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+        body.honey-mode .back-to-top-btn:hover {
+            background: rgba(217, 119, 6, 0.12);
+            border-color: var(--accent);
+            box-shadow: 
+                0 12px 40px rgba(217, 119, 6, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4),
+                0 0 20px rgba(217, 119, 6, 0.25);
+        }
+
+        /* Hide back-to-top in fullscreen */
+        body.fullscreen-active .back-to-top-btn {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }
+
+        /* ===== SCROLL REVEAL ANIMATION ===== */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== SMOOTH PAGE LOAD ===== */
+        .page-loader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-color);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s;
+        }
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .loader-spinner {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid rgba(244, 114, 182, 0.1);
+            border-top-color: var(--accent);
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         @media (max-width: 600px) {
             #fullscreenOverlay .nav-btn { 
                 font-size: 22px; 
@@ -814,10 +1045,28 @@
             .swipe-text { font-size: 9px; letter-spacing: 2px; }
             .arrow-wrapper { width: 26px; height: 14px; }
             .zoom-indicator { bottom: 20px; font-size: 11px; padding: 6px 12px; }
+            .back-to-top-btn {
+                width: 38px;
+                height: 38px;
+                bottom: 22px;
+                right: 22px;
+            }
+            .back-to-top-btn svg {
+                width: 16px;
+                height: 16px;
+            }
         }
     </style>
 </head>
 <body class="honey-mode" onclick="resetAllCaptions(event)">
+    <!-- Page Loader -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-spinner"></div>
+    </div>
+
+    <!-- Glass Overlay Effect -->
+    <div class="glass-overlay"></div>
+    
     <!-- Premium Cursor Glow Effect -->
     <div class="cursor-glow" id="cursorGlow"></div>
     
@@ -829,6 +1078,13 @@
         <div class="bar-viz"></div>
         <div class="bar-viz"></div>
     </div>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top-btn" id="backToTopBtn" aria-label="Back to top">
+        <svg viewBox="0 0 24 24">
+            <path d="M12 19V5M5 12l7-7 7 7"/>
+        </svg>
+    </button>
     
     <div class="waves-container">
         <svg class="wave-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 24 150 28" preserveAspectRatio="none">
@@ -928,7 +1184,7 @@
                     window.galleryItems = [
                         { img: "https://i.pinimg.com/736x/73/78/fe/7378fe1fad39cd932ee3e4328d5835c9.jpg", cap: "শিল্পের ছোঁয়া 🎨", date: "2026-07-30", time: "8:55 PM" },
                         { img: "https://i.pinimg.com/736x/d4/27/e2/d427e266d2f08ece8c51cc4417d31df9.jpg", cap: "Final 🇪🇸VS🇦🇷", date: "2026-07-19", time: "7:15 PM" },
-                        { img: "https://i.pinimg.com/736x/27/50/2d/27502dcfb047f4752ddfe0f08c3a9a8e.jpg", cap: "Semi-finals 🏴󠁧󠁢󠁥󠁮󠁧󠁿VS🇦🇷", date: "2026-07-15", time: "6:56 PM" },
+                        { img: "https://i.pinimg.com/736x/27/50/2d/27502dcfb047f4752ddfe0f08c3a9a8e.jpg", cap: "Semi-finals 🏴󠁧󠁢󠁥󠁮󠁧U+E007FVS🇦🇷", date: "2026-07-15", time: "6:56 PM" },
                         { img: "https://i.pinimg.com/736x/5d/e9/58/5de958cebe6b603a0f4353fa516a8940.jpg", cap: "Semi-finals 🇫🇷VS🇪🇸", date: "2026-07-14", time: "7:01 PM" },
                         { img: "https://i.pinimg.com/736x/91/29/43/91294305c138501bcfb743e8b027c928.jpg", cap: "Argentina 🇦🇷 🏆", date: "2026-06-21", time: "7:52 PM" },
                         { img: "https://i.pinimg.com/736x/60/41/90/6041906775e729b9b31bf18b2447c0d6.jpg", cap: "Brazil 🇧🇷 🏆", date: "2026-06-21", time: "7:52 PM" },
@@ -1045,12 +1301,12 @@
                         const datetimeHtml = (dateDisplay || timeDisplay) ? `<div class="post-datetime">${dateDisplay}${timeDisplay}</div>` : '';
                         
                         const html = `
-                            <div class="flex flex-col gap-2" style="animation-delay: ${1.2 + (index * 0.05)}s;">
+                            <div class="flex flex-col gap-2 scroll-reveal" style="animation-delay: ${1.2 + (index * 0.05)}s;">
                                 <p class="post-caption" onclick="toggleCaption(this, event)">${item.cap}</p>
                                 ${datetimeHtml}
                                 <div class="collection-card" onclick="openFull(${index}); event.stopPropagation()">
                                     <div class="inner-img">
-                                        <img src="${item.img}" alt="Coll" onerror="this.src='https://i.pinimg.com/736x/96/5f/f8/965ff82713b7a1ef6e3ffb782fcdc412.jpg'">
+                                        <img src="${item.img}" alt="Coll" loading="lazy" onerror="this.src='https://i.pinimg.com/736x/96/5f/f8/965ff82713b7a1ef6e3ffb782fcdc412.jpg'">
                                     </div>
                                 </div>
                             </div>
@@ -1197,7 +1453,7 @@
         
         // ===== PROFESSIONAL SOUND EFFECTS ENGINE v2.0 =====
         let audioCtx = null;
-        let soundEnabled = false; // DEFAULT OFF
+        let soundEnabled = false;
         let masterGain = null;
         let convolverNode = null;
         let compressorNode = null;
@@ -1209,7 +1465,6 @@
             try {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 
-                // Master compressor for clean output
                 compressorNode = audioCtx.createDynamicsCompressor();
                 compressorNode.threshold.value = -12;
                 compressorNode.knee.value = 6;
@@ -1218,22 +1473,18 @@
                 compressorNode.release.value = 0.15;
                 compressorNode.connect(audioCtx.destination);
                 
-                // Master gain - HIGHER VOLUME (0.65 instead of 0.25)
                 masterGain = audioCtx.createGain();
                 masterGain.gain.value = 0.65;
                 
-                // Dry signal path
                 dryGain = audioCtx.createGain();
                 dryGain.gain.value = 0.85;
                 masterGain.connect(dryGain);
                 dryGain.connect(compressorNode);
                 
-                // Reverb send (subtle room reverb)
                 reverbGain = audioCtx.createGain();
                 reverbGain.gain.value = 0.15;
                 masterGain.connect(reverbGain);
                 
-                // Create convolution reverb
                 createReverb();
                 
             } catch (e) {
@@ -1244,7 +1495,7 @@
         function createReverb() {
             if (!audioCtx) return;
             const sampleRate = audioCtx.sampleRate;
-            const length = sampleRate * 1.2; // 1.2 second reverb tail
+            const length = sampleRate * 1.2;
             const impulse = audioCtx.createBuffer(2, length, sampleRate);
             
             for (let channel = 0; channel < 2; channel++) {
@@ -1267,7 +1518,6 @@
             }
         }
 
-        // Initialize audio on first user interaction
         ['click', 'touchstart', 'keydown'].forEach(evt => {
             document.addEventListener(evt, () => {
                 if (soundEnabled) {
@@ -1277,12 +1527,10 @@
             }, { once: false, passive: true });
         });
 
-        // Enhanced tone with harmonics, better envelope, and spatial positioning
         function playTone({ freq = 440, type = 'sine', duration = 0.15, volume = 0.5, attack = 0.005, release = 0.15, freqEnd = null, harmonics = [], pan = 0, detune = 0 }) {
             if (!soundEnabled || !audioCtx) return;
             const now = audioCtx.currentTime;
             
-            // Main oscillator
             const osc = audioCtx.createOscillator();
             osc.type = type;
             osc.frequency.setValueAtTime(freq, now);
@@ -1291,7 +1539,6 @@
                 osc.frequency.exponentialRampToValueAtTime(Math.max(20, freqEnd), now + duration);
             }
             
-            // Main gain envelope (ADSR-like)
             const gain = audioCtx.createGain();
             gain.gain.setValueAtTime(0, now);
             gain.gain.linearRampToValueAtTime(volume, now + attack);
@@ -1303,7 +1550,6 @@
             osc.start(now);
             osc.stop(now + duration + release + 0.1);
             
-            // Add harmonics for richness
             harmonics.forEach((h, idx) => {
                 const hOsc = audioCtx.createOscillator();
                 const hGain = audioCtx.createGain();
@@ -1322,7 +1568,6 @@
             });
         }
 
-        // Play a rich chord with multiple oscillators
         function playChord({ freqs = [440, 554, 659], type = 'sine', duration = 0.4, volume = 0.3, stagger = 25 }) {
             if (!soundEnabled || !audioCtx) return;
             freqs.forEach((f, i) => {
@@ -1340,7 +1585,6 @@
             });
         }
 
-        // Play a noise burst (for clicks, taps)
         function playNoise({ duration = 0.04, volume = 0.15, filterFreq = 3000, filterType = 'highpass' }) {
             if (!soundEnabled || !audioCtx) return;
             const now = audioCtx.currentTime;
@@ -1370,7 +1614,6 @@
             source.start(now);
         }
 
-        // Sound presets - PROFESSIONAL QUALITY
         const SOUNDS = {
             click: () => {
                 playNoise({ duration: 0.03, volume: 0.2, filterFreq: 4000 });
@@ -1397,7 +1640,6 @@
                 }, 180);
             },
             imageOpen: () => {
-                // Cinematic reveal sound
                 playTone({ freq: 220, type: 'sine', duration: 0.3, volume: 0.35, freqEnd: 440, attack: 0.01, release: 0.2, harmonics: [{ ratio: 1.5, volume: 0.12 }, { ratio: 2, volume: 0.08 }] });
                 setTimeout(() => {
                     playTone({ freq: 440, type: 'triangle', duration: 0.25, volume: 0.25, freqEnd: 880, attack: 0.008, release: 0.15, harmonics: [{ ratio: 2, volume: 0.06 }] });
@@ -1419,7 +1661,6 @@
                 playTone({ freq: 1319, type: 'sine', duration: 0.06, volume: 0.2, attack: 0.002, release: 0.04 });
             },
             success: () => {
-                // Triumphant ascending arpeggio
                 const notes = [523.25, 659.25, 783.99, 1046.5];
                 notes.forEach((freq, i) => {
                     setTimeout(() => {
@@ -1434,7 +1675,6 @@
                         });
                     }, i * 80);
                 });
-                // Final shimmer
                 setTimeout(() => {
                     playTone({ freq: 1568, type: 'triangle', duration: 0.3, volume: 0.15, attack: 0.01, release: 0.25 });
                 }, 350);
@@ -1446,7 +1686,6 @@
                 }, 50);
             },
             thankYou: () => {
-                // Magical sparkle chord
                 playChord({ freqs: [523.25, 659.25, 783.99, 1046.5, 1318.5], type: 'sine', duration: 0.6, volume: 0.2, stagger: 40 });
                 setTimeout(() => {
                     playTone({ freq: 2093, type: 'sine', duration: 0.3, volume: 0.12, attack: 0.01, release: 0.25 });
@@ -1469,6 +1708,12 @@
                 setTimeout(() => {
                     playTone({ freq: 1320, type: 'sine', duration: 0.1, volume: 0.2, attack: 0.005, release: 0.08 });
                 }, 100);
+            },
+            scrollTop: () => {
+                playTone({ freq: 440, type: 'sine', duration: 0.1, volume: 0.3, freqEnd: 880, attack: 0.003, release: 0.08, harmonics: [{ ratio: 2, volume: 0.08 }] });
+                setTimeout(() => {
+                    playTone({ freq: 880, type: 'triangle', duration: 0.12, volume: 0.2, attack: 0.005, release: 0.1 });
+                }, 80);
             }
         };
 
@@ -1485,7 +1730,6 @@
                 visualizer.classList.add('active');
                 initAudio();
                 resumeAudio();
-                // Play a nice "enabled" sound
                 setTimeout(() => SOUNDS.toggle(), 50);
             } else {
                 item.classList.remove('sound-on');
@@ -1497,7 +1741,6 @@
             event.stopPropagation();
         }
 
-        // Load sound preference - DEFAULT OFF
         try {
             const saved = localStorage.getItem('honeySound');
             if (saved === '1') {
@@ -1511,7 +1754,6 @@
                     if (visualizer) visualizer.classList.add('active');
                 }, 0);
             } else {
-                // Default: sound OFF
                 soundEnabled = false;
                 setTimeout(() => {
                     const item = document.getElementById('soundToggleItem');
@@ -1521,7 +1763,6 @@
                 }, 0);
             }
         } catch(e) {
-            // Default: sound OFF
             soundEnabled = false;
         }
         
@@ -1567,7 +1808,6 @@
             document.getElementById('watchBtnText').innerText = t.watchNow; 
             document.getElementById('langBtn').innerText = t.lang; 
             document.getElementById('thankYouTxt').innerText = t.thanks;
-            // Photo details labels
             document.getElementById('photoDetailsHeaderText').innerText = t.photoDetails;
             document.getElementById('detailDateLabel').innerText = t.dateLabel;
             document.getElementById('detailTimeLabel').innerText = t.timeLabel;
@@ -1575,18 +1815,15 @@
             document.getElementById('detailSizeLabel').innerText = t.sizeLabel;
             document.getElementById('detailDownloadLabel').innerText = t.downloadLabel;
             document.getElementById('downloadTapText').innerText = t.downloadTap;
-            // Update sound toggle label
             const soundLabel = document.getElementById('soundToggleLabel');
             soundLabel.innerText = soundEnabled ? t.soundOn : t.soundOff;
             SOUNDS.langSwitch();
             toggleMenu(); 
         }
         
-        // ===== FALLING CAPTION ANIMATION FUNCTION =====
         function animateCaption(text) {
             const captionOverlay = document.getElementById('fullscreenCaption');
             
-            // Split text into tokens: words and emojis separately
             const emojiRegex = /[\p{Emoji_Presentation}\p{Extended_Pictographic}\p{Emoji}]/gu;
             const tokens = [];
             let remaining = text;
@@ -1596,21 +1833,17 @@
                 if (match) {
                     const emojiIndex = remaining.indexOf(match[0]);
                     
-                    // Add text before emoji (if any)
                     if (emojiIndex > 0) {
                         const before = remaining.substring(0, emojiIndex);
-                        // Split by spaces and add each word
                         before.split(/(\s+)/).forEach(part => {
                             if (part.trim()) tokens.push({ type: 'word', value: part });
                             else if (part) tokens.push({ type: 'space', value: part });
                         });
                     }
                     
-                    // Add the emoji
                     tokens.push({ type: 'emoji', value: match[0] });
                     remaining = remaining.substring(emojiIndex + match[0].length);
                 } else {
-                    // No more emojis, add remaining text
                     remaining.split(/(\s+)/).forEach(part => {
                         if (part.trim()) tokens.push({ type: 'word', value: part });
                         else if (part) tokens.push({ type: 'space', value: part });
@@ -1627,7 +1860,7 @@
                     html += token.value;
                 } else {
                     html += `<span class="fall-word" style="animation-delay: ${delay}ms">${token.value}</span>`;
-                    delay += 80; // 80ms delay between each word/emoji
+                    delay += 80;
                 }
             });
             
@@ -1635,18 +1868,15 @@
             captionOverlay.style.display = 'block';
         }
         
-        // ===== SWIPE HINT TIMER VARIABLES =====
         let swipeHintTimer = null;
         let swipeHideTimer = null;
         let swipeCycleTimer = null;
         
         function resetSwipeHintTimers() {
-            // Clear all existing timers
             if (swipeHintTimer) { clearTimeout(swipeHintTimer); swipeHintTimer = null; }
             if (swipeHideTimer) { clearTimeout(swipeHideTimer); swipeHideTimer = null; }
             if (swipeCycleTimer) { clearTimeout(swipeCycleTimer); swipeCycleTimer = null; }
             
-            // Hide the hint immediately
             const swipeHint = document.getElementById('swipeHint');
             swipeHint.classList.remove('visible');
             swipeHint.classList.add('hidden');
@@ -1657,12 +1887,10 @@
             swipeHint.classList.remove('hidden');
             swipeHint.classList.add('visible');
             
-            // Hide after 5 seconds
             swipeHideTimer = setTimeout(() => {
                 swipeHint.classList.remove('visible');
                 swipeHint.classList.add('hidden');
                 
-                // Cycle again after 5 seconds
                 swipeCycleTimer = setTimeout(() => {
                     showSwipeHint();
                 }, 5000);
@@ -1670,16 +1898,13 @@
         }
         
         function startSwipeHintTimer() {
-            // Reset all timers first
             resetSwipeHintTimers();
             
-            // Start new timer - show hint after 5 seconds
             swipeHintTimer = setTimeout(() => {
                 showSwipeHint();
             }, 5000);
         }
         
-        // ===== ZOOM & PAN FUNCTIONALITY =====
         let zoomScale = 1;
         let panX = 0;
         let panY = 0;
@@ -1696,18 +1921,15 @@
             const img = document.getElementById('fullImg');
             img.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomScale})`;
             
-            // Update zoom indicator
             const indicator = document.getElementById('zoomIndicator');
             indicator.textContent = Math.round(zoomScale * 100) + '%';
             indicator.classList.add('visible');
             
-            // Hide indicator after 1.5 seconds
             if (zoomIndicatorTimeout) clearTimeout(zoomIndicatorTimeout);
             zoomIndicatorTimeout = setTimeout(() => {
                 indicator.classList.remove('visible');
             }, 1500);
             
-            // Update cursor based on zoom level
             if (zoomScale > 1.1) {
                 img.classList.add('zoomed');
             } else {
@@ -1722,16 +1944,6 @@
             updateImageTransform();
         }
         
-        function showZoomIndicator() {
-            const indicator = document.getElementById('zoomIndicator');
-            indicator.classList.add('visible');
-            if (zoomIndicatorTimeout) clearTimeout(zoomIndicatorTimeout);
-            zoomIndicatorTimeout = setTimeout(() => {
-                indicator.classList.remove('visible');
-            }, 1500);
-        }
-        
-        // Mouse Wheel Zoom
         function handleWheelZoom(e) {
             if (document.getElementById('fullscreenOverlay').style.display !== 'flex') return;
             
@@ -1739,7 +1951,6 @@
             const delta = e.deltaY > 0 ? -0.15 : 0.15;
             const newScale = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoomScale + delta));
             
-            // Zoom towards mouse position
             if (newScale !== zoomScale) {
                 const rect = e.target.getBoundingClientRect();
                 const mouseX = e.clientX - rect.left - rect.width / 2;
@@ -1754,7 +1965,6 @@
             }
         }
         
-        // Mouse Drag for Panning
         function handleMouseDown(e) {
             if (zoomScale <= 1.1) return;
             if (e.target.closest('.close-btn, .nav-btn, .three-dot-btn, .photo-details-menu')) return;
@@ -1779,7 +1989,6 @@
             if (img) img.style.cursor = zoomScale > 1.1 ? 'grab' : 'default';
         }
         
-        // Touch Events for Pinch Zoom & Pan
         function handleTouchStart(e) {
             if (e.touches.length === 1 && zoomScale > 1.1) {
                 isDragging = true;
@@ -1793,13 +2002,11 @@
         
         function handleTouchMove(e) {
             if (e.touches.length === 1 && isDragging) {
-                // Pan
                 e.preventDefault();
                 panX = e.touches[0].clientX - startX;
                 panY = e.touches[0].clientY - startY;
                 updateImageTransform();
             } else if (e.touches.length === 2) {
-                // Pinch zoom
                 e.preventDefault();
                 const distance = getTouchDistance(e.touches);
                 const scale = distance / lastTouchDistance;
@@ -1821,15 +2028,12 @@
             return Math.sqrt(dx * dx + dy * dy);
         }
         
-        // Double Click/Tap to Zoom
         function handleDoubleClick(e) {
             e.preventDefault();
             if (zoomScale > 1.5) {
-                // Reset to original
                 resetZoom();
                 SOUNDS.navigate();
             } else {
-                // Zoom to 2.5x
                 zoomScale = 2.5;
                 panX = 0;
                 panY = 0;
@@ -1838,23 +2042,19 @@
             }
         }
         
-        // Attach event listeners
         const overlay = document.getElementById('fullscreenOverlay');
         const fullImg = document.getElementById('fullImg');
         
-        // Mouse events
         overlay.addEventListener('wheel', handleWheelZoom, { passive: false });
         fullImg.addEventListener('mousedown', handleMouseDown);
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', handleMouseUp);
         fullImg.addEventListener('dblclick', handleDoubleClick);
         
-        // Touch events
         fullImg.addEventListener('touchstart', handleTouchStart, { passive: true });
         fullImg.addEventListener('touchmove', handleTouchMove, { passive: false });
         fullImg.addEventListener('touchend', handleTouchEnd, { passive: true });
         
-        // Double tap detection for mobile
         let lastTapTime = 0;
         fullImg.addEventListener('touchend', function(e) {
             const currentTime = new Date().getTime();
@@ -1865,20 +2065,16 @@
             lastTapTime = currentTime;
         });
         
-        // Fullscreen Functions
         function openFull(index) { 
             currentGalleryIndex = index; 
             const item = window.galleryItems[index];
             const img = document.getElementById('fullImg');
             const t = translations[currentLang];
             
-            // Reset zoom state
             resetZoom();
             
-            // Set size loading state
             document.getElementById('detailSize').textContent = t.loading;
             
-            // Setup onload handler BEFORE setting src
             img.onload = function() {
                 const width = this.naturalWidth;
                 const height = this.naturalHeight;
@@ -1892,37 +2088,33 @@
                 document.getElementById('detailSize').textContent = t.loadFailed;
             };
             
-            // Set source
             img.src = item.img;
             
-            // Use the new falling animation for caption
             animateCaption(item.cap);
             
             updatePhotoDetails(item);
             document.getElementById('fullscreenOverlay').style.display = 'flex';
             document.body.style.overflow = 'hidden';
+            document.body.classList.add('fullscreen-active');
             
             SOUNDS.imageOpen();
             
-            // Start swipe hint timer
             startSwipeHintTimer();
         }
         
         function closeFull() { 
             document.getElementById('fullscreenOverlay').style.display = 'none'; 
             document.body.style.overflow = ''; 
+            document.body.classList.remove('fullscreen-active');
             closePhotoMenu();
             
-            // Reset zoom state
             resetZoom();
             
             SOUNDS.imageClose();
             
-            // Reset swipe hint timers when closing
             resetSwipeHintTimers();
         }
         
-        // ===== CHANGED: Only close menu on empty space click, NOT the fullscreen view =====
         function handleOverlayClick(event) { 
             if (event.target.id === 'fullscreenOverlay' || event.target.id === 'zoomContainer') { 
                 const menu = document.getElementById('photoDetailsMenu');
@@ -1944,13 +2136,10 @@
             const img = document.getElementById('fullImg');
             const t = translations[currentLang];
             
-            // Reset zoom state when navigating
             resetZoom();
             
-            // Reset size display
             document.getElementById('detailSize').textContent = t.loading;
             
-            // Setup onload handler BEFORE setting src
             img.onload = function() {
                 const width = this.naturalWidth;
                 const height = this.naturalHeight;
@@ -1964,10 +2153,8 @@
                 document.getElementById('detailSize').textContent = t.loadFailed;
             };
             
-            // Set source
             img.src = item.img;
             
-            // Use the new falling animation for caption
             animateCaption(item.cap);
             
             updatePhotoDetails(item);
@@ -1975,25 +2162,20 @@
             
             SOUNDS.navigate();
             
-            // Reset and restart swipe hint timer on navigation
             startSwipeHintTimer();
         }
         
-        // ===== UPDATED DOWNLOAD FUNCTION - Direct Download to File Manager =====
         async function downloadImg() { 
             const imgSrc = document.getElementById('fullImg').src;
             const t = translations[currentLang];
             SOUNDS.download();
             
             try {
-                // Fetch the image as blob
                 const response = await fetch(imgSrc);
                 const blob = await response.blob();
                 
-                // Create blob URL
                 const blobUrl = URL.createObjectURL(blob);
                 
-                // Create download link
                 const link = document.createElement('a'); 
                 link.href = blobUrl; 
                 link.download = 'honey-collection.jpg'; 
@@ -2002,13 +2184,11 @@
                 link.click(); 
                 document.body.removeChild(link);
                 
-                // Clean up blob URL
                 setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
                 
                 setTimeout(() => SOUNDS.success(), 300);
                 
             } catch (error) {
-                // Fallback: try direct download approach
                 const link = document.createElement('a'); 
                 link.href = imgSrc; 
                 link.download = 'honey-collection.jpg'; 
@@ -2019,7 +2199,6 @@
             }
         }
         
-        // Photo Details Menu Functions
         function togglePhotoMenu() {
             const menu = document.getElementById('photoDetailsMenu');
             const backdrop = document.getElementById('menuBackdrop');
@@ -2074,7 +2253,6 @@
             }
         }
         
-        // Swipe/Touch Navigation (only when NOT zoomed)
         let touchStartX = 0; let touchEndX = 0;
         overlay.addEventListener('touchstart', (e) => { 
             if (zoomScale <= 1.1) {
@@ -2089,7 +2267,6 @@
         }, {passive: true});
         function handleSwipe() { const swipeThreshold = 50; if (touchStartX - touchEndX > swipeThreshold) { navigateImage(1); } if (touchEndX - touchStartX > swipeThreshold) { navigateImage(-1); } }
         
-        // Keyboard Navigation
         document.addEventListener('keydown', (e) => { 
             if (document.getElementById('fullscreenOverlay').style.display === 'flex') { 
                 if (e.key === 'ArrowLeft') { e.preventDefault(); navigateImage(-1); } 
@@ -2152,53 +2329,140 @@
         });
 
         function animateGlow() {
-            glowX += (targetX - glowX) * 0.1;
-            glowY += (targetY - glowY) * 0.1;
+            glowX += (targetX - glowX) * 0.08;
+            glowY += (targetY - glowY) * 0.08;
             cursorGlow.style.left = glowX + 'px';
             cursorGlow.style.top = glowY + 'px';
             requestAnimationFrame(animateGlow);
         }
         animateGlow();
 
+        // ===== BACK TO TOP BUTTON =====
+        const backToTopBtn = document.getElementById('backToTopBtn');
+        let lastScrollY = 0;
+        let ticking = false;
+        const SCROLL_THRESHOLD = 300; // Show after scrolling 300px
+
+        function updateBackToTopButton() {
+            const scrollY = window.scrollY || window.pageYOffset;
+            
+            if (scrollY > SCROLL_THRESHOLD) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+            
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateBackToTopButton);
+                ticking = true;
+            }
+        }, { passive: true });
+
+        backToTopBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            SOUNDS.scrollTop();
+            
+            // Smooth scroll to top with custom easing
+            const startPosition = window.scrollY || window.pageYOffset;
+            const duration = 800;
+            const startTime = performance.now();
+            
+            function easeOutCubic(t) {
+                return 1 - Math.pow(1 - t, 3);
+            }
+            
+            function scrollAnimation(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const ease = easeOutCubic(progress);
+                
+                window.scrollTo(0, startPosition * (1 - ease));
+                
+                if (progress < 1) {
+                    requestAnimationFrame(scrollAnimation);
+                }
+            }
+            
+            requestAnimationFrame(scrollAnimation);
+        });
+
+        // ===== SCROLL REVEAL (Intersection Observer) =====
+        function initScrollReveal() {
+            const revealElements = document.querySelectorAll('.scroll-reveal');
+            
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('revealed');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                });
+                
+                revealElements.forEach(el => observer.observe(el));
+            } else {
+                // Fallback for older browsers
+                revealElements.forEach(el => el.classList.add('revealed'));
+            }
+        }
+
+        // ===== PAGE LOADER =====
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('pageLoader');
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 600);
+            }, 400);
+            
+            // Initialize scroll reveal after load
+            setTimeout(initScrollReveal, 500);
+        });
+
         // ===== ATTACH SOUND EFFECTS TO INTERACTIVE ELEMENTS =====
         document.addEventListener('DOMContentLoaded', () => {
-            // Button hover and click sounds
             document.querySelectorAll('.btn-premium').forEach(btn => {
                 btn.addEventListener('mouseenter', () => SOUNDS.hover());
                 btn.addEventListener('click', () => SOUNDS.click());
             });
 
-            // Social box hover sounds
             document.querySelectorAll('.social-box').forEach(box => {
                 box.addEventListener('mouseenter', () => SOUNDS.hover());
             });
 
-            // Collection card hover/click sounds
             document.querySelectorAll('.collection-card').forEach(card => {
                 card.addEventListener('mouseenter', () => SOUNDS.hover());
             });
 
-            // Menu item hover sounds
             document.querySelectorAll('.menu-item').forEach(item => {
                 item.addEventListener('mouseenter', () => SOUNDS.hover());
             });
 
-            // Navigation buttons
             document.querySelectorAll('.nav-btn, .close-btn, .three-dot-btn').forEach(btn => {
                 btn.addEventListener('mouseenter', () => SOUNDS.hover());
             });
 
-            // Thank you bar hover
             const thankYouBar = document.getElementById('thankYouBar');
             if (thankYouBar) {
                 thankYouBar.addEventListener('mouseenter', () => SOUNDS.hover());
             }
 
-            // Logo hover
             const logo = document.querySelector('.custom-logo-placeholder');
             if (logo) {
                 logo.addEventListener('mouseenter', () => SOUNDS.hover());
             }
+
+            // Back to top button hover sound
+            backToTopBtn.addEventListener('mouseenter', () => SOUNDS.hover());
         });
     </script>
 </body>
