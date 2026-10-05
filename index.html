@@ -704,7 +704,7 @@ body.fullscreen-active .back-to-top-btn { opacity: 0 !important; visibility: hid
 <h1 class="text-4xl font-black italic shimmer-text tracking-tighter leading-tight">HONEY<br>ENTERTAINMENT</h1>
 </header>
 <section>
-<p class="text-[13px] opacity-60 font-black uppercase tracking-[0.25em] mb-6" id="followTxt">⤹ Follow us to stay connected ⤸</p>
+<p class="text-[13px] opacity-60 font-black uppercase tracking-[0.25em] mb-6" id="followTxt">❁Follow us to stay connected❁</p>
 <div class="social-container">
 <a href="https://www.facebook.com/share/1APsixLhgv/" target="_blank" class="social-box">
 <svg width="32" height="32" fill="#1877F2" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
@@ -759,10 +759,12 @@ body.fullscreen-active .back-to-top-btn { opacity: 0 !important; visibility: hid
 <h2 class="animated-title" id="collTxt"><span>▶</span> Some of our collections :-</h2>
 <div class="filter-bar" id="filterBar">
 <button class="filter-btn active" id="filterAll" data-filter="all" onclick="applyFilter('all', this)">All</button>
+<button class="filter-btn" id="filterHoneySticker" data-filter="honey-sticker" onclick="applyFilter('honey-sticker', this)">Honey Sticker🥀</button>
 <button class="filter-btn" id="filter2026" data-filter="2026" onclick="applyFilter('2026', this)">2026</button>
 <button class="filter-btn" id="filter2025" data-filter="2025" onclick="applyFilter('2025', this)">2025</button>
 <button class="filter-btn" id="filterEmoji" data-filter="emoji" onclick="applyFilter('emoji', this)">😃</button>
 <button class="filter-btn" id="filterFifa" data-filter="fifa" onclick="applyFilter('fifa', this)">FIFA 2026</button>
+
 </div>
 <div class="collection-grid" id="gallery">
 <script>
@@ -781,7 +783,19 @@ return hasFlag && hasTrophy;
 }
 const gallery = document.getElementById('gallery');
 window.galleryItems = [
-{ img: "https://i.pinimg.com/736x/2c/2a/50/2c2a500820ddfd25a918ec8d64d2a043.jpg", cap: "80's Honey 😁", date: "2026-09-10", time: "12:33 PM" },
+{ img: "https://i.pinimg.com/736x/ca/ca/db/cacadb3fbf869812196cace0ad604b36.jpg", cap: "🍺 honey sticker", date: "2026-10-05", time: "6:33 PM" },
+{ img: "https://i.pinimg.com/736x/78/92/48/789248b83b811a405cf763d3cf93b6a2.jpg", cap: "🥰 honey sticker", date: "2026-10-05", time: "6:33 PM" },
+{ img: "https://i.pinimg.com/736x/2f/79/6d/2f796d746b1c77cd0b97af0fa3937eb7.jpg", cap: "🥳 honey sticker", date: "2026-10-05", time: "6:33 PM" },
+{ img: "https://i.pinimg.com/736x/8c/b6/01/8cb60120cd0d6e2588d6da84fee8320a.jpg", cap: "🥳 honey sticker", date: "2026-10-05", time: "6:33 PM" },
+{ img: "https://i.pinimg.com/736x/40/74/2b/40742b0d31b82130d61e57aa033df58c.jpg", cap: "😭 honey sticker", date: "2026-10-05", time: "6:33 PM" },
+{ img: "https://i.pinimg.com/736x/27/88/15/278815ceceb20a39775b6b965eb3c4a2.jpg", cap: "😭 honey sticker", date: "2026-10-05", time: "6:33 PM" },
+{ img: "https://i.pinimg.com/736x/62/14/67/621467e71cfc50a5bb0cfc6b5f3fbdaa.jpg", cap: "🤔 honey sticker", date: "2026-10-05", time: "6:33 PM" },
+{ img: "https://i.pinimg.com/736x/f9/73/62/f97362fecf1d8f658026012defca03e2.jpg", cap: "😱 honey sticker", date: "2026-10-05", time: "6:33 PM" },
+{ img: "https://i.pinimg.com/736x/74/9f/c3/749fc33d1ed7d18a2e550bb069ebbb78.jpg", cap: "🫶🏻 honey sticker", date: "2026-10-05", time: "6:33 PM" },
+{ img: "https://i.pinimg.com/736x/da/d8/26/dad826bb6d59f16e8a01102bf1616ec6.jpg", cap: "💖 honey sticker", date: "2026-10-05", time: "6:33 PM" },
+{ img: "https://i.pinimg.com/736x/10/1a/41/101a41856db724c3cf8bba27dd15a863.jpg", cap: "😒 honey sticker", date: "2026-10-05", time: "6:33 PM" },
+{ img: "https://i.pinimg.com/736x/01/65/59/0165597dcfbe5d1aee41983404b578c7.jpg", cap: "😑 honey sticker", date: "2026-10-05", time: "6:33 PM" },
+{ img: "https://i.pinimg.com/736x/2c/2a/50/2c2a500820ddfd25a918ec8d64d2a043.jpg", cap: "80's Honey 😁", date: "2026-09-10", time: "10:33 PM" },
 { img: "https://i.pinimg.com/736x/f3/34/84/f33484a5eec264ad4bfc156de6be8d1b.jpg", cap: "🥰😁", date: "2026-09-07", time: "8:28 PM" },
 { img: "https://i.pinimg.com/736x/76/21/c0/7621c039d60791b395a4376d4b715f8e.jpg", cap: "আজকে mood: No Rules 😈", date: "2026-09-02", time: "7:01 PM" },
 { img: "https://i.pinimg.com/736x/ae/8b/52/ae8b5292dedaa5786a78d497d37f48a2.jpg", cap: "রূপনগরের রাজকন্যা 👑🥰", date: "2026-09-02", time: "6:58 PM" },
@@ -789,18 +803,18 @@ window.galleryItems = [
 { img: "https://i.pinimg.com/736x/55/c4/fe/55c4fe71c315967186d50bf3f2abd31b.jpg", cap: "Skating 🛹", date: "2026-08-28", time: "5:45 PM" },
 { img: "https://i.pinimg.com/736x/73/78/fe/7378fe1fad39cd932ee3e4328d5835c9.jpg", cap: "শিল্পের ছোঁয়া 🎨", date: "2026-07-30", time: "8:55 PM" },
 { img: "https://i.pinimg.com/736x/d4/27/e2/d427e266d2f08ece8c51cc4417d31df9.jpg", cap: "Final 🇪🇸VS🇦🇷 🏆", date: "2026-07-19", time: "7:15 PM" },
-{ img: "https://i.pinimg.com/736x/27/50/2d/27502dcfb047f4752ddfe0f08c3a9a8e.jpg", cap: "Semi-finals 🏴󠁧󠁢󠁥󠁮󠁧󠁿VS🇦🇷 🏆", date: "2026-07-15", time: "6:56 PM" },
-{ img: "https://i.pinimg.com/736x/5d/e9/58/5de958cebe6b603a0f4353fa516a8940.jpg", cap: "Semi-finals 🇫🇷VS🇪🇸 🏆", date: "2026-07-14", time: "7:01 PM" },
-{ img: "https://i.pinimg.com/736x/91/29/43/91294305c138501bcfb743e8b027c928.jpg", cap: "Argentina 🇦🇷 🏆", date: "2026-06-21", time: "7:52 PM" },
-{ img: "https://i.pinimg.com/736x/60/41/90/6041906775e729b9b31bf18b2447c0d6.jpg", cap: "Brazil 🇧🇷 🏆", date: "2026-06-21", time: "7:52 PM" },
-{ img: "https://i.pinimg.com/736x/e1/0a/cc/e10acc1beb9314257d7c622f2d055753.jpg", cap: "Portugal 🇵🇹 🏆", date: "2026-06-21", time: "7:52 PM" },
-{ img: "https://i.pinimg.com/736x/9d/1a/94/9d1a9448e5e211ce68499c7a9420dd9d.jpg", cap: "Germany 🇩🇪 🏆", date: "2026-06-21", time: "7:52 PM" },
-{ img: "https://i.pinimg.com/736x/0f/24/67/0f246753506901340692f082296890a9.jpg", cap: "France 🇫🇷 🏆", date: "2026-06-21", time: "7:51 PM" },
-{ img: "https://i.pinimg.com/736x/7a/fc/03/7afc03b360620c26f2ed412a5fcecddd.jpg", cap: "Spain 🇪🇸 🏆", date: "2026-06-21", time: "7:51 PM" },
-{ img: "https://i.pinimg.com/736x/0e/9d/97/0e9d97749c6f4c729726b4a5e7d5c633.jpg", cap: "England 🇬🇧 🏆", date: "2026-06-21", time: "7:51 PM" },
-{ img: "https://i.pinimg.com/736x/7f/f8/97/7ff897e22a474cd8be09b4211c598bd6.jpg", cap: "Morocco 🇲🇦 🏆", date: "2026-06-21", time: "7:50 PM" },
-{ img: "https://i.pinimg.com/736x/0c/d3/19/0cd31972548ecbf5898e6ae1123c0a8d.jpg", cap: "Saudi Arabia 🇸🇦 🏆", date: "2026-06-21", time: "7:50 PM" },
-{ img: "https://i.pinimg.com/736x/ca/3e/16/ca3e1618de8cd10c12b1a22f0a5f51c0.jpg", cap: "Netherlands 🇳🇱 🏆", date: "2026-06-21", time: "7:50 PM" },
+{ img: "https://i.pinimg.com/736x/27/50/2d/27502dcfb047f4752ddfe0f08c3a9a8e.jpg", cap: "Semi-finals 🏴VS🇦🇷🏆", date: "2026-07-15", time: "6:56 PM" },
+{ img: "https://i.pinimg.com/736x/5d/e9/58/5de958cebe6b603a0f4353fa516a8940.jpg", cap: "Semi-finals 🇫🇷VS🇪🇸🏆", date: "2026-07-14", time: "7:01 PM" },
+{ img: "https://i.pinimg.com/736x/91/29/43/91294305c138501bcfb743e8b027c928.jpg", cap: "Argentina 🇦🇷🏆", date: "2026-06-21", time: "7:52 PM" },
+{ img: "https://i.pinimg.com/736x/60/41/90/6041906775e729b9b31bf18b2447c0d6.jpg", cap: "Brazil 🇧🇷🏆", date: "2026-06-21", time: "7:52 PM" },
+{ img: "https://i.pinimg.com/736x/e1/0a/cc/e10acc1beb9314257d7c622f2d055753.jpg", cap: "Portugal 🇵🇹🏆", date: "2026-06-21", time: "7:52 PM" },
+{ img: "https://i.pinimg.com/736x/9d/1a/94/9d1a9448e5e211ce68499c7a9420dd9d.jpg", cap: "Germany 🇩🇪🏆", date: "2026-06-21", time: "7:52 PM" },
+{ img: "https://i.pinimg.com/736x/0f/24/67/0f246753506901340692f082296890a9.jpg", cap: "France 🇫🇷 ", date: "2026-06-21", time: "7:51 PM" },
+{ img: "https://i.pinimg.com/736x/7a/fc/03/7afc03b360620c26f2ed412a5fcecddd.jpg", cap: "Spain 🇪🇸🏆", date: "2026-06-21", time: "7:51 PM" },
+{ img: "https://i.pinimg.com/736x/0e/9d/97/0e9d97749c6f4c729726b4a5e7d5c633.jpg", cap: "England 🇬🇧🏆", date: "2026-06-21", time: "7:51 PM" },
+{ img: "https://i.pinimg.com/736x/7f/f8/97/7ff897e22a474cd8be09b4211c598bd6.jpg", cap: "Morocco 🇲🇦🏆", date: "2026-06-21", time: "7:50 PM" },
+{ img: "https://i.pinimg.com/736x/0c/d3/19/0cd31972548ecbf5898e6ae1123c0a8d.jpg", cap: "Saudi Arabia 🇸🇦 ", date: "2026-06-21", time: "7:50 PM" },
+{ img: "https://i.pinimg.com/736x/ca/3e/16/ca3e1618de8cd10c12b1a22f0a5f51c0.jpg", cap: "Netherlands 🇳🇱🏆", date: "2026-06-21", time: "7:50 PM" },
 { img: "https://i.pinimg.com/736x/5e/9a/99/5e9a9948dbcb263d2caac6db417e16eb.jpg", cap: "কাগজের পরিবার 😄", date: "2026-06-02", time: "7:04 PM" },
 { img: "https://i.pinimg.com/736x/fe/ce/b1/feceb168f5aaa7dd3b2955891a7dbe7d.jpg", cap: "ধোয়াটে হাসি 🤠", date: "2026-05-27", time: "8:16 PM" },
 { img: "https://i.pinimg.com/736x/da/21/a1/da21a1614f611881af21905b320dcd05.jpg", cap: "Facebook ⓕ", date: "2026-05-10", time: "4:30 PM" },
@@ -901,11 +915,12 @@ window.galleryItems.forEach((item, index) => {
 const year = item.date ? item.date.substring(0, 4) : '';
 const emojiOnly = isEmojiOnly(item.cap);
 const fifa = isFifa2026(item.cap);
+const hasHoneySticker = item.cap.toLowerCase().includes('honey sticker');
 const dateDisplay = item.date ? `<span class="post-date">${formatDate(item.date)}</span>` : '';
 const timeDisplay = item.time ? `<span class="post-time">${item.time}</span>` : '';
 const datetimeHtml = (dateDisplay || timeDisplay) ? `<div class="post-datetime">${dateDisplay}${timeDisplay}</div>` : '';
 const html = `
-<div class="flex flex-col gap-2 scroll-reveal gallery-item-wrapper" data-year="${year}" data-emoji-only="${emojiOnly}" data-fifa="${fifa}" style="animation-delay: ${1.2 + (index * 0.05)}s;">
+<div class="flex flex-col gap-2 scroll-reveal gallery-item-wrapper" data-year="${year}" data-emoji-only="${emojiOnly}" data-fifa="${fifa}" data-honey-sticker="${hasHoneySticker}"  style="animation-delay: ${1.2 + (index * 0.05)}s;">
 <p class="post-caption" onclick="toggleCaption(this, event)">${item.cap}</p>
 ${datetimeHtml}
 <div class="collection-card" onclick="openFull(${index}); event.stopPropagation()">
@@ -1030,6 +1045,7 @@ soundOn: '🔊 Sound Effects',
 soundOff: '🔇 Sound Effects',
 days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
 filterAll: 'All',
+filterHoneySticker: 'Honey Sticker 🥀',
 filter2026: '2026',
 filter2025: '2025',
 filterEmoji: '😃',
@@ -1060,6 +1076,7 @@ soundOn: '🔊 সাউন্ড ইফেক্ট',
 soundOff: '🔇 সাউন্ড ইফেক্ট',
 days: ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'],
 filterAll: 'সব',
+filterHoneySticker: 'Honey স্টিকার 🥀',
 filter2026: '2026',
 filter2025: '2025',
 filterEmoji: '😃',
@@ -1279,6 +1296,7 @@ document.getElementById('detailSizeLabel').innerText = t.sizeLabel;
 document.getElementById('detailDownloadLabel').innerText = t.downloadLabel;
 document.getElementById('downloadTapText').innerText = t.downloadTap;
 document.getElementById('filterAll').innerText = t.filterAll;
+document.getElementById('filterHoneySticker').innerText = t.filterHoneySticker;
 document.getElementById('filter2026').innerText = t.filter2026;
 document.getElementById('filter2025').innerText = t.filter2025;
 document.getElementById('filterEmoji').innerText = t.filterEmoji;
@@ -1942,6 +1960,7 @@ let isFiltering = false;
 
 function checkFilter(item, filterType) {
 if (filterType === 'all') return true;
+if (filterType === 'honey-sticker') return item.dataset.honeySticker === 'true';
 if (filterType === '2026') return item.dataset.year === '2026';
 if (filterType === '2025') return item.dataset.year === '2025';
 if (filterType === 'emoji') return item.dataset.emojiOnly === 'true';
