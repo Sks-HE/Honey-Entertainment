@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://www.youtube.com/iframe_api"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Honey Entertainment | sajeeb saha </title>
@@ -648,6 +649,44 @@ body.fullscreen-active .back-to-top-btn { opacity: 0 !important; visibility: hid
 .arrow-up svg, .arrow-down svg { width: 22px; height: 22px; }
 .plus-box svg, .minus-box svg { width: 28px; height: 28px; }
 }
+/* ===== YOUTUBE MINI PLAYER & PLAY/PAUSE STYLES ===== */
+.yt-mini-player-container {
+    width: 140px;
+    height: 80px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1.5px solid var(--accent);
+    margin: 0 auto 10px auto;
+    background: #000;
+    pointer-events: none; /* এটা ক্লিক অকেজো করে দেবে, ঠিক যেমনটা চেয়েছ */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.yt-mini-player-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+.play-pause-item {
+    cursor: pointer;
+    border-left-color: #f472b6 !important;
+    transition: all 0.3s ease;
+}
+.play-pause-item:hover {
+    background: rgba(244, 114, 182, 0.1);
+    border-left-width: 5px !important;
+}
+.play-pause-value {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accent);
+    font-weight: 700;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+}
 </style>
 </head>
 <body class="honey-mode" onclick="resetAllCaptions(event)">
@@ -783,124 +822,124 @@ return hasFlag && hasTrophy;
 }
 const gallery = document.getElementById('gallery');
 window.galleryItems = [
-{ img: "https://i.pinimg.com/736x/ca/ca/db/cacadb3fbf869812196cace0ad604b36.jpg", cap: "🍺 honey sticker", date: "2026-10-05", time: "6:33 PM" },
-{ img: "https://i.pinimg.com/736x/78/92/48/789248b83b811a405cf763d3cf93b6a2.jpg", cap: "🥰 honey sticker", date: "2026-10-05", time: "6:33 PM" },
-{ img: "https://i.pinimg.com/736x/2f/79/6d/2f796d746b1c77cd0b97af0fa3937eb7.jpg", cap: "🥳 honey sticker", date: "2026-10-05", time: "6:33 PM" },
-{ img: "https://i.pinimg.com/736x/8c/b6/01/8cb60120cd0d6e2588d6da84fee8320a.jpg", cap: "🥳 honey sticker", date: "2026-10-05", time: "6:33 PM" },
-{ img: "https://i.pinimg.com/736x/40/74/2b/40742b0d31b82130d61e57aa033df58c.jpg", cap: "😭 honey sticker", date: "2026-10-05", time: "6:33 PM" },
-{ img: "https://i.pinimg.com/736x/27/88/15/278815ceceb20a39775b6b965eb3c4a2.jpg", cap: "😭 honey sticker", date: "2026-10-05", time: "6:33 PM" },
-{ img: "https://i.pinimg.com/736x/62/14/67/621467e71cfc50a5bb0cfc6b5f3fbdaa.jpg", cap: "🤔 honey sticker", date: "2026-10-05", time: "6:33 PM" },
-{ img: "https://i.pinimg.com/736x/f9/73/62/f97362fecf1d8f658026012defca03e2.jpg", cap: "😱 honey sticker", date: "2026-10-05", time: "6:33 PM" },
-{ img: "https://i.pinimg.com/736x/74/9f/c3/749fc33d1ed7d18a2e550bb069ebbb78.jpg", cap: "🫶🏻 honey sticker", date: "2026-10-05", time: "6:33 PM" },
-{ img: "https://i.pinimg.com/736x/da/d8/26/dad826bb6d59f16e8a01102bf1616ec6.jpg", cap: "💖 honey sticker", date: "2026-10-05", time: "6:33 PM" },
-{ img: "https://i.pinimg.com/736x/10/1a/41/101a41856db724c3cf8bba27dd15a863.jpg", cap: "😒 honey sticker", date: "2026-10-05", time: "6:33 PM" },
-{ img: "https://i.pinimg.com/736x/01/65/59/0165597dcfbe5d1aee41983404b578c7.jpg", cap: "😑 honey sticker", date: "2026-10-05", time: "6:33 PM" },
-{ img: "https://i.pinimg.com/736x/2c/2a/50/2c2a500820ddfd25a918ec8d64d2a043.jpg", cap: "80's Honey 😁", date: "2026-09-10", time: "10:33 PM" },
-{ img: "https://i.pinimg.com/736x/f3/34/84/f33484a5eec264ad4bfc156de6be8d1b.jpg", cap: "🥰😁", date: "2026-09-07", time: "8:28 PM" },
-{ img: "https://i.pinimg.com/736x/76/21/c0/7621c039d60791b395a4376d4b715f8e.jpg", cap: "আজকে mood: No Rules 😈", date: "2026-09-02", time: "7:01 PM" },
-{ img: "https://i.pinimg.com/736x/ae/8b/52/ae8b5292dedaa5786a78d497d37f48a2.jpg", cap: "রূপনগরের রাজকন্যা 👑🥰", date: "2026-09-02", time: "6:58 PM" },
-{ img: "https://i.pinimg.com/736x/86/69/ae/8669ae9d492c45f32b1253790564c1b6.jpg", cap: "বিড়ি 🚬", date: "2026-08-28", time: "5:47 PM" },
-{ img: "https://i.pinimg.com/736x/55/c4/fe/55c4fe71c315967186d50bf3f2abd31b.jpg", cap: "Skating 🛹", date: "2026-08-28", time: "5:45 PM" },
-{ img: "https://i.pinimg.com/736x/73/78/fe/7378fe1fad39cd932ee3e4328d5835c9.jpg", cap: "শিল্পের ছোঁয়া 🎨", date: "2026-07-30", time: "8:55 PM" },
-{ img: "https://i.pinimg.com/736x/d4/27/e2/d427e266d2f08ece8c51cc4417d31df9.jpg", cap: "Final 🇪🇸VS🇦🇷 🏆", date: "2026-07-19", time: "7:15 PM" },
-{ img: "https://i.pinimg.com/736x/27/50/2d/27502dcfb047f4752ddfe0f08c3a9a8e.jpg", cap: "Semi-finals 🏴VS🇦🇷🏆", date: "2026-07-15", time: "6:56 PM" },
-{ img: "https://i.pinimg.com/736x/5d/e9/58/5de958cebe6b603a0f4353fa516a8940.jpg", cap: "Semi-finals 🇫🇷VS🇪🇸🏆", date: "2026-07-14", time: "7:01 PM" },
-{ img: "https://i.pinimg.com/736x/91/29/43/91294305c138501bcfb743e8b027c928.jpg", cap: "Argentina 🇦🇷🏆", date: "2026-06-21", time: "7:52 PM" },
-{ img: "https://i.pinimg.com/736x/60/41/90/6041906775e729b9b31bf18b2447c0d6.jpg", cap: "Brazil 🇧🇷🏆", date: "2026-06-21", time: "7:52 PM" },
-{ img: "https://i.pinimg.com/736x/e1/0a/cc/e10acc1beb9314257d7c622f2d055753.jpg", cap: "Portugal 🇵🇹🏆", date: "2026-06-21", time: "7:52 PM" },
-{ img: "https://i.pinimg.com/736x/9d/1a/94/9d1a9448e5e211ce68499c7a9420dd9d.jpg", cap: "Germany 🇩🇪🏆", date: "2026-06-21", time: "7:52 PM" },
-{ img: "https://i.pinimg.com/736x/0f/24/67/0f246753506901340692f082296890a9.jpg", cap: "France 🇫🇷 ", date: "2026-06-21", time: "7:51 PM" },
-{ img: "https://i.pinimg.com/736x/7a/fc/03/7afc03b360620c26f2ed412a5fcecddd.jpg", cap: "Spain 🇪🇸🏆", date: "2026-06-21", time: "7:51 PM" },
-{ img: "https://i.pinimg.com/736x/0e/9d/97/0e9d97749c6f4c729726b4a5e7d5c633.jpg", cap: "England 🇬🇧🏆", date: "2026-06-21", time: "7:51 PM" },
-{ img: "https://i.pinimg.com/736x/7f/f8/97/7ff897e22a474cd8be09b4211c598bd6.jpg", cap: "Morocco 🇲🇦🏆", date: "2026-06-21", time: "7:50 PM" },
-{ img: "https://i.pinimg.com/736x/0c/d3/19/0cd31972548ecbf5898e6ae1123c0a8d.jpg", cap: "Saudi Arabia 🇸🇦 ", date: "2026-06-21", time: "7:50 PM" },
-{ img: "https://i.pinimg.com/736x/ca/3e/16/ca3e1618de8cd10c12b1a22f0a5f51c0.jpg", cap: "Netherlands 🇳🇱🏆", date: "2026-06-21", time: "7:50 PM" },
-{ img: "https://i.pinimg.com/736x/5e/9a/99/5e9a9948dbcb263d2caac6db417e16eb.jpg", cap: "কাগজের পরিবার 😄", date: "2026-06-02", time: "7:04 PM" },
-{ img: "https://i.pinimg.com/736x/fe/ce/b1/feceb168f5aaa7dd3b2955891a7dbe7d.jpg", cap: "ধোয়াটে হাসি 🤠", date: "2026-05-27", time: "8:16 PM" },
-{ img: "https://i.pinimg.com/736x/da/21/a1/da21a1614f611881af21905b320dcd05.jpg", cap: "Facebook ⓕ", date: "2026-05-10", time: "4:30 PM" },
-{ img: "https://i.pinimg.com/736x/ef/a2/38/efa23820bfb26f1ea58dc215e54afba4.jpg", cap: "Capture 😎", date: "2026-05-10", time: "4:26 PM" },
-{ img: "https://i.pinimg.com/736x/53/32/5b/53325b96aa3e5f60873df6badcfce238.jpg", cap: "বাংলাদেশ ❤️🇧🇩", date: "2026-05-04", time: "7:50 PM" },
-{ img: "https://i.pinimg.com/736x/5b/e4/c4/5be4c4d40cff53155050d4b4b12ea1f9.jpg", cap: "এই জিল্লু মাল দে 🍺", date: "2026-05-04", time: "7:46 PM" },
-{ img: "https://i.pinimg.com/736x/36/fe/db/36fedb4c312d01d757112c7b7709a57a.jpg", cap: "Hello Bro 😎", date: "2026-04-21", time: "6:56 PM" },
-{ img: "https://i.pinimg.com/736x/a9/24/00/a9240002141a026062c774dc52721844.jpg", cap: "ENTERTAINMENT WITH HONEY 🥰", date: "2026-04-21", time: "6:51 PM" },
-{ img: "https://i.pinimg.com/736x/a0/67/5e/a0675eddf5e2e90f746db7ac32c38479.jpg", cap: "গাড়ি ছুটছে 🚗", date: "2026-04-16", time: "5:56 PM" },
-{ img: "https://i.pinimg.com/736x/aa/df/d4/aadfd4e83db176ef864c0c6d8a6e74a0.jpg", cap: "কল্পনা যখন canvas এ😀", date: "2026-04-16", time: "5:45 PM" },
-{ img: "https://i.pinimg.com/736x/a8/ef/dc/a8efdc1d439a41f23b4a20fdd8629350.jpg", cap: "রঙিন Comic, সাদাকালো স্মৃতি আমার 🖍️🖼️", date: "2026-04-02", time: "11:00 AM" },
-{ img: "https://i.pinimg.com/736x/ca/de/f6/cadef65bdb2be8e12dcafbc619b9a6da.jpg", cap: "খবরে ভরা দেয়ালে আমিই সেরা খবর! 📰😎", date: "2026-03-31", time: "8:20 PM" },
-{ img: "https://i.pinimg.com/736x/5b/d8/9b/5bd89bebefecdf2c474c843ff0833e02.jpg", cap: "চারিদিকে শুধুই ভালোবাসার হাসি 💖", date: "2026-03-29", time: "9:15 AM" },
-{ img: "https://i.pinimg.com/736x/fd/0a/1d/fd0a1d295158b68864e117a6f51e2230.jpg", cap: "Hero সেজেছি, এখন Villain কই? 🧭", date: "2026-03-21", time: "6:07 PM" },
-{ img: "https://i.pinimg.com/736x/cf/33/36/cf333697f81a1216664f8d2af4d0d65e.jpg", cap: "লাল রঙে আমি হলাম রাজা তাতে বাকি সব ভাজা ভাজা🍎", date: "2026-03-19", time: "6:31 PM" },
-{ img: "https://i.pinimg.com/736x/4b/1b/4e/4b1b4ed698310ab9c49b255386dc083e.jpg", cap: "Look টা Professional, কিন্তু হাসিটা Original😁", date: "2026-03-11", time: "7:05 PM" },
-{ img: "https://i.pinimg.com/736x/45/9e/ec/459eec3426f88ddf12f5cba8b31b4983.jpg", cap: "I am my only competition 🏆", date: "2026-03-11", time: "7:02 PM" },
-{ img: "https://i.pinimg.com/736x/25/84/3c/25843c0d772ff032c30214b6ba6f1a87.jpg", cap: "Holi Special 💥", date: "2026-03-03", time: "8:04 AM" },
-{ img: "https://i.pinimg.com/736x/e9/65/be/e965be3e635edbaee3c63ea500e828ae.jpg", cap: "আমাকে রঙ মাখানোর সাহস কার? সামনে আসো দেখি! 😡🫟", date: "2026-03-03", time: "8:03 AM" },
-{ img: "https://i.pinimg.com/736x/02/5f/a7/025fa7ed5b93d7bdf8d0bc41cdef596e.jpg", cap: "হোলির রং এর মত সকলের মন পবিত্র হোক 😊", date: "2026-03-03", time: "8:01 AM" },
-{ img: "https://i.pinimg.com/736x/b8/d0/36/b8d0361430c1b919f1eb52ee0357faa4.jpg", cap: "Instagram 🤓", date: "2026-03-01", time: "4:06 AM" },
-{ img: "https://i.pinimg.com/736x/c4/a1/bf/c4a1bf36a029b696151afb54093f0821.jpg", cap: "Honey on Fire 🔥", date: "2026-03-01", time: "4:00 PM" },
-{ img: "https://i.pinimg.com/736x/7b/5a/52/7b5a52c7e86327109d3257135a97aa4d.jpg", cap: "Success looks good on me💸", date: "2026-02-28", time: "7:34 PM" },
-{ img: "https://i.pinimg.com/736x/3a/a9/42/3aa942dee58ff5950614dd5092297bee.jpg", cap: "নীরবতাই হলো সেরা গর্জন 🤫", date: "2026-02-28", time: "7:25 PM" },
-{ img: "https://i.pinimg.com/736x/35/43/89/3543891f28366d876f4bfb81e2fcf696.jpg", cap: "নিজের রাজত্বের রাজা নিজেই! 👑", date: "2026-02-27", time: "6:43 PM" },
-{ img: "https://i.pinimg.com/736x/2d/3e/2d/2d3e2d9c1cf3626cb54a0b939cdae97d.jpg", cap: "🫰🏻 Follow", date: "2026-02-26", time: "7:40 PM" },
-{ img: "https://i.pinimg.com/736x/b1/66/70/b166709bd875ac5d8eb26eacaddf8b91.jpg", cap: "কাগজ কিন্তু চুপচাপ নয়, বেশ মজাদার!😂", date: "2026-02-25", time: "6:07 PM" },
-{ img: "https://i.pinimg.com/736x/2b/2f/c5/2b2fc56a242d5fdad04858ae7fd0b10f.jpg", cap: "কাগজের Honey, স্টাইলে এক নম্বর!😄", date: "2026-02-25", time: "6:01 PM" },
-{ img: "https://i.pinimg.com/736x/95/cd/c9/95cdc923d31456655aa8a612e1a4c42e.jpg", cap: "Honey প্রদেশ 😱😱", date: "2026-02-24", time: "7:32 PM" },
-{ img: "https://i.pinimg.com/736x/9d/e4/0e/9de40e3a1e615b8a3ffcbd7e0aba496c.jpg", cap: "🤟🏻YoY", date: "2026-02-24", time: "7:13 PM" },
-{ img: "https://i.pinimg.com/736x/35/8d/be/358dbe0abd72870c2c0eeafb147c5b66.jpg", cap: "চশমাটা Just Look এর জন্য না, Attitude ধরে রাখার জন্য!🙂", date: "2026-02-21", time: "7:25 PM" },
-{ img: "https://i.pinimg.com/736x/07/0c/d9/070cd9ce863ad45d5067af110073aa44.jpg", cap: " Tips একটাই—সবসময় নিজের ওপর বিশ্বাস রাখো 👍", date: "2026-02-21", time: "7:08 PM" },
-{ img: "https://i.pinimg.com/736x/20/32/24/20322447b1aef1bf25945e1765ad6e96.jpg", cap: "কথা কম, কাজ বেশি—এটাই আমার Style🤨", date: "2026-02-19", time: "6:44 PM" },
-{ img: "https://i.pinimg.com/736x/3a/82/86/3a82864922b6bde73c3617f63721352e.jpg", cap: "শহরে নতুন Don, নাম তার Honey! 🧥", date: "2026-02-19", time: "6:30 PM" },
-{ img: "https://i.pinimg.com/736x/86/ca/d2/86cad2ad629bb7839ea91a9940f919a6.jpg", cap: "মায়াবী আয়না 😱—   সত্যিটা এখানেই ধরা পড়ে", date: "2026-02-16", time: "6:44 PM" },
-{ img: "https://i.pinimg.com/736x/62/04/42/62044256f7758ed7b95ac2fc841f926a.jpg", cap: "Smoking is injurious to health, it causes cancer 🚭", date: "2026-02-16", time: "6:15 PM" },
-{ img: "https://i.pinimg.com/736x/51/ed/de/51edde23f7f78a7f6795e6c2a7b2eb00.jpg", cap: "Sorry 𝙺𝚒𝚝𝚝𝚢 🫥", date: "2026-02-01", time: "7:54 PM" },
-{ img: "https://i.pinimg.com/736x/b6/b9/76/b6b976a9f2d5f5648ed15130ac1995f9.jpg", cap: "Just fun 😁", date: "2026-02-01", time: "7:33 PM" },
-{ img: "https://i.pinimg.com/736x/3a/52/8e/3a528e17d8b0160b839f51766dab7115.jpg", cap: " Party তো সবে শুরু! উৎসব চলুক পুরোদমে🕺", date: "2026-01-21", time: "8:38 PM" },
-{ img: "https://i.pinimg.com/736x/21/d5/6a/21d56abc1c3f5373cf63f4ac98048337.jpg", cap: "আজকের রাতটা শুধু Enjoy করার জন্য Just chill! 🥂", date: "2026-01-21", time: "8:31 PM" },
-{ img: "https://i.pinimg.com/736x/f2/cb/64/f2cb643e89667721430262558cc55be0.jpg", cap: "Style যখন 1 no, তখন সবকিছুই সুন্দর😎", date: "2026-01-16", time: "11:41 AM" },
-{ img: "https://i.pinimg.com/736x/5d/a1/8c/5da18c4e774f923c92d927471b710fa8.jpg", cap: "কিটি কিছু মনে করো না plz😶", date: "2026-01-16", time: "11:30 AM" },
-{ img: "https://i.pinimg.com/736x/4a/8c/8c/4a8c8c07c3d576bace406c8ac1cd70f6.jpg", cap: "মন্টুপুরের রাজা Honey 🤴🏻", date: "2026-01-14", time: "9:03 AM" },
-{ img: "https://i.pinimg.com/736x/79/0f/9d/790f9dda89865fafd38656b72629a3ac.jpg", cap: "𝐻𝑜𝑛𝑒𝑦 𝑤𝑖𝑡ℎ 𝑚𝑒 😉", date: "2026-01-14", time: "9:00 AM" },
-{ img: "https://i.pinimg.com/736x/53/55/1c/53551c55e2e9788dbf0448b8a2a9a733.jpg", cap: "mood 😠", date: "2026-01-10", time: "6:32 PM" },
-{ img: "https://i.pinimg.com/736x/1c/d2/97/1cd29752e7286f36b6dc0a1197be0cb8.jpg", cap: "𝗧𝗶𝗿𝗲𝗱😪", date: "2026-01-10", time: "6:15 PM" },
-{ img: "https://i.pinimg.com/736x/62/12/c5/6212c5662950807efe738efe37fe1b43.jpg", cap: "Party time 🍹🎊", date: "2026-01-07", time: "10:55 AM" },
-{ img: "https://i.pinimg.com/736x/9b/87/ef/9b87ef48f59948af91e02689a9075963.jpg", cap: "𝙷𝚘𝚗𝚎𝚢 𝙱𝚞𝚗𝚗𝚢 𝙺𝚊 𝙹𝚑𝚘𝚕𝚖𝚊𝚗𝚊𝚕 ✌🏻", date: "2026-01-07", time: "10:45 AM" },
-{ img: "https://i.pinimg.com/736x/1e/c4/4b/1ec44b813abccb229f4f6f837e7ea0a7.jpg", cap: "হানি যখন পিঠে চড়ে, ভালোবাসা তখন ফুলে ফলে ভরে!🌹", date: "2026-01-05", time: "7:46 AM" },
-{ img: "https://i.pinimg.com/736x/31/2c/f2/312cf2f7ad9280f649bafe77592b8236.jpg", cap: "Honey is running on the treadmill 🏃🏻‍♂️", date: "2026-01-05", time: "7:33 AM" },
-{ img: "https://i.pinimg.com/736x/5a/d2/e7/5ad2e7d630313e21d57cfb0b767e52c5.jpg", cap: "𝐇𝐨𝐧𝐞𝐲 𝐁𝐮𝐧𝐧𝐲 😺", date: "2026-01-01", time: "5:59 PM" },
-{ img: "https://i.pinimg.com/736x/29/bc/36/29bc36c72865567576c7de16f51fcabd.jpg", cap: "Honey Dracula 🧛🏻", date: "2026-01-01", time: "5:45 PM" },
-{ img: "https://i.pinimg.com/736x/5a/d9/20/5ad9203b193e198a268187ddbe4bdf15.jpg", cap: "🧟", date: "2025-12-31", time: "6:47 PM" },
-{ img: "https://i.pinimg.com/736x/78/36/2f/78362f364c254586f60a635d4f01552c.jpg", cap: "🥹🥹", date: "2025-12-31", time: "6:35 PM" },
-{ img: "https://i.pinimg.com/736x/bb/db/2e/bbdb2ef7454d6281d79460916e57988f.jpg", cap: "🙂পুলাপান", date: "2025-12-30", time: "8:11 PM" },
-{ img: "https://i.pinimg.com/736x/d3/c0/19/d3c01989ecaf42aece53c7c4f20e6a47.jpg", cap: "কথা কস কেন 😒", date: "2025-12-30", time: "8:00 PM" },
-{ img: "https://i.pinimg.com/736x/79/e2/f8/79e2f8642cb5e874c6e34176e4d37b9c.jpg", cap: "ᴛʜᴇɴ ʜᴏɴᴇʏ 🤕", date: "2025-12-28", time: "6:45 PM" },
-{ img: "https://i.pinimg.com/736x/f8/ef/ac/f8efac5718c0be6a57e4f538a8b4ec0f.jpg", cap: "😫", date: "2025-12-28", time: "6:30 PM" },
-{ img: "https://i.pinimg.com/736x/be/ab/68/beab68e9091b5f6f47497178c4adef2e.jpg", cap: "HONEY AS RADHE 😁", date: "2025-12-24", time: "7:15 PM" },
-{ img: "https://i.pinimg.com/736x/16/35/84/1635848901e77d9b6552a8bd678630fe.jpg", cap: "Honey এর কৌতুক 🤡", date: "2025-12-24", time: "6:50 PM" },
-{ img: "https://i.pinimg.com/736x/25/bc/98/25bc9843314e191f836bcc93777d91d4.jpg", cap: "হানির শীতের সকাল ❄️", date: "2025-12-21", time: "7:51 AM" },
-{ img: "https://i.pinimg.com/736x/bc/fe/78/bcfe78af093b605410702517251f5fcf.jpg", cap: "ওরে ঠান্ডা 🥶", date: "2025-12-21", time: "7:44 AM" },
-{ img: "https://i.pinimg.com/736x/5f/e2/c6/5fe2c6cb0c048891ba30bf127b3fe1cf.jpg", cap: "🆆🅾🆆 🅱🅴🅰🆄🆃🅸🅵🆄🅻 😍", date: "2025-12-10", time: "8:37 PM" },
-{ img: "https://i.pinimg.com/736x/e1/9c/4b/e19c4b6442c88eca22fb0e4314ba19a1.jpg", cap: "ＨＯＮＥＹ : আমার কি দোষ 😶", date: "2025-12-10", time: "8:30 PM" },
-{ img: "https://i.pinimg.com/736x/27/2e/ad/272ead7687ec5e0762802a1c9ee4aa90.jpg", cap: "ℍ𝕖𝕪 𝕐𝕠𝕦 🫵🏻 𝕤𝕠𝕞𝕖𝕥𝕙𝕚𝕟𝕘 𝕨𝕣𝕠𝕟𝕘 🧐", date: "2025-11-27", time: "4:51 PM" },
-{ img: "https://i.pinimg.com/736x/cf/83/4a/cf834a423b250c69c013aa1b6ea1e2c0.jpg", cap: "😎", date: "2025-11-27", time: "4:45 PM" },
-{ img: "https://i.pinimg.com/736x/28/49/20/2849207682dba7dfe5c2f006d70f349f.jpg", cap: "গাধা আর পাগল 😶", date: "2025-11-23", time: "8:21 PM" },
-{ img: "https://i.pinimg.com/736x/4c/fc/1e/4cfc1e2c1a7a036bfa742ffc067b7ee3.jpg", cap: "তারা কাকে দেখছে 🤔❔", date: "2025-11-23", time: "7:10 PM" },
-{ img: "https://i.pinimg.com/736x/13/0c/a4/130ca4f5c913c48d9889a78537690cb4.jpg", cap: "ছোট ভাই 🤗💟", date: "2025-11-21", time: "6:41 PM" },
-{ img: "https://i.pinimg.com/736x/c5/3a/09/c53a09a52313287802ff333bcf5c52c0.jpg", cap: "😤", date: "2025-11-21", time: "6:30 PM" },
-{ img: "https://i.pinimg.com/736x/3b/be/32/3bbe3266885a996df89c9247cea8d853.jpg", cap: " Honey is running 🏃🏻‍♂️‍➡️", date: "2025-11-15", time: "7:55 PM" },
-{ img: "https://i.pinimg.com/736x/97/14/39/9714391c3817e3a1e4c81609205aeaaa.jpg", cap: "𝘉𝘳𝘦𝘢𝘬𝘧𝘢𝘴𝘵 🍳", date: "2025-11-15", time: "7:45 PM" },
-{ img: "https://i.pinimg.com/736x/d4/89/f1/d489f1c8f748df1bd166bc51c20335a0.jpg", cap: "হ্যালোইন 😱🧟", date: "2025-11-06", time: "7:05 PM" },
-{ img: "https://i.pinimg.com/736x/1c/3c/bb/1c3cbb8bf6f92c50ec5fb2ff3d8f1124.jpg", cap: "Honey তো অবাক 🫨", date: "2025-11-06", time: "7:00 PM" },
-{ img: "https://i.pinimg.com/736x/eb/44/2a/eb442a51536dde53d52854027575b0a3.jpg", cap: "✊🏻🥳", date: "2025-11-01", time: "7:30 PM" },
-{ img: "https://i.pinimg.com/736x/f8/0a/7e/f80a7e743f74381a1446b41701e7fd56.jpg", cap: "🐱ɢᴏᴏᴅ", date: "2025-11-01", time: "7:10 PM" },
-{ img: "https://i.pinimg.com/736x/4a/5f/42/4a5f424d1601442344ca6cf57ddaf9d1.jpg", cap: "🎥", date: "2025-10-29", time: "7:10 PM" },
-{ img: "https://i.pinimg.com/736x/58/af/cc/58afcc88f8bb1b1dc4cb713e829742fd.jpg", cap: "But................❕", date: "2025-10-29", time: "7:00 PM" },
-{ img: "https://i.pinimg.com/736x/0a/58/f9/0a58f9c288f80720a0bcaa0d525ce1f2.jpg", cap: "𝐺𝑎𝑛𝑔 ✊🏻 👾", date: "2025-10-17", time: "7:30 PM" },
-{ img: "https://i.pinimg.com/736x/b8/30/5e/b8305eb15a3aa4fc7fb4cdb22577bc79.jpg", cap: "Honey🤦🏻‍♂️", date: "2025-10-17", time: "7:10 PM" },
-{ img: "https://i.pinimg.com/736x/b5/5b/24/b55b244325e7a55df6ee8a0eaa960c08.jpg", cap: "সুলতানের ছেলে Bad Monkey 🐒", date: "2025-10-12", time: "8:01 PM" },
-{ img: "https://i.pinimg.com/736x/f3/d4/3e/f3d43e17c350b7b8675b67151236e672.jpg", cap: "😾👊🏻", date: "2025-10-12", time: "7:45 PM" },
-{ img: "https://i.pinimg.com/736x/19/6d/8a/196d8a40bd7ca969db8b3bf6f0b5d8b2.jpg", cap: "what is your problem 🫥", date: "2025-10-10", time: "7:14 PM" },
-{ img: "https://i.pinimg.com/736x/e4/67/7b/e4677befb090b8aefd1b5859f5078f07.jpg", cap: " Dancer🕺🏻", date: "2025-10-10", time: "7:00 PM" },
-{ img: "https://i.pinimg.com/736x/7e/3b/2c/7e3b2cdd5868ed9a8cf6fe7ca769be5d.jpg", cap: "𝘉𝘳𝘦𝘢𝘬𝘧𝘢𝘴𝘵 🍳", date: "2025-09-29", time: "7:10 PM" },
-{ img: "https://i.pinimg.com/736x/01/79/23/017923ceab52a900dccd3f98c9216e95.jpg", cap: "𝐻𝑜𝑛𝑒𝑦 𝑤𝑖𝑡ℎ 𝑚𝑒 🫱🏻‍🫲🏻", date: "2025-09-29", time: "7:01 PM" }
+{ img: "https://i.pinimg.com/736x/ca/ca/db/cacadb3fbf869812196cace0ad604b36.jpg", cap: "🍺 honey sticker", date: "2026-10-05", time: "6:33 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/78/92/48/789248b83b811a405cf763d3cf93b6a2.jpg", cap: "🥰 honey sticker", date: "2026-10-05", time: "6:33 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/2f/79/6d/2f796d746b1c77cd0b97af0fa3937eb7.jpg", cap: "🥳 honey sticker", date: "2026-10-05", time: "6:33 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/8c/b6/01/8cb60120cd0d6e2588d6da84fee8320a.jpg", cap: "🥳 honey sticker", date: "2026-10-05", time: "6:33 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/40/74/2b/40742b0d31b82130d61e57aa033df58c.jpg", cap: "😭 honey sticker", date: "2026-10-05", time: "6:33 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/27/88/15/278815ceceb20a39775b6b965eb3c4a2.jpg", cap: "😭 honey sticker", date: "2026-10-05", time: "6:33 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/62/14/67/621467e71cfc50a5bb0cfc6b5f3fbdaa.jpg", cap: "🤔 honey sticker", date: "2026-10-05", time: "6:33 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/f9/73/62/f97362fecf1d8f658026012defca03e2.jpg", cap: "😱 honey sticker", date: "2026-10-05", time: "6:33 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/74/9f/c3/749fc33d1ed7d18a2e550bb069ebbb78.jpg", cap: "🫶🏻 honey sticker", date: "2026-10-05", time: "6:33 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/da/d8/26/dad826bb6d59f16e8a01102bf1616ec6.jpg", cap: "💖 honey sticker", date: "2026-10-05", time: "6:33 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/10/1a/41/101a41856db724c3cf8bba27dd15a863.jpg", cap: "😒 honey sticker", date: "2026-10-05", time: "6:33 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/01/65/59/0165597dcfbe5d1aee41983404b578c7.jpg", cap: "😑 honey sticker", date: "2026-10-05", time: "6:33 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/2c/2a/50/2c2a500820ddfd25a918ec8d64d2a043.jpg", cap: "80's Honey 😁", date: "2026-09-10", time: "10:33 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/f3/34/84/f33484a5eec264ad4bfc156de6be8d1b.jpg", cap: "🥰😁", date: "2026-09-07", time: "8:28 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/76/21/c0/7621c039d60791b395a4376d4b715f8e.jpg", cap: "আজকে mood: No Rules 😈", date: "2026-09-02", time: "7:01 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/ae/8b/52/ae8b5292dedaa5786a78d497d37f48a2.jpg", cap: "রূপনগরের রাজকন্যা 👑🥰", date: "2026-09-02", time: "6:58 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/86/69/ae/8669ae9d492c45f32b1253790564c1b6.jpg", cap: "বিড়ি 🚬", date: "2026-08-28", time: "5:47 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/55/c4/fe/55c4fe71c315967186d50bf3f2abd31b.jpg", cap: "Skating 🛹", date: "2026-08-28", time: "5:45 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/73/78/fe/7378fe1fad39cd932ee3e4328d5835c9.jpg", cap: "শিল্পের ছোঁয়া 🎨", date: "2026-07-30", time: "8:55 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/d4/27/e2/d427e266d2f08ece8c51cc4417d31df9.jpg", cap: "Final 🇪🇸VS🇦🇷 🏆", date: "2026-07-19", time: "7:15 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/27/50/2d/27502dcfb047f4752ddfe0f08c3a9a8e.jpg", cap: "Semi-finals 🏴VS🇦🇷🏆", date: "2026-07-15", time: "6:56 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/5d/e9/58/5de958cebe6b603a0f4353fa516a8940.jpg", cap: "Semi-finals 🇫🇷VS🇪🇸🏆", date: "2026-07-14", time: "7:01 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/91/29/43/91294305c138501bcfb743e8b027c928.jpg", cap: "Argentina 🇦🇷🏆", date: "2026-06-21", time: "7:52 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/60/41/90/6041906775e729b9b31bf18b2447c0d6.jpg", cap: "Brazil 🇧🇷🏆", date: "2026-06-21", time: "7:52 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/e1/0a/cc/e10acc1beb9314257d7c622f2d055753.jpg", cap: "Portugal 🇵🇹🏆", date: "2026-06-21", time: "7:52 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/9d/1a/94/9d1a9448e5e211ce68499c7a9420dd9d.jpg", cap: "Germany 🇩🇪🏆", date: "2026-06-21", time: "7:52 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/0f/24/67/0f246753506901340692f082296890a9.jpg", cap: "France 🇫🇷 ", date: "2026-06-21", time: "7:51 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/7a/fc/03/7afc03b360620c26f2ed412a5fcecddd.jpg", cap: "Spain 🇪🇸🏆", date: "2026-06-21", time: "7:51 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/0e/9d/97/0e9d97749c6f4c729726b4a5e7d5c633.jpg", cap: "England 🇬🇧🏆", date: "2026-06-21", time: "7:51 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/7f/f8/97/7ff897e22a474cd8be09b4211c598bd6.jpg", cap: "Morocco 🇲🇦🏆", date: "2026-06-21", time: "7:50 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/0c/d3/19/0cd31972548ecbf5898e6ae1123c0a8d.jpg", cap: "Saudi Arabia 🇸🇦 ", date: "2026-06-21", time: "7:50 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/ca/3e/16/ca3e1618de8cd10c12b1a22f0a5f51c0.jpg", cap: "Netherlands 🇳🇱🏆", date: "2026-06-21", time: "7:50 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/5e/9a/99/5e9a9948dbcb263d2caac6db417e16eb.jpg", cap: "কাগজের পরিবার 😄", date: "2026-06-02", time: "7:04 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/fe/ce/b1/feceb168f5aaa7dd3b2955891a7dbe7d.jpg", cap: "ধোয়াটে হাসি 🤠", date: "2026-05-27", time: "8:16 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/da/21/a1/da21a1614f611881af21905b320dcd05.jpg", cap: "Facebook ⓕ", date: "2026-05-10", time: "4:30 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/ef/a2/38/efa23820bfb26f1ea58dc215e54afba4.jpg", cap: "Capture 😎", date: "2026-05-10", time: "4:26 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/53/32/5b/53325b96aa3e5f60873df6badcfce238.jpg", cap: "বাংলাদেশ ❤️🇧🇩", date: "2026-05-04", time: "7:50 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/5b/e4/c4/5be4c4d40cff53155050d4b4b12ea1f9.jpg", cap: "এই জিল্লু মাল দে 🍺", date: "2026-05-04", time: "7:46 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/36/fe/db/36fedb4c312d01d757112c7b7709a57a.jpg", cap: "Hello Bro 😎", date: "2026-04-21", time: "6:56 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/a9/24/00/a9240002141a026062c774dc52721844.jpg", cap: "ENTERTAINMENT WITH HONEY 🥰", date: "2026-04-21", time: "6:51 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/a0/67/5e/a0675eddf5e2e90f746db7ac32c38479.jpg", cap: "গাড়ি ছুটছে 🚗", date: "2026-04-16", time: "5:56 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/aa/df/d4/aadfd4e83db176ef864c0c6d8a6e74a0.jpg", cap: "কল্পনা যখন canvas এ😀", date: "2026-04-16", time: "5:45 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/a8/ef/dc/a8efdc1d439a41f23b4a20fdd8629350.jpg", cap: "রঙিন Comic, সাদাকালো স্মৃতি আমার 🖍️🖼️", date: "2026-04-02", time: "11:00 AM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/ca/de/f6/cadef65bdb2be8e12dcafbc619b9a6da.jpg", cap: "খবরে ভরা দেয়ালে আমিই সেরা খবর! 📰😎", date: "2026-03-31", time: "8:20 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/5b/d8/9b/5bd89bebefecdf2c474c843ff0833e02.jpg", cap: "চারিদিকে শুধুই ভালোবাসার হাসি 💖", date: "2026-03-29", time: "9:15 AM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/fd/0a/1d/fd0a1d295158b68864e117a6f51e2230.jpg", cap: "Hero সেজেছি, এখন Villain কই? 🧭", date: "2026-03-21", time: "6:07 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/cf/33/36/cf333697f81a1216664f8d2af4d0d65e.jpg", cap: "লাল রঙে আমি হলাম রাজা তাতে বাকি সব ভাজা ভাজা🍎", date: "2026-03-19", time: "6:31 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/4b/1b/4e/4b1b4ed698310ab9c49b255386dc083e.jpg", cap: "Look টা Professional, কিন্তু হাসিটা Original😁", date: "2026-03-11", time: "7:05 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/45/9e/ec/459eec3426f88ddf12f5cba8b31b4983.jpg", cap: "I am my only competition 🏆", date: "2026-03-11", time: "7:02 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/25/84/3c/25843c0d772ff032c30214b6ba6f1a87.jpg", cap: "Holi Special 💥", date: "2026-03-03", time: "8:04 AM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/e9/65/be/e965be3e635edbaee3c63ea500e828ae.jpg", cap: "আমাকে রঙ মাখানোর সাহস কার? সামনে আসো দেখি! 😡🫟", date: "2026-03-03", time: "8:03 AM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/02/5f/a7/025fa7ed5b93d7bdf8d0bc41cdef596e.jpg", cap: "হোলির রং এর মত সকলের মন পবিত্র হোক 😊", date: "2026-03-03", time: "8:01 AM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/b8/d0/36/b8d0361430c1b919f1eb52ee0357faa4.jpg", cap: "Instagram 🤓", date: "2026-03-01", time: "4:06 AM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/c4/a1/bf/c4a1bf36a029b696151afb54093f0821.jpg", cap: "Honey on Fire 🔥", date: "2026-03-01", time: "4:00 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/7b/5a/52/7b5a52c7e86327109d3257135a97aa4d.jpg", cap: "Success looks good on me💸", date: "2026-02-28", time: "7:34 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/3a/a9/42/3aa942dee58ff5950614dd5092297bee.jpg", cap: "নীরবতাই হলো সেরা গর্জন 🤫", date: "2026-02-28", time: "7:25 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/35/43/89/3543891f28366d876f4bfb81e2fcf696.jpg", cap: "নিজের রাজত্বের রাজা নিজেই! 👑", date: "2026-02-27", time: "6:43 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/2d/3e/2d/2d3e2d9c1cf3626cb54a0b939cdae97d.jpg", cap: "🫰🏻 Follow", date: "2026-02-26", time: "7:40 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/b1/66/70/b166709bd875ac5d8eb26eacaddf8b91.jpg", cap: "কাগজ কিন্তু চুপচাপ নয়, বেশ মজাদার!😂", date: "2026-02-25", time: "6:07 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/2b/2f/c5/2b2fc56a242d5fdad04858ae7fd0b10f.jpg", cap: "কাগজের Honey, স্টাইলে এক নম্বর!😄", date: "2026-02-25", time: "6:01 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/95/cd/c9/95cdc923d31456655aa8a612e1a4c42e.jpg", cap: "Honey প্রদেশ 😱😱", date: "2026-02-24", time: "7:32 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/9d/e4/0e/9de40e3a1e615b8a3ffcbd7e0aba496c.jpg", cap: "🤟🏻YoY", date: "2026-02-24", time: "7:13 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/35/8d/be/358dbe0abd72870c2c0eeafb147c5b66.jpg", cap: "চশমাটা Just Look এর জন্য না, Attitude ধরে রাখার জন্য!🙂", date: "2026-02-21", time: "7:25 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/07/0c/d9/070cd9ce863ad45d5067af110073aa44.jpg", cap: " Tips একটাই—সবসময় নিজের ওপর বিশ্বাস রাখো 👍", date: "2026-02-21", time: "7:08 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/20/32/24/20322447b1aef1bf25945e1765ad6e96.jpg", cap: "কথা কম, কাজ বেশি—এটাই আমার Style🤨", date: "2026-02-19", time: "6:44 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/3a/82/86/3a82864922b6bde73c3617f63721352e.jpg", cap: "শহরে নতুন Don, নাম তার Honey! 🧥", date: "2026-02-19", time: "6:30 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/86/ca/d2/86cad2ad629bb7839ea91a9940f919a6.jpg", cap: "মায়াবী আয়না 😱—  সত্যিটা এখানেই ধরা পড়ে", date: "2026-02-16", time: "6:44 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/62/04/42/62044256f7758ed7b95ac2fc841f926a.jpg", cap: "Smoking is injurious to health, it causes cancer 🚭", date: "2026-02-16", time: "6:15 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/51/ed/de/51edde23f7f78a7f6795e6c2a7b2eb00.jpg", cap: "Sorry 𝙺𝚒𝚝𝚝𝚢 🫥", date: "2026-02-01", time: "7:54 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/b6/b9/76/b6b976a9f2d5f5648ed15130ac1995f9.jpg", cap: "Just fun 😁", date: "2026-02-01", time: "7:33 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/3a/52/8e/3a528e17d8b0160b839f51766dab7115.jpg", cap: " Party তো সবে শুরু! উৎসব চলুক পুরোদমে🕺", date: "2026-01-21", time: "8:38 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/21/d5/6a/21d56abc1c3f5373cf63f4ac98048337.jpg", cap: "আজকের রাতটা শুধু Enjoy করার জন্য Just chill! 🥂", date: "2026-01-21", time: "8:31 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/f2/cb/64/f2cb643e89667721430262558cc55be0.jpg", cap: "Style যখন 1 no, তখন সবকিছুই সুন্দর😎", date: "2026-01-16", time: "11:41 AM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/5d/a1/8c/5da18c4e774f923c92d927471b710fa8.jpg", cap: "কিটি কিছু মনে করো না plz😶", date: "2026-01-16", time: "11:30 AM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/4a/8c/8c/4a8c8c07c3d576bace406c8ac1cd70f6.jpg", cap: "মন্টুপুরের রাজা Honey 🤴🏻", date: "2026-01-14", time: "9:03 AM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/79/0f/9d/790f9dda89865fafd38656b72629a3ac.jpg", cap: "𝐻𝑜𝑛𝑒𝑦 𝑤𝑖𝑡ℎ 𝑚𝑒 😉", date: "2026-01-14", time: "9:00 AM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/53/55/1c/53551c55e2e9788dbf0448b8a2a9a733.jpg", cap: "mood 😠", date: "2026-01-10", time: "6:32 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/1c/d2/97/1cd29752e7286f36b6dc0a1197be0cb8.jpg", cap: "𝗧𝗶𝗿𝗲𝗱😪", date: "2026-01-10", time: "6:15 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/62/12/c5/6212c5662950807efe738efe37fe1b43.jpg", cap: "Party time 🍹🎊", date: "2026-01-07", time: "10:55 AM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/9b/87/ef/9b87ef48f59948af91e02689a9075963.jpg", cap: "𝙷𝚘𝚗𝚎𝚢 𝙱𝚞𝚗𝚗𝚢 𝙺𝚊 𝙹𝚑𝚘𝚕𝚖𝚊𝚗𝚊𝚕 ✌🏻", date: "2026-01-07", time: "10:45 AM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/1e/c4/4b/1ec44b813abccb229f4f6f837e7ea0a7.jpg", cap: "হানি যখন পিঠে চড়ে, ভালোবাসা তখন ফুলে ফলে ভরে!🌹", date: "2026-01-05", time: "7:46 AM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/31/2c/f2/312cf2f7ad9280f649bafe77592b8236.jpg", cap: "Honey is running on the treadmill 🏃🏻‍♂️", date: "2026-01-05", time: "7:33 AM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/5a/d2/e7/5ad2e7d630313e21d57cfb0b767e52c5.jpg", cap: "𝐇𝐨𝐧𝐞𝐲 𝐁𝐮𝐧𝐧𝐲 😺", date: "2026-01-01", time: "5:59 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/29/bc/36/29bc36c72865567576c7de16f51fcabd.jpg", cap: "Honey Dracula 🧛🏻", date: "2026-01-01", time: "5:45 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/5a/d9/20/5ad9203b193e198a268187ddbe4bdf15.jpg", cap: "🧟", date: "2025-12-31", time: "6:47 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/78/36/2f/78362f364c254586f60a635d4f01552c.jpg", cap: "🥹🥹", date: "2025-12-31", time: "6:35 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/bb/db/2e/bbdb2ef7454d6281d79460916e57988f.jpg", cap: "🙂পুলাপান", date: "2025-12-30", time: "8:11 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/d3/c0/19/d3c01989ecaf42aece53c7c4f20e6a47.jpg", cap: "কথা কস কেন 😒", date: "2025-12-30", time: "8:00 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/79/e2/f8/79e2f8642cb5e874c6e34176e4d37b9c.jpg", cap: "ᴛʜᴇɴ ʜᴏɴᴇʏ 🤕", date: "2025-12-28", time: "6:45 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/f8/ef/ac/f8efac5718c0be6a57e4f538a8b4ec0f.jpg", cap: "😫", date: "2025-12-28", time: "6:30 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/be/ab/68/beab68e9091b5f6f47497178c4adef2e.jpg", cap: "HONEY AS RADHE 😁", date: "2025-12-24", time: "7:15 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/16/35/84/1635848901e77d9b6552a8bd678630fe.jpg", cap: "Honey এর কৌতুক 🤡", date: "2025-12-24", time: "6:50 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/25/bc/98/25bc9843314e191f836bcc93777d91d4.jpg", cap: "হানির শীতের সকাল ❄️", date: "2025-12-21", time: "7:51 AM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/bc/fe/78/bcfe78af093b605410702517251f5fcf.jpg", cap: "ওরে ঠান্ডা 🥶", date: "2025-12-21", time: "7:44 AM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/5f/e2/c6/5fe2c6cb0c048891ba30bf127b3fe1cf.jpg", cap: "🆆🅾🆆 🅱🅴🅰🆄🆃🅸🅵🆄🅻 😍", date: "2025-12-10", time: "8:37 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/e1/9c/4b/e19c4b6442c88eca22fb0e4314ba19a1.jpg", cap: "ＨＯＮＥＹ : আমার কি দোষ 😶", date: "2025-12-10", time: "8:30 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/27/2e/ad/272ead7687ec5e0762802a1c9ee4aa90.jpg", cap: "ℍ𝕖𝕪 𝕐𝕠𝕦 🫵🏻 𝕤𝕠𝕞𝕖𝕥𝕙𝕚𝕟𝕘 𝕨𝕣𝕠𝕟𝕘 🧐", date: "2025-11-27", time: "4:51 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/cf/83/4a/cf834a423b250c69c013aa1b6ea1e2c0.jpg", cap: "😎", date: "2025-11-27", time: "4:45 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/28/49/20/2849207682dba7dfe5c2f006d70f349f.jpg", cap: "গাধা আর পাগল 😶", date: "2025-11-23", time: "8:21 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/4c/fc/1e/4cfc1e2c1a7a036bfa742ffc067b7ee3.jpg", cap: "তারা কাকে দেখছে 🤔❔", date: "2025-11-23", time: "7:10 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/13/0c/a4/130ca4f5c913c48d9889a78537690cb4.jpg", cap: "ছোট ভাই 🤗💟", date: "2025-11-21", time: "6:41 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/c5/3a/09/c53a09a52313287802ff333bcf5c52c0.jpg", cap: "😤", date: "2025-11-21", time: "6:30 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/3b/be/32/3bbe3266885a996df89c9247cea8d853.jpg", cap: " Honey is running 🏃🏻‍♂️‍➡️", date: "2025-11-15", time: "7:55 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/97/14/39/9714391c3817e3a1e4c81609205aeaaa.jpg", cap: "𝘉𝘳𝘦𝘢𝘬𝘧𝘢𝘴𝘵 🍳", date: "2025-11-15", time: "7:45 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/d4/89/f1/d489f1c8f748df1bd166bc51c20335a0.jpg", cap: "হ্যালোইন 😱🧟", date: "2025-11-06", time: "7:05 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/1c/3c/bb/1c3cbb8bf6f92c50ec5fb2ff3d8f1124.jpg", cap: "Honey তো অবাক 🫨", date: "2025-11-06", time: "7:00 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/eb/44/2a/eb442a51536dde53d52854027575b0a3.jpg", cap: "✊🏻🥳", date: "2025-11-01", time: "7:30 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/f8/0a/7e/f80a7e743f74381a1446b41701e7fd56.jpg", cap: "🐱ɢᴏᴏᴅ", date: "2025-11-01", time: "7:10 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/4a/5f/42/4a5f424d1601442344ca6cf57ddaf9d1.jpg", cap: "🎥", date: "2025-10-29", time: "7:10 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/58/af/cc/58afcc88f8bb1b1dc4cb713e829742fd.jpg", cap: "But................❕", date: "2025-10-29", time: "7:00 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/0a/58/f9/0a58f9c288f80720a0bcaa0d525ce1f2.jpg", cap: "𝐺𝑎𝑛𝑔 ✊🏻 👾", date: "2025-10-17", time: "7:30 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/b8/30/5e/b8305eb15a3aa4fc7fb4cdb22577bc79.jpg", cap: "Honey🤦🏻‍♂️", date: "2025-10-17", time: "7:10 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/b5/5b/24/b55b244325e7a55df6ee8a0eaa960c08.jpg", cap: "সুলতানের ছেলে Bad Monkey 🐒", date: "2025-10-12", time: "8:01 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/f3/d4/3e/f3d43e17c350b7b8675b67151236e672.jpg", cap: "😾👊🏻", date: "2025-10-12", time: "7:45 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/19/6d/8a/196d8a40bd7ca969db8b3bf6f0b5d8b2.jpg", cap: "what is your problem 🫥", date: "2025-10-10", time: "7:14 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/e4/67/7b/e4677befb090b8aefd1b5859f5078f07.jpg", cap: " Dancer🕺🏻", date: "2025-10-10", time: "7:00 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/7e/3b/2c/7e3b2cdd5868ed9a8cf6fe7ca769be5d.jpg", cap: "𝘉𝘳𝘦𝘢𝘬𝘧𝘢𝘴𝘵 🍳", date: "2025-09-29", time: "7:10 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 },
+{ img: "https://i.pinimg.com/736x/01/79/23/017923ceab52a900dccd3f98c9216e95.jpg", cap: "𝐻𝑜𝑛𝑒𝑦 𝑤𝑖𝑡ℎ 𝑚𝑒 🫱🏻‍🫲🏻", date: "2025-09-29", time: "7:01 PM", ytId: "sUcjnSLCksk", start: 40, end: 60 }
 ];
 let currentGalleryIndex = 0;
 function formatDate(dateStr) {
@@ -992,6 +1031,13 @@ gallery.insertAdjacentHTML('beforeend', html);
 <span id="photoDetailsHeaderText">More</span>
 </div>
 <div class="photo-details-content">
+    <div class="yt-mini-player-container" id="ytMiniPlayerContainer">
+    <!-- YouTube iframe এখানে জাভাস্ক্রিপ্ট দিয়ে লোড হবে -->
+</div>
+<div class="detail-item play-pause-item" onclick="toggleYtPlayPause(); event.stopPropagation();">
+    <span class="detail-label" id="playPauseLabel">Audio Control</span>
+    <span class="play-pause-value" id="playPauseValue">⏸ Pause</span>
+</div>
 <div class="detail-item">
 <span class="detail-label" id="detailDateLabel">Date</span>
 <span class="detail-value date-val" id="detailDate">--</span>
@@ -1018,6 +1064,103 @@ gallery.insertAdjacentHTML('beforeend', html);
 </div>
 </div>
 <script>
+    // ===== YOUTUBE AUDIO CONTROL SYSTEM =====
+let ytPlayer;
+let ytLoopInterval;
+let currentYtStart = 0;
+let currentYtEnd = 10000;
+let isYtPlaying = false;
+
+function onYouTubeIframeAPIReady() {
+    ytPlayer = new YT.Player('ytMiniPlayerContainer', {
+        height: '100%',
+        width: '100%',
+        playerVars: { 
+            'playsinline': 1, 
+            'controls': 0, 
+            'modestbranding': 1,
+            'rel': 0,
+            'showinfo': 0
+        },
+        events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+        }
+    });
+}
+
+function onPlayerReady(event) {
+    // Player is ready
+}
+
+function onPlayerStateChange(event) {
+    if (event.data === YT.PlayerState.ENDED) {
+        // ভিডিও শেষ হলে আবার শুরু থেকে বাজবে (Strict Loop)
+        if (ytPlayer && isYtPlaying) {
+            ytPlayer.seekTo(currentYtStart);
+            ytPlayer.playVideo();
+        }
+    }
+}
+
+// এই ফাংশনটি প্রতি ৫০০ মিলিসেকেন্ডে চেক করবে যাতে গান নির্দিষ্ট সময়ের বাইরে না যায়
+setInterval(() => {
+    if (ytPlayer && isYtPlaying && typeof ytPlayer.getCurrentTime === 'function') {
+        let currentTime = ytPlayer.getCurrentTime();
+        if (currentTime >= currentYtEnd - 0.3) { // ০.৩ সেকেন্ড আগেই লুপ করবে যাতে বাইরে না যায়
+            ytPlayer.seekTo(currentYtStart);
+            ytPlayer.playVideo();
+        }
+    }
+}, 500);
+
+function loadAndPlayYt(index) {
+    const item = window.galleryItems[index];
+    if (!item || !item.ytId) {
+        if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
+            ytPlayer.stopVideo();
+        }
+        isYtPlaying = false;
+        updatePlayPauseUI();
+        return;
+    }
+    
+    currentYtStart = item.start || 0;
+    currentYtEnd = item.end || 10000;
+    
+    if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
+        ytPlayer.loadVideoById({
+            videoId: item.ytId,
+            startSeconds: currentYtStart,
+            endSeconds: currentYtEnd
+        });
+        isYtPlaying = true;
+        updatePlayPauseUI();
+    }
+}
+
+function toggleYtPlayPause() {
+    if (!ytPlayer || typeof ytPlayer.getPlayerState !== 'function') return;
+    
+    if (isYtPlaying) {
+        ytPlayer.pauseVideo();
+        isYtPlaying = false;
+    } else {
+        ytPlayer.playVideo();
+        isYtPlaying = true;
+    }
+    updatePlayPauseUI();
+    if (typeof SOUNDS !== 'undefined') SOUNDS.click();
+}
+
+function updatePlayPauseUI() {
+    const label = document.getElementById('playPauseValue');
+    const t = translations[currentLang]; // এই লাইনটি ভাষা অনুযায়ী শব্দ ঠিক করবে
+    if (label) {
+        label.innerText = isYtPlaying ? t.pause : t.play;
+    }
+}
+// ===== END YOUTUBE AUDIO CONTROL SYSTEM =====
 let currentLang = 'EN';
 const translations = {
 EN: {
@@ -1041,6 +1184,8 @@ notFound: 'Not found',
 loadFailed: 'Load failed',
 downloadLabel: 'Download',
 downloadTap: 'save',
+play: '▶ Play',
+pause: '⏸ Pause',
 soundOn: '🔊 Sound Effects',
 soundOff: '🔇 Sound Effects',
 days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
@@ -1072,6 +1217,8 @@ notFound: 'পাওয়া যায়নি',
 loadFailed: 'লোড ব্যর্থ',
 downloadLabel: 'ডাউনলোড',
 downloadTap: 'সংরক্ষণ',
+play: '▶  অডিও প্লে করো',
+pause: '⏸ অডিও বিরতি দিন',
 soundOn: '🔊 সাউন্ড ইফেক্ট',
 soundOff: '🔇 সাউন্ড ইফেক্ট',
 days: ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'],
@@ -1679,6 +1826,7 @@ img.src = item.img;
 animateCaption(item.cap);
 updatePhotoDetails(item);
 document.getElementById('fullscreenOverlay').style.display = 'flex';
+loadAndPlayYt(index);
 document.body.style.overflow = 'hidden';
 document.body.classList.add('fullscreen-active');
 SOUNDS.imageOpen();
@@ -1691,6 +1839,11 @@ function closeFull() {
 document.getElementById('fullscreenOverlay').style.display = 'none';
 document.body.style.overflow = '';
 document.body.classList.remove('fullscreen-active');
+if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
+    ytPlayer.stopVideo();
+}
+isYtPlaying = false;
+updatePlayPauseUI();
 closePhotoMenu();
 
 // Reset zoom state
@@ -1730,6 +1883,7 @@ else { document.getElementById('detailSize').textContent = t.notFound; }
 };
 img.onerror = function() { document.getElementById('detailSize').textContent = t.loadFailed; };
 img.src = item.img;
+loadAndPlayYt(currentGalleryIndex);
 animateCaption(item.cap);
 updatePhotoDetails(item);
 closePhotoMenu();
