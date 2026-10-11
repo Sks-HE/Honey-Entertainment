@@ -258,7 +258,303 @@ footer { animation: fadeInUp 0.6s ease-out forwards; animation-delay: 1.5s; opac
 .thank-you-bar { width: 85%; margin: 20px auto; padding: 12px 20px; background: var(--card-bg); border-radius: 100px; text-align: center; cursor: pointer; position: relative; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); display: flex; align-items: center; justify-content: center; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease; }
 .thank-you-bar:hover { transform: translateY(-3px); box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.3), 0 0 20px var(--glow-color); }
 .thank-you-text { font-size: 16px; font-weight: 800; text-transform: uppercase; background: linear-gradient(90deg, var(--text-color), var(--accent), #fb923c, var(--text-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
+/* ===== HORIZONTAL VIDEO FEED ===== */
+.video-feed-section { width: 100%; margin-bottom: 10px; overflow: hidden; }
+.horizontal-feed-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px 0;
+    overflow: hidden;
+    width: 100%;
+}
+.feed-item {
+    flex-shrink: 0;
+    width: 130px;
+    height: 190px;
+    cursor: pointer;
+    transition: transform 0.1s linear, opacity 0.1s linear;
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    border: 2px solid rgba(255,255,255,0.1);
+    transform-origin: center center;
+}
+.feed-item img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+.feed-item-title {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 25px 8px 8px;
+    text-align: center;
+    font-family: 'Hind Siliguri', sans-serif;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    pointer-events: none;
+}
+/* ===== VIDEO OVERLAY (SHORTS PLAYER) ===== */
+#videoOverlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.98);
+    z-index: 3000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    touch-action: pan-y;
+}
+#videoOverlay.active { display: flex; }
 
+.short-player-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    height: 100vh;
+    max-height: 100vh;
+    background: #000;
+    overflow: hidden;
+    box-shadow: 0 0 60px rgba(0,0,0,0.8);
+}
+
+@media (min-width: 500px) {
+    .short-player-wrapper {
+        height: 90vh;
+        max-height: 850px;
+        border-radius: 20px;
+        border: 2px solid rgba(255,255,255,0.1);
+    }
+}
+
+.short-video-container {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #000;
+}
+.short-video-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    pointer-events: none;
+}
+
+.short-tap-layer {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 3200;
+    cursor: pointer;
+}
+
+/* ===== CLOSE BUTTON ===== */
+#videoOverlay .close-video-btn {
+    position: absolute;
+    top: 20px; left: 20px;
+    width: 45px; height: 45px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.5);
+    border: 2px solid rgba(255,255,255,0.3);
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3300;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+#videoOverlay .close-video-btn:hover { 
+    transform: scale(1.1) rotate(90deg); 
+    background: var(--accent); 
+    border-color: var(--accent);
+}
+
+/* ===== CAPTION (FLY-IN ANIMATION) ===== */
+.short-caption-bar {
+    position: absolute;
+    bottom: 30px; left: 20px; right: 70px;
+    z-index: 3250;
+    color: white;
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.5;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+    pointer-events: none;
+    padding: 10px 15px;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    border-radius: 12px;
+}
+.short-caption-bar .fall-word {
+    display: inline-block;
+    opacity: 0;
+    animation: wordFall 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    margin: 0 2px;
+}
+@keyframes wordFallShort {
+    0% { opacity: 0; transform: translateY(-30px) rotate(-10deg) scale(0.5); }
+    60% { transform: translateY(4px) rotate(3deg) scale(1.1); }
+    100% { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
+}
+.short-caption-bar .fall-word {
+    animation-name: wordFallShort;
+}
+
+/* ===== PLAY/PAUSE ICON ===== */
+.short-play-pause-icon {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3260;
+    pointer-events: none;
+    opacity: 0;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+    border: 2px solid rgba(255,255,255,0.3);
+}
+.short-play-pause-icon.show {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+.short-play-pause-icon svg {
+    width: 45px; height: 45px;
+    fill: white;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+}
+
+/* ===== SWIPE HINT (UP/DOWN ARROWS) ===== */
+.short-swipe-hint {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.7);
+    font-size: 11px;
+    font-family: 'Hind Siliguri', sans-serif;
+    text-align: center;
+    z-index: 3240;
+    pointer-events: none;
+    opacity: 0;
+    animation: swipeHintFade 3s ease-in-out;
+}
+@keyframes swipeHintFade {
+    0%, 100% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+    20%, 80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.short-swipe-hint svg {
+    width: 20px; height: 20px;
+    fill: white;
+    animation: arrowBounceShort 1.5s infinite;
+    display: block;
+    margin: 0 auto 5px;
+}
+@keyframes arrowBounceShort {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* ===== VIDEO COUNTER ===== */
+.short-video-counter {
+    position: absolute;
+    top: 25px; right: 20px;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 20px;
+    z-index: 3300;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    letter-spacing: 1px;
+}
+/* ===== ONLY BOTTOM MOVED SECTIONS SPACING ===== */
+/* শুধুমাত্র নিচে সরানো সেকশনগুলোর উপরে ফাঁকা জায়গা তৈরি হবে */
+#fbGroupTxt,
+#watchTxt,
+#ownerProfileTxt,
+#newTxt,
+#followTxt,
+#aiStatusTxt {
+    margin-top: 35px !important; 
+}
+
+/* ওই সেকশনগুলোর টাইটেল এবং নিচের বাটনের মাঝে সুন্দর গ্যাপ */
+#fbGroupTxt, 
+#watchTxt, 
+#newTxt, 
+#followTxt {
+    margin-bottom: 35px !important;
+}
+/* ===== MENU INFO LINKS (OFFICIAL LOGOS WITH RGB ANIMATION) ===== */
+.menu-info-links {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 12px 15px;
+    scrollbar-width: none;
+    margin-top: 5px;
+    border-top: 1px solid rgba(128,128,128,0.1);
+}
+.menu-info-links::-webkit-scrollbar { display: none; }
+.menu-social-box {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: var(--bg-color);
+    z-index: 10;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    text-decoration: none;
+}
+.menu-social-box::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: conic-gradient(from var(--angle), #1877F2, #25F4EE, #FE2C55, #FF0000, #FFD700, #1877F2);
+    border-radius: 14px;
+    z-index: -1;
+    animation: rotateRGB 4s linear infinite;
+}
+.menu-social-box::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: var(--bg-color);
+    border-radius: 10px;
+    z-index: -1;
+    transition: background 0.3s;
+}
+.menu-social-box:hover {
+    transform: scale(1.15) rotate(-5deg);
+    box-shadow: 0 0 20px rgba(244, 114, 182, 0.4);
+}
+.menu-social-box svg {
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    filter: drop-shadow(0 0 3px rgba(0,0,0,0.2));
+    z-index: 1;
+}
+.menu-social-box:hover svg {
+    transform: scale(1.2) rotate(5deg);
+}
 /* ===== FILTER BAR ===== */
 .filter-bar {
     display: flex;
@@ -833,6 +1129,26 @@ body.fullscreen-active .back-to-top-btn { opacity: 0 !important; visibility: hid
 <span class="sound-toggle"></span>
 </div>
 <div class="menu-item" onclick="toggleLang()" id="langBtn">🌐Language: EN 🇬🇧</div>
+<div class="menu-info-links" id="menuInfoLinks">
+    <a href="https://www.facebook.com/groups/honeysajeeb" target="_blank" class="menu-social-box" title="Facebook Group">
+        <svg width="20" height="20" fill="#1877F2" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+    </a>
+    <a href="https://www.tiktok.com/@honey_owner_sajeeb" target="_blank" class="menu-social-box" title="TikTok">
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 448 512"><path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/></svg>
+    </a>
+    <a href="https://www.facebook.com/SAJEEBSAHA.S" target="_blank" class="menu-social-box" title="Owner Profile">
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    </a>
+    <a href="https://youtube.com/@he.s1?si=zVRmKIYJKT9Dzs3ep" target="_blank" class="menu-social-box" title="YouTube Channel">
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+    </a>
+    <a href="https://www.facebook.com/share/1APsixLhgv/" target="_blank" class="menu-social-box" title="Facebook Page">
+        <svg width="20" height="20" fill="#1877F2" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+    </a>
+    <a href="https://www.instagram.com/honey_entertainment1?igsh=bzl5bTB4bWlqMWtj" target="_blank" class="menu-social-box" title="Instagram">
+        <svg width="20" height="20" fill="#E4405F" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+    </a>
+</div>
 </div>
 </div>
 <div class="app-container">
@@ -842,58 +1158,14 @@ body.fullscreen-active .back-to-top-btn { opacity: 0 !important; visibility: hid
 </div>
 <h1 class="text-4xl font-black italic shimmer-text tracking-tighter leading-tight">HONEY<br>ENTERTAINMENT</h1>
 </header>
-<section>
-<p class="text-[13px] opacity-60 font-black uppercase tracking-[0.25em] mb-6" id="followTxt">❁Follow us to stay connected❁</p>
-<div class="social-container">
-<a href="https://www.facebook.com/share/1APsixLhgv/" target="_blank" class="social-box">
-<svg width="32" height="32" fill="#1877F2" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-</a>
-<a href="https://www.tiktok.com/@honey_owner_sajeeb" target="_blank" class="social-box">
-<svg width="32" height="32" fill="currentColor" viewBox="0 0 448 512"><path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/></svg>
-</a>
-<a href="https://www.instagram.com/honey_entertainment1?igsh=bzl5bTB4bWlqMWtj" target="_blank" class="social-box">
-<svg width="32" height="32" fill="#E4405F" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-</a>
-</div>
+<section class="video-feed-section">
+    <h2 class="animated-title"><span>▶</span> <span id="feedTitleText">Trending Shorts</span></h2>
+    <div class="horizontal-feed-container" id="videoFeedContainer">
+        <!-- JS এখান থেকে ভিডিও লোড করবে -->
+    </div>
 </section>
-<section>
-<h2 class="animated-title" id="fbGroupTxt"><span>▶</span> In our Facebook group :-</h2>
-<button class="btn-premium" onclick="window.open('https://www.facebook.com/groups/honeysajeeb', '_blank')">
-<svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" class="mr-1"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-<span id="joinBtnText">Join Now</span>
-</button>
-</section>
-<section>
-<h2 class="animated-title" id="watchTxt"><span>▶</span> Watch full cartoon videos :-</h2>
-<button class="btn-premium" onclick="window.open('https://www.tiktok.com/@honey_owner_sajeeb/collection/HE%F0%9F%8E%AFHoney%20Bunny%20Full%20Episode%F0%9F%8E%AD-7601366338283506433?is_from_webapp=1&sender_device=pc', '_blank')">
-<svg width="20" height="20" fill="currentColor" viewBox="0 0 448 512" class="mr-1"><path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/></svg>
-<span id="watchBtnText">Watch Now</span>
-</button>
-</section>
-<section>
-<h2 class="animated-title"><span>▶</span> Owner Profile :-</h2>
-<button class="btn-premium" onclick="window.open('https://www.facebook.com/SAJEEBSAHA.S', '_blank')">
-<svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" class="mr-1"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-<span id="ownerBtnText">Sajeeb Saha</span>
-</button>
-</section>
-<div class="flex flex-col items-center">
-<span class="ai-status-text" id="aiStatusTxt"><span class="highlight-ai">Subscribe</span>to Honey Entertainment's YouTube channel to get all the cartoon videos first</span>
-<div class="visit-status-text">
-<span id="visitStatusTxt">Subscribe</span>
-<svg class="bell-icon" width="20" height="20" viewBox="0 0 24 24">
-<path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
-</svg>
-</div>
-<div class="scroll-indicator"></div>
-</div>
-<section>
-<h2 class="animated-title" id="newTxt"><span>▶</span> YouTube :-</h2>
-<button class="btn-premium" onclick="window.open('https://youtube.com/@he.s1?si=zVRmKIYJKT9Dzs3ep', '_blank')">
-<svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" class="mr-1"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-<span>HE</span>
-</button>
-</section>
+
+
 <section class="w-full">
 <h2 class="animated-title" id="collTxt"><span>▶</span> Some of our collections :-</h2>
 <div class="filter-bar" id="filterBar">
@@ -921,6 +1193,434 @@ const hasTrophy = /\u{1F3C6}/u.test(text);
 return hasFlag && hasTrophy;
 }
 const gallery = document.getElementById('gallery');
+// ===== HORIZONTAL VIDEO FEED =====
+const originalFeedData = [
+    { thumb: "https://i.pinimg.com/736x/bf/bf/7c/bfbf7cf9b83f5e23c5e5d225ec16056b.jpg", title: "মৃত Pet | part 1", ytId: "5fb6N2xyaow" },
+    { thumb: "https://i.pinimg.com/736x/0d/e2/61/0de2616c0d67388288d99121695261c7.jpg", title: "Honey 🤫", ytId: "xq1uhe1qZa0" },
+    { thumb: "https://i.pinimg.com/736x/42/7d/3b/427d3b7ec0fc060404fd68d0c2766501.jpg", title: "Antique Engine | Part 18", ytId: "Vz0-vjiWq0w" },
+    { thumb: "https://i.pinimg.com/736x/a3/b8/2a/a3b82accc3b89de3e02db22e02955480.jpg", title: "Antique Engine | Part 17", ytId: "H4phLu9W9Kw" },
+    { thumb: "https://i.pinimg.com/736x/62/6e/ac/626eacfde042e103e7fb2631e7849619.jpg", title: "Antique Engine | part 16", ytId: "mmmm21GyXLY" },
+    { thumb: "https://i.pinimg.com/736x/41/0b/ba/410bba330a26f9871b2e356938edcc19.jpg", title: "Antique Engine | Part 15", ytId: "SqNDRE2rjX8" },
+    { thumb: "https://i.pinimg.com/736x/f0/ff/f4/f0fff487df727e9a2bb8c23fe513506b.jpg", title: "Antique Engine | Part 14", ytId: "26T0WRRZMZc" }
+];
+const videoFeedData = [...originalFeedData, ...originalFeedData, ...originalFeedData];
+let currentFeedYtId = "";
+let feedYtPlayer = null;
+let feedAnimFrame = null;
+let feedScaleFrame = null;
+
+function renderVideoFeed() {
+    const container = document.getElementById('videoFeedContainer');
+    if (!container) return;
+    container.innerHTML = videoFeedData.map(item => `
+        <div class="feed-item" data-ytid="${item.ytId}" data-title="${item.title.replace(/"/g, '&quot;')}">
+            <img src="${item.thumb}" alt="${item.title}" loading="lazy">
+            <div class="feed-item-title">${item.title}</div>
+        </div>
+    `).join('');
+    container.querySelectorAll('.feed-item').forEach(item => {
+        item.addEventListener('click', () => {
+            openVideoFeed(item.dataset.ytid, item.dataset.title);
+        });
+    });
+    startFeedAnimation();
+}
+
+let feedPaused = false;
+let feedStepTimeout = null;
+
+function startFeedAnimation() {
+    const container = document.getElementById('videoFeedContainer');
+    if (!container) return;
+    
+    const itemWidth = 130;
+    const gap = 20;
+    const stepSize = itemWidth + gap;
+    let currentStep = 0;
+    
+    function scrollToNextStep() {
+        if (feedPaused) return;
+        
+        currentStep++;
+        const targetScroll = currentStep * stepSize;
+        
+        container.scrollTo({
+            left: targetScroll,
+            behavior: 'smooth'
+        });
+        
+        if (currentStep >= originalFeedData.length) {
+            setTimeout(() => {
+                if (!feedPaused) {
+                    container.style.scrollBehavior = 'auto';
+                    container.scrollLeft = 0;
+                    container.style.scrollBehavior = '';
+                    currentStep = 0;
+                }
+            }, 1200);
+        }
+        
+        feedStepTimeout = setTimeout(scrollToNextStep, 3500); // ১ সেকেন্ড স্ক্রল + ২.৫ সেকেন্ড পজ
+    }
+    
+    feedStepTimeout = setTimeout(scrollToNextStep, 2500);
+    
+    function updateScales() {
+        if (feedPaused) {
+            requestAnimationFrame(updateScales);
+            return;
+        }
+        const items = container.querySelectorAll('.feed-item');
+        const containerRect = container.getBoundingClientRect();
+        const containerCenter = containerRect.left + containerRect.width / 2;
+        items.forEach(item => {
+            const itemRect = item.getBoundingClientRect();
+            const itemCenter = itemRect.left + itemRect.width / 2;
+            const distance = Math.abs(containerCenter - itemCenter);
+            const maxDistance = containerRect.width / 2;
+            const scale = 1.15 - (distance / maxDistance) * 0.55;
+            const clampedScale = Math.max(0.6, Math.min(1.15, scale));
+            item.style.transform = 'scale(' + clampedScale + ')';
+            item.style.opacity = 0.4 + (clampedScale - 0.6) * 1.6;
+        });
+        requestAnimationFrame(updateScales);
+    }
+    updateScales();
+}
+
+// ভিডিও ওপেন হলে ফিড থামানোর ফাংশন
+function pauseFeed() {
+    const overlay = document.getElementById('videoOverlay'); if(overlay) overlay.style.pointerEvents = 'none';
+    feedPaused = true;
+    if (feedStepTimeout) clearTimeout(feedStepTimeout);
+}
+
+// ভিডিও ক্লোজ হলে ফিড আবার চালু করার ফাংশন
+function resumeFeed() {
+    const overlay = document.getElementById('videoOverlay'); if(overlay) overlay.style.pointerEvents = '';
+    feedPaused = false;
+    const container = document.getElementById('videoFeedContainer');
+    if (!container) return;
+    
+    const stepSize = 150;
+    let currentStep = Math.round(container.scrollLeft / stepSize);
+    
+    function scrollToNextStep() {
+        if (feedPaused) return;
+        currentStep++;
+        const targetScroll = currentStep * stepSize;
+        container.scrollTo({ left: targetScroll, behavior: 'smooth' });
+        
+        if (currentStep >= originalFeedData.length) {
+            setTimeout(() => {
+                if (!feedPaused) {
+                    container.style.scrollBehavior = 'auto';
+                    container.scrollLeft = 0;
+                    container.style.scrollBehavior = '';
+                    currentStep = 0;
+                }
+            }, 1200);
+        }
+        
+        feedStepTimeout = setTimeout(scrollToNextStep, 3500);
+    }
+    
+    feedStepTimeout = setTimeout(scrollToNextStep, 2500);
+}
+
+let currentFeedIndex = 0;
+let isFeedVideoPlaying = true;
+let playPauseIconTimer = null;
+
+function animateShortCaption(text) {
+    const captionBar = document.getElementById('shortCaptionBar');
+    if (!captionBar) return;
+    
+    const emojiRegex = /[\p{Emoji_Presentation}\p{Extended_Pictographic}\p{Emoji}]/gu;
+    const tokens = [];
+    let remaining = text;
+    
+    while (remaining.length > 0) {
+        const match = remaining.match(emojiRegex);
+        if (match) {
+            const emojiIndex = remaining.indexOf(match[0]);
+            if (emojiIndex > 0) {
+                remaining.substring(0, emojiIndex).split(/(\s+)/).forEach(part => {
+                    if (part.trim()) tokens.push({ type: 'word', value: part });
+                    else if (part) tokens.push({ type: 'space', value: part });
+                });
+            }
+            tokens.push({ type: 'emoji', value: match[0] });
+            remaining = remaining.substring(emojiIndex + match[0].length);
+        } else {
+            remaining.split(/(\s+)/).forEach(part => {
+                if (part.trim()) tokens.push({ type: 'word', value: part });
+                else if (part) tokens.push({ type: 'space', value: part });
+            });
+            remaining = '';
+        }
+    }
+    
+    let html = '';
+    let delay = 0;
+    tokens.forEach(token => {
+        if (token.type === 'space') { 
+            html += token.value; 
+        } else { 
+            html += `<span class="fall-word" style="animation-delay: ${delay}ms">${token.value}</span>`; 
+            delay += 70; 
+        }
+    });
+    captionBar.innerHTML = html;
+}
+
+function showPlayPauseIcon(isPause) {
+    const icon = document.getElementById('shortPlayPauseIcon');
+    const pauseSvg = document.getElementById('shortPauseSvg');
+    const playSvg = document.getElementById('shortPlaySvg');
+    
+    if (!icon) return;
+    
+    if (isPause) {
+        pauseSvg.style.display = 'block';
+        playSvg.style.display = 'none';
+    } else {
+        pauseSvg.style.display = 'none';
+        playSvg.style.display = 'block';
+    }
+    
+    icon.classList.add('show');
+    
+    if (playPauseIconTimer) clearTimeout(playPauseIconTimer);
+    playPauseIconTimer = setTimeout(() => {
+        icon.classList.remove('show');
+    }, 700);
+}
+
+function updateVideoCounter() {
+    const counter = document.getElementById('shortVideoCounter');
+    if (counter) {
+        counter.textContent = `${currentFeedIndex + 1} / ${originalFeedData.length}`;
+    }
+}
+
+function loadFeedVideo(index) {
+    const item = originalFeedData[index];
+    if (!item) return;
+    
+    currentFeedIndex = index;
+    isFeedVideoPlaying = true;
+    
+    const iframeContainer = document.getElementById('videoFeedIframeContainer');
+    if (iframeContainer) {
+        iframeContainer.innerHTML = `<div id="feedPlayerTarget" style="width:100%;height:100%;"></div>`;
+    }
+    
+    if (feedYtPlayer && typeof feedYtPlayer.destroy === 'function') {
+        try { feedYtPlayer.destroy(); } catch(e) {}
+    }
+    
+    feedYtPlayer = new YT.Player('feedPlayerTarget', {
+        height: '100%',
+        width: '100%',
+        videoId: item.ytId,
+        playerVars: {
+            'autoplay': 1,
+            'controls': 0,
+            'modestbranding': 1,
+            'rel': 0,
+            'showinfo': 0,
+            'playsinline': 1,
+            'loop': 1,
+            'playlist': item.ytId
+        },
+        events: {
+            'onReady': function(event) {
+                event.target.playVideo();
+                try { event.target.unMute(); event.target.setVolume(100); } catch(e) {}
+            },
+            'onStateChange': function(event) {
+                if (event.data === YT.PlayerState.ENDED) {
+                    event.target.seekTo(0);
+                    event.target.playVideo();
+                }
+            }
+        }
+    });
+    
+    animateShortCaption(item.title);
+    updateVideoCounter();
+}
+
+function openVideoFeed(ytId, title) {
+    // এই ytId কোন ইনডেক্সে আছে খুঁজে বের করি
+    const index = originalFeedData.findIndex(item => item.ytId === ytId);
+    if (index !== -1) {
+        currentFeedIndex = index;
+    }
+    
+    const overlay = document.getElementById('videoOverlay');
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    loadFeedVideo(currentFeedIndex);
+    
+    if (typeof SOUNDS !== 'undefined') SOUNDS.imageOpen();
+}
+
+function closeVideoFeed() {
+    const overlay = document.getElementById('videoOverlay');
+    const iframeContainer = document.getElementById('videoFeedIframeContainer');
+    
+    if (feedYtPlayer && typeof feedYtPlayer.destroy === 'function') {
+        try { feedYtPlayer.destroy(); } catch(e) {}
+    }
+    feedYtPlayer = null;
+    if (iframeContainer) iframeContainer.innerHTML = '';
+    
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+    
+    resumeFeed();
+    if (typeof SOUNDS !== 'undefined') SOUNDS.imageClose();
+}
+
+function navigateFeedVideo(direction) {
+    let newIndex = currentFeedIndex + direction;
+    if (newIndex < 0) newIndex = originalFeedData.length - 1;
+    if (newIndex >= originalFeedData.length) newIndex = 0;
+    
+    if (typeof SOUNDS !== 'undefined') SOUNDS.navigate();
+    loadFeedVideo(newIndex);
+}
+
+function toggleFeedVideoPlayPause() {
+    if (!feedYtPlayer || typeof feedYtPlayer.getPlayerState !== 'function') return;
+    
+    const state = feedYtPlayer.getPlayerState();
+    
+    if (state === YT.PlayerState.PLAYING) {
+        feedYtPlayer.pauseVideo();
+        isFeedVideoPlaying = false;
+        showPlayPauseIcon(true); // পজ আইকন দেখাও
+    } else {
+        feedYtPlayer.playVideo();
+        isFeedVideoPlaying = true;
+        showPlayPauseIcon(false); // প্লে আইকন দেখাও
+    }
+}
+
+// ===== SHORTS PLAYER TAP & SWIPE SYSTEM =====
+document.addEventListener('DOMContentLoaded', function() {
+var tapLayer = document.getElementById('videoFeedTapLayer');
+if (!tapLayer) return;
+    
+    var tapTimeout = null;
+    var touchStartY = 0;
+    var touchStartTime = 0;
+    var isSwiping = false;
+    
+    // টাচ শুরু
+    tapLayer.addEventListener('touchstart', function(e) {
+        touchStartY = e.touches[0].clientY;
+        touchStartTime = Date.now();
+        isSwiping = false;
+    }, { passive: true });
+    
+    // টাচ চলছে (সোয়াইপ ডিটেক্ট)
+    tapLayer.addEventListener('touchmove', function(e) {
+        var currentY = e.touches[0].clientY;
+        var deltaY = Math.abs(currentY - touchStartY);
+        if (deltaY > 30) {
+            isSwiping = true;
+        }
+    }, { passive: true });
+    
+    // টাচ শেষ
+    tapLayer.addEventListener('touchend', function(e) {
+        var touchEndY = e.changedTouches[0].clientY;
+        var deltaY = touchEndY - touchStartY;
+        var timeDiff = Date.now() - touchStartTime;
+        
+        // যদি সোয়াইপ হয় (উপরে বা নিচে)
+        if (isSwiping && Math.abs(deltaY) > 50) {
+            if (deltaY < 0) {
+                // উপরে সোয়াইপ = পরের ভিডিও
+                navigateFeedVideo(1);
+            } else {
+                // নিচে সোয়াইপ = আগের ভিডিও
+                navigateFeedVideo(-1);
+            }
+            return;
+        }
+        
+        // যদি ট্যাপ হয় (সময় ৩০০ms এর কম)
+        if (timeDiff < 300 && !isSwiping) {
+            if (tapTimeout) {
+                // ডাবল ট্যাপ = ইউটিউবে নিয়ে যাও
+                clearTimeout(tapTimeout);
+                tapTimeout = null;
+                var item = originalFeedData[currentFeedIndex];
+                if (item) {
+                    window.open('https://www.youtube.com/watch?v=' + item.ytId, '_blank');
+                }
+            } else {
+                // সিঙ্গেল ট্যাপ = পজ/প্লে
+                tapTimeout = setTimeout(function() {
+                    toggleFeedVideoPlayPause();
+                    tapTimeout = null;
+                }, 280);
+            }
+        }
+    }, { passive: true });
+    
+    // মাউস ক্লিক সাপোর্ট (পিসির জন্য)
+    tapLayer.addEventListener('click', function(e) {
+        if (tapTimeout) {
+            clearTimeout(tapTimeout);
+            tapTimeout = null;
+            var item = originalFeedData[currentFeedIndex];
+            if (item) {
+                window.open('https://www.youtube.com/watch?v=' + item.ytId, '_blank');
+            }
+        } else {
+            tapTimeout = setTimeout(function() {
+                toggleFeedVideoPlayPause();
+                tapTimeout = null;
+            }, 280);
+        }
+    });
+    
+    // মাউস হুইল দিয়ে স্ক্রল (পিসির জন্য)
+    tapLayer.addEventListener('wheel', function(e) {
+        e.preventDefault();
+        if (e.deltaY > 0) {
+            navigateFeedVideo(1);
+        } else {
+            navigateFeedVideo(-1);
+        }
+    }, { passive: false });
+    
+    // কীবোর্ড সাপোর্ট (পিসির জন্য)
+    document.addEventListener('keydown', function(e) {
+        var overlay = document.getElementById('videoOverlay');
+        if (!overlay || !overlay.classList.contains('active')) return;
+        
+        if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            navigateFeedVideo(-1);
+        } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            navigateFeedVideo(1);
+        } else if (e.key === ' ') {
+            e.preventDefault();
+            toggleFeedVideoPlayPause();
+        } else if (e.key === 'Escape') {
+            closeVideoFeed();
+        }
+    });
+});
+// ===== END SHORTS PLAYER TAP & SWIPE SYSTEM =====
 window.galleryItems = [
 { img: "https://i.pinimg.com/736x/3e/94/a1/3e94a10eee20dfaed6cb34c81b743e08.jpg", cap: "খোকা 🥺", date: "2026-10-11", time: "12:55 PM", ytId: "8qSV3gvqN00", start: 35, end: 74 },
 { img: "https://i.pinimg.com/736x/7c/cf/1b/7ccf1b7914e6f980becaef5c42d204b6.jpg", cap: "Honey In 2050 🙂", date: "2026-10-10", time: "3:40 PM", ytId: "L6Lt8YHvE9o", start: 00, end: 36 },
@@ -1080,6 +1780,58 @@ ${datetimeHtml}
 gallery.insertAdjacentHTML('beforeend', html);
 });
 </script>
+</div>
+
+<section>
+<h2 class="animated-title" id="fbGroupTxt"><span>▶</span> In our Facebook group :-</h2>
+<button class="btn-premium" onclick="window.open('https://www.facebook.com/groups/honeysajeeb', '_blank')">
+<svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" class="mr-1"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+<span id="joinBtnText">Join Now</span>
+</button>
+</section>
+<section>
+<h2 class="animated-title" id="watchTxt"><span>▶</span> Watch full cartoon videos :-</h2>
+<button class="btn-premium" onclick="window.open('https://www.tiktok.com/@honey_owner_sajeeb/collection/HE%F0%9F%8E%AFHoney%20Bunny%20Full%20Episode%F0%9F%8E%AD-7601366338283506433?is_from_webapp=1&sender_device=pc', '_blank')">
+<svg width="20" height="20" fill="currentColor" viewBox="0 0 448 512" class="mr-1"><path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/></svg>
+<span id="watchBtnText">Watch Now</span>
+</button>
+</section>
+<section>
+<h2 class="animated-title" id="ownerProfileTxt"><span>▶</span> Owner Profile :-</h2>
+<button class="btn-premium" onclick="window.open('https://www.facebook.com/SAJEEBSAHA.S', '_blank')">
+<svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" class="mr-1"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+<span id="ownerBtnText">Sajeeb Saha</span>
+</button>
+</section>
+<div class="flex flex-col items-center">
+<span class="ai-status-text" id="aiStatusTxt"><span class="highlight-ai">Subscribe</span>to Honey Entertainment's YouTube channel to get all the cartoon videos first</span>
+<div class="visit-status-text">
+<span id="visitStatusTxt">Subscribe</span>
+<svg class="bell-icon" width="20" height="20" viewBox="0 0 24 24">
+<path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+</svg>
+</div>
+<div class="scroll-indicator"></div>
+</div>
+<section>
+<h2 class="animated-title" id="newTxt"><span>▶</span> YouTube :-</h2>
+<button class="btn-premium" onclick="window.open('https://youtube.com/@he.s1?si=zVRmKIYJKT9Dzs3ep', '_blank')">
+<svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" class="mr-1"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+<span>HE</span>
+</button>
+</section>
+<section>
+<p class="text-[13px] opacity-60 font-black uppercase tracking-[0.25em] mb-6" id="followTxt">❁Follow us to stay connected❁</p>
+<div class="social-container">
+<a href="https://www.facebook.com/share/1APsixLhgv/" target="_blank" class="social-box">
+<svg width="32" height="32" fill="#1877F2" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+</a>
+<a href="https://www.tiktok.com/@honey_owner_sajeeb" target="_blank" class="social-box">
+<svg width="32" height="32" fill="currentColor" viewBox="0 0 448 512"><path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/></svg>
+</a>
+<a href="https://www.instagram.com/honey_entertainment1?igsh=bzl5bTB4bWlqMWtj" target="_blank" class="social-box">
+<svg width="32" height="32" fill="#E4405F" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+</a>
 </div>
 </section>
 <div class="thank-you-bar" id="thankYouBar" onclick="triggerEffect(event); event.stopPropagation()">
@@ -1261,6 +2013,7 @@ function toggleYtPlayPause() {
     if (typeof SOUNDS !== 'undefined') SOUNDS.click();
 }
 
+
 function updatePlayPauseUI() {
     const label = document.getElementById('playPauseValue');
     const t = translations[currentLang]; // এই লাইনটি ভাষা অনুযায়ী শব্দ ঠিক করবে
@@ -1302,7 +2055,11 @@ filterHoneySticker: 'Honey Sticker 🥀',
 filter2026: '2026',
 filter2025: '2025',
 filterEmoji: '😃',
-filterFifa: 'FIFA 2026'
+filterFifa: 'FIFA 2026',
+rightClickDisabled: '⚠️ Right Click is disabled on HE',
+longPressDisabled: '⚠️ Long Press is disabled on HE',
+feedTitle: 'Trending Shorts',
+menuFbGroup: 'Facebook Group',menuOwnerProfile: 'Owner Profile',menuYoutube: 'YouTube Channel',menuFbPage: 'Facebook Page',menuTiktok: 'TikTok',menuInstagram: 'Instagram',
 },
 BN: {
 follow: '⤹ যোগাযোগ রাখতে আমাদের ফলো করুন ⤸',
@@ -1335,7 +2092,11 @@ filterHoneySticker: 'Honey স্টিকার 🥀',
 filter2026: '2026',
 filter2025: '2025',
 filterEmoji: '😃',
-filterFifa: 'FIFA 2026'
+filterFifa: 'FIFA 2026',
+rightClickDisabled: '⚠️ রাইট ক্লিক এই HE তে নিষিদ্ধ',
+longPressDisabled: '⚠️ লং প্রেস এই HE তে নিষিদ্ধ',
+feedTitle: 'Trending Shorts',
+menuFbGroup: 'ফেসবুক গ্রুপ',menuOwnerProfile: 'Owner Profile',menuYoutube: 'ইউটিউব চ্যানেল',menuFbPage: 'ফেসবুক পেজ',menuTiktok: 'Tiktok',menuInstagram: 'Instagram',
 }
 };
 let audioCtx = null;
@@ -1533,6 +2294,7 @@ toggleMenu();
 function toggleLang() {
 currentLang = currentLang === 'EN' ? 'BN' : 'EN';
 const t = translations[currentLang];
+document.getElementById('feedTitleText').innerText = t.feedTitle;
 document.getElementById('followTxt').innerText = t.follow;
 document.getElementById('fbGroupTxt').innerHTML = `<span>▶</span> ${t.fbGroup}`;
 document.getElementById('watchTxt').innerHTML = `<span>▶</span> ${t.watch}`;
@@ -1556,6 +2318,7 @@ document.getElementById('filter2026').innerText = t.filter2026;
 document.getElementById('filter2025').innerText = t.filter2025;
 document.getElementById('filterEmoji').innerText = t.filterEmoji;
 document.getElementById('filterFifa').innerText = t.filterFifa;
+
 const soundLabel = document.getElementById('soundToggleLabel');
 soundLabel.innerText = soundEnabled ? t.soundOn : t.soundOff;
 SOUNDS.langSwitch();
@@ -2476,6 +3239,7 @@ setTimeout(() => { loader.style.display = 'none'; }, 600);
 setTimeout(initScrollReveal, 500);
 });
 document.addEventListener('DOMContentLoaded', () => {
+    renderVideoFeed();
 document.querySelectorAll('.btn-premium').forEach(btn => {
 btn.addEventListener('mouseenter', () => SOUNDS.hover());
 btn.addEventListener('click', () => SOUNDS.click());
@@ -2507,39 +3271,36 @@ backToTopBtn.addEventListener('mouseenter', () => SOUNDS.hover());
 // ১. রাইট ক্লিক মেনু বন্ধ করা
 document.addEventListener('contextmenu', function(e) {
     e.preventDefault();
+    // ডিটেক্ট করা হচ্ছে ফোন নাকি কম্পিউটার
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || e.pointerType === 'touch';
+    const msg = isMobile ? translations[currentLang].longPressDisabled : translations[currentLang].rightClickDisabled;
     if (typeof showToast === 'function') {
-        showToast('Sorry ❗LONG PRESS❗ is disabled on HE ', 2500);
+        showToast(msg, 2500);
     }
 });
-
-// ২. কোড দেখার শর্টকাট এবং কি-বোর্ড বাটন বন্ধ করা
-document.addEventListener('keydown', function(e) {
-    // F12 বন্ধ করা
-    if (e.keyCode === 123) { 
-        e.preventDefault();
-        if (typeof showToast === 'function') showToast('⚠️ F12 is disabled!', 2500);
-        return false;
-    }
-    // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C বন্ধ করা
-    if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) { 
-        e.preventDefault();
-        if (typeof showToast === 'function') showToast('⚠️ Shortcut disabled!', 2500);
-        return false;
-    }
-    // Ctrl+U (View Source) বন্ধ করা
-    if (e.ctrlKey && e.keyCode === 85) { 
-        e.preventDefault();
-        if (typeof showToast === 'function') showToast('⚠️ View Source is disabled!', 2500);
-        return false;
-    }
-    // Ctrl+S (Page Save) বন্ধ করা
-    if (e.ctrlKey && e.keyCode === 83) { 
-        e.preventDefault();
-        if (typeof showToast === 'function') showToast('⚠️ Saving page is disabled!', 2500);
-        return false;
-    }
-});
-// ===== END SOURCE CODE PROTECTION =====
 </script>
+<div id="videoOverlay">
+    <div class="short-player-wrapper">
+        <button class="close-video-btn" onclick="closeVideoFeed()">×</button>
+        <div class="short-video-counter" id="shortVideoCounter">1 / 4</div>
+        
+        <div class="short-video-container">
+            <div id="videoFeedIframeContainer" style="width:100%;height:100%;"></div>
+        </div>
+        
+        <div class="short-tap-layer" id="videoFeedTapLayer"></div>
+        
+        <div class="short-play-pause-icon" id="shortPlayPauseIcon">
+            <svg id="shortPauseSvg" viewBox="0 0 24 24" style="display:none;">
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+            <svg id="shortPlaySvg" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+            </svg>
+        </div>
+        
+        <div class="short-caption-bar" id="shortCaptionBar"></div>
+    </div>
+</div>
 </body>
 </html>
