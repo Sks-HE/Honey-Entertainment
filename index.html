@@ -678,8 +678,8 @@ backdrop-filter: blur(25px) saturate(180%);
 @keyframes wordFall { 0% { opacity: 0; transform: translateY(-30px) rotate(-10deg); } 60% { transform: translateY(4px) rotate(3deg); } 100% { opacity: 1; transform: translateY(0) rotate(0deg); } }
 #fullscreenOverlay .caption-overlay .fall-word { display: inline-block; opacity: 0; animation: wordFall 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; margin: 0 1px; }
 #fullscreenOverlay .caption-overlay .en-text, #fullscreenOverlay .caption-overlay span[lang="en"] { font-family: 'Caveat', cursive; font-size: 15px; font-weight: 600; }
-#fullscreenOverlay .nav-btn { position: absolute; top: 50%; transform: translateY(-50%) scaleX(0.6); background: transparent; color: #000000; border: none; width: auto; height: auto; font-size: 28px; cursor: pointer; z-index: 2100; display: flex; align-items: center; justify-content: center; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); user-select: none; -webkit-tap-highlight-color: transparent; padding: 15px; font-weight: 200; }
-body.dark-mode #fullscreenOverlay .nav-btn { color: #ffffff !important; }
+#fullscreenOverlay .nav-btn { position: absolute; top: 50%; transform: translateY(-50%) scaleX(0.6); background: transparent; color: #000000; border: none; width: auto; height: auto; font-size: 28px; cursor: pointer; z-index: 2100; display: flex; align-items: center; justify-content: center; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); user-select: none; -webkit-tap-highlight-color: transparent; padding: 15px; font-weight: 200; text-shadow: -1px -1px 0 #ffffff, 1px -1px 0 #ffffff, -1px 1px 0 #ffffff, 1px 1px 0 #ffffff; }
+body.dark-mode #fullscreenOverlay .nav-btn { color: #ffffff !important; text-shadow: -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 1px 1px 0 #000000 !important; }
 #fullscreenOverlay .nav-btn:hover { color: var(--accent); transform: translateY(-50%) scaleX(0.6) scaleY(1.15); text-shadow: 0 0 20px var(--accent); }
 #fullscreenOverlay .nav-btn:active { transform: translateY(-50%) scaleX(0.6) scaleY(0.95); }
 #fullscreenOverlay .nav-btn.prev { left: 15px; }
@@ -687,8 +687,8 @@ body.dark-mode #fullscreenOverlay .nav-btn { color: #ffffff !important; }
 .swipe-hint-container { position: absolute; bottom: 35px; left: 50%; transform: translateX(-50%); display: none; flex-direction: column; align-items: center; gap: 4px; z-index: 2100; opacity: 0; transition: opacity 0.5s ease; }
 .swipe-hint-container.visible { display: flex; opacity: 1; }
 .swipe-hint-container.hidden { opacity: 0; }
-.swipe-text { color: rgba(0, 0, 0, 0.7); font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; background: linear-gradient(90deg, #000, #555, #000); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shimmerSwipe 3s infinite linear; font-family: 'Inter', sans-serif; }
-body.dark-mode .swipe-text { color: rgba(255, 255, 255, 0.8); background: linear-gradient(90deg, #aaa, #fff, #aaa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.swipe-text { color: rgba(0, 0, 0, 0.7); font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; background: linear-gradient(90deg, #000, #555, #000); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shimmerSwipe 3s infinite linear; font-family: 'Inter', sans-serif; filter: drop-shadow(-1px -1px 0 #ffffff) drop-shadow(1px -1px 0 #ffffff) drop-shadow(-1px 1px 0 #ffffff) drop-shadow(1px 1px 0 #ffffff); }
+body.dark-mode .swipe-text { color: rgba(255, 255, 255, 0.8); background: linear-gradient(90deg, #aaa, #fff, #aaa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(-1px -1px 0 #000000) drop-shadow(1px -1px 0 #000000) drop-shadow(-1px 1px 0 #000000) drop-shadow(1px 1px 0 #000000) !important; }
 @keyframes shimmerSwipe { to { background-position: 200% center; } }
 /* ===== NAVIGATION ARROWS (MODE-AWARE) ===== */
 .arrow-wrapper { 
@@ -699,22 +699,16 @@ body.dark-mode .swipe-text { color: rgba(255, 255, 255, 0.8); background: linear
     align-items: center; 
     overflow: hidden; 
 }
-.arrow-icon { 
-    position: absolute; 
-    animation: slideArrowSwipe 2s infinite cubic-bezier(0.4, 0, 0.2, 1); 
-    color: #ffffff; /* Dark mode এর জন্য ডিফল্ট সাদা */
+.arrow-icon {
+position: absolute;
+animation: slideArrowSwipe 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+color: #000000;
+filter: drop-shadow(-1px -1px 0 #ffffff) drop-shadow(1px -1px 0 #ffffff) drop-shadow(-1px 1px 0 #ffffff) drop-shadow(1px 1px 0 #ffffff);
 }
-/* Light mode এ কালো arrow */
-body.light-mode .arrow-icon { 
-    color: #000000 !important; 
-}
-/* Honey mode এ কালো arrow */
-body.honey-mode .arrow-icon { 
-    color: #000000 !important; 
-}
-/* Dark mode এ সাদা arrow (ডিফল্ট) */
-body.dark-mode .arrow-icon { 
-    color: #ffffff !important; 
+/* Dark mode এ সাদা arrow */
+body.dark-mode .arrow-icon {
+color: #ffffff !important;
+filter: drop-shadow(-1px -1px 0 #000000) drop-shadow(1px -1px 0 #000000) drop-shadow(-1px 1px 0 #000000) drop-shadow(1px 1px 0 #000000) !important;
 }
 @keyframes slideArrowSwipe { 
     0% { transform: translateX(-100%); opacity: 0; } 
