@@ -684,7 +684,7 @@ body.dark-mode #fullscreenOverlay .nav-btn { color: #ffffff !important; text-sha
 #fullscreenOverlay .nav-btn:active { transform: translateY(-50%) scaleX(0.6) scaleY(0.95); }
 #fullscreenOverlay .nav-btn.prev { left: 15px; }
 #fullscreenOverlay .nav-btn.next { right: 15px; }
-.swipe-hint-container { position: absolute; bottom: 35px; left: 50%; transform: translateX(-50%); display: none; flex-direction: column; align-items: center; gap: 4px; z-index: 2100; opacity: 0; transition: opacity 0.5s ease; }
+.swipe-hint-container { position: absolute; left: 50%; transform: translateX(-50%); display: none; flex-direction: column; align-items: center; gap: 4px; z-index: 2100; opacity: 0; transition: opacity 0.5s ease, top 0.3s ease; }
 .swipe-hint-container.visible { display: flex; opacity: 1; }
 .swipe-hint-container.hidden { opacity: 0; }
 .swipe-text { color: rgba(0, 0, 0, 0.7); font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; background: linear-gradient(90deg, #000, #555, #000); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shimmerSwipe 3s infinite linear; font-family: 'Inter', sans-serif; filter: drop-shadow(-1px -1px 0 #ffffff) drop-shadow(1px -1px 0 #ffffff) drop-shadow(-1px 1px 0 #ffffff) drop-shadow(1px 1px 0 #ffffff); }
@@ -982,7 +982,7 @@ body.dark-mode .swipe-zoom-icon svg {
 .detail-value { font-size: 11px; }
 .close-btn { width: 46px; height: 46px; font-size: 24px; top: 15px; left: 15px; }
 .top-decorative-bar { top: 58px; height: 5px; }
-.swipe-hint-container { bottom: 25px; left: 50%; transform: translateX(-50%); right: auto; top: auto; }
+.swipe-hint-container { left: 50%; transform: translateX(-50%); right: auto; }
 .swipe-text { font-size: 9px; letter-spacing: 2px; }
 .arrow-wrapper { width: 26px; height: 14px; }
 .back-to-top-btn { width: 38px; height: 38px; bottom: 22px; right: 22px; }
@@ -2463,11 +2463,37 @@ function showSwipeHint() {
 const swipeHint = document.getElementById('swipeHint');
 swipeHint.classList.remove('hidden');
 swipeHint.classList.add('visible');
+updateSwipeHintPosition();
 swipeHideTimer = setTimeout(() => {
 swipeHint.classList.remove('visible');
 swipeHint.classList.add('hidden');
 swipeCycleTimer = setTimeout(() => { showSwipeHint(); }, 5000);
 }, 5000);
+}
+function updateSwipeHintPosition() {
+    const img = document.getElementById('fullImg');
+    const hint = document.getElementById('swipeHint');
+    if (!img || !hint) return;
+    
+    const imgRect = img.getBoundingClientRect();
+    const screenHeight = window.innerHeight;
+    const imgBottom = imgRect.bottom;
+    const emptySpaceHeight = screenHeight - imgBottom;
+    const hintHeight = hint.offsetHeight || 30; 
+    
+    // ফাঁকা জায়গার ঠিক মাঝখানে নিয়ে যাওয়ার হিসাব
+    let topPosition = imgBottom + (emptySpaceHeight / 2) - (hintHeight / 2);
+    
+    // স্ক্রিনের বাইরে চলে গেলে ঠিক করার জন্য
+    if (topPosition + hintHeight > screenHeight - 10) {
+        topPosition = screenHeight - hintHeight - 10;
+    }
+    if (topPosition < imgBottom + 5) {
+        topPosition = imgBottom + 5;
+    }
+    
+    hint.style.top = topPosition + 'px';
+    hint.style.bottom = 'auto';
 }
 function startSwipeHintTimer() {
 resetSwipeHintTimers();
@@ -2780,9 +2806,11 @@ const width = this.naturalWidth;
 const height = this.naturalHeight;
 if (width > 0 && height > 0) { document.getElementById('detailSize').textContent = `${width} × ${height} px`; }
 else { document.getElementById('detailSize').textContent = t.notFound; }
+updateSwipeHintPosition();
 };
 img.onerror = function() { document.getElementById('detailSize').textContent = t.loadFailed; };
 img.src = item.img;
+updateSwipeHintPosition();
 animateCaption(item.cap);
 updatePhotoDetails(item);
 document.getElementById('fullscreenOverlay').style.display = 'flex';
@@ -2840,9 +2868,11 @@ const width = this.naturalWidth;
 const height = this.naturalHeight;
 if (width > 0 && height > 0) { document.getElementById('detailSize').textContent = `${width} × ${height} px`; }
 else { document.getElementById('detailSize').textContent = t.notFound; }
+updateSwipeHintPosition();
 };
 img.onerror = function() { document.getElementById('detailSize').textContent = t.loadFailed; };
 img.src = item.img;
+updateSwipeHintPosition();
 loadAndPlayYt(currentGalleryIndex);
 animateCaption(item.cap);
 updatePhotoDetails(item);
@@ -3327,6 +3357,7 @@ function applyFilter(filterType, btnElement) {
     }, 450);
 }
 
+window.addEventListener('resize', updateSwipeHintPosition);
 window.addEventListener('load', () => {
 const loader = document.getElementById('pageLoader');
 setTimeout(() => {
