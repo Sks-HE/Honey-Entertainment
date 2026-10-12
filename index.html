@@ -307,6 +307,8 @@ footer { animation: fadeInUp 0.6s ease-out forwards; animation-delay: 1.5s; opac
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     touch-action: pan-y;
+    padding: 10px; /* স্ক্রিনের একদম কিনারা থেকে একটু ফাঁকা রাখা হলো */
+    box-sizing: border-box;
 }
 #videoOverlay.active { display: flex; }
 
@@ -314,16 +316,17 @@ footer { animation: fadeInUp 0.6s ease-out forwards; animation-delay: 1.5s; opac
     position: relative;
     width: 100%;
     max-width: 420px;
-    height: 100vh;
-    max-height: 100vh;
+    height: 92dvh; /* মোবাইল ব্রাউজারের বারের জন্য ডাইনামিক হাইট */
+    max-height: 92vh; /* পুরনো ব্রাউজারের জন্য ফলব্যাক */
     background: #000;
     overflow: hidden;
     box-shadow: 0 0 60px rgba(0,0,0,0.8);
+    border-radius: 15px; /* মোবাইলে দেখতে সুন্দর লাগবে */
 }
 
 @media (min-width: 500px) {
     .short-player-wrapper {
-        height: 90vh;
+        height: 88vh;
         max-height: 850px;
         border-radius: 20px;
         border: 2px solid rgba(255,255,255,0.1);
