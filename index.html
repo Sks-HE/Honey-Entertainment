@@ -222,6 +222,15 @@ footer { animation: fadeInUp 0.6s ease-out forwards; animation-delay: 1.5s; opac
 .menu-item.sound-on .sound-toggle { background: #22c55e; }
 .menu-item.sound-on .sound-toggle::after { transform: translateX(16px); }
 .header-wrapper { display: flex; align-items: center; gap: 15px; }
+.header-wrapper h1 {
+    height: 60px; /* লোগোর হাইটের (60px) সমান করে দিলাম */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* লেখাটা লোগোর ঠিক মাঝখানে সেট হবে */
+    margin: 0;
+    font-size: 22px !important; /* ফন্ট সাইজ ছোট করে লোগোর ভেতরে ফিট করা হলো */
+    line-height: 1.15 !important;
+}
 .custom-logo-placeholder { width: 60px; height: 60px; border-radius: 12px; border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; background: var(--card-bg); flex-shrink: 0; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease; }
 .custom-logo-placeholder:hover { transform: scale(1.05) rotate(-3deg); box-shadow: 0 8px 20px var(--glow-color); }
 .custom-logo-placeholder img { 
@@ -1198,6 +1207,98 @@ body.dark-mode .zoom-hint-container svg {
     0%, 100% { box-shadow: 0 4px 15px rgba(255, 0, 0, 0.5); }
     50% { box-shadow: 0 4px 25px rgba(255, 0, 0, 0.9); }
 }
+/* ===== DESKTOP / LAPTOP VIEW OPTIMIZATION ===== */
+@media (min-width: 992px) {
+    /* Main container ke wide kora */
+    .app-container {
+        max-width: 1200px;
+        padding: 50px 40px;
+        gap: 50px;
+    }
+
+    /* Header ke desktop friendly kora */
+    .header-wrapper {
+        gap: 25px;
+    }
+    .custom-logo-placeholder {
+        width: 80px;
+        height: 80px;
+    }
+    .header-wrapper h1 {
+        height: 80px; /* ডেস্কটপে লোগোর হাইটের (80px) সমান */
+        font-size: 28px !important; /* ডেস্কটপের জন্য একটু বড় ফন্ট */
+        line-height: 1.2 !important;
+    }
+
+    /* Collection grid ke 3 column kora */
+    .collection-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+    }
+
+    /* Trending shorts er card ektu boro kora */
+    .feed-item {
+        width: 160px;
+        height: 230px;
+    }
+    .horizontal-feed-container {
+        gap: 25px;
+    }
+
+    /* Button guloke desktop size dewa */
+    .btn-premium {
+        padding: 16px 32px;
+        font-size: 15px;
+    }
+
+    /* Social box guloke ektu boro kora */
+    .social-box {
+        width: 80px;
+        height: 80px;
+    }
+    .social-container {
+        gap: 35px;
+    }
+
+    /* Menu dropdown ke desktop friendly kora */
+    .menu-container {
+        top: 30px;
+        right: 40px;
+    }
+    .dropdown-menu {
+        width: 240px;
+        top: 65px;
+    }
+    .menu-item {
+        padding: 16px 20px;
+        font-size: 15px;
+    }
+
+    /* Filter bar er button boro kora */
+    .filter-btn {
+        padding: 12px 28px;
+        font-size: 15px;
+    }
+
+    /* Thank you bar */
+    .thank-you-bar {
+        width: 60%;
+        padding: 16px 24px;
+    }
+    
+    /* Post caption */
+    .post-caption {
+        font-size: 17px;
+        padding: 12px 16px;
+    }
+    
+    /* Animated title */
+    .animated-title {
+        font-size: 22px;
+        margin-bottom: 20px;
+    }
+}
+
 </style>
 </head>
 <body class="honey-mode" onclick="resetAllCaptions(event)">
@@ -1271,7 +1372,7 @@ body.dark-mode .zoom-hint-container svg {
 <div class="custom-logo-placeholder">
 <img src="https://i.pinimg.com/736x/96/5f/f8/965ff82713b7a1ef6e3ffb782fcdc412.jpg" alt="Logo">
 </div>
-<h1 class="text-4xl font-black italic shimmer-text tracking-tighter leading-tight">HONEY<br>ENTERTAINMENT</h1>
+<h1 class="text-4xl font-black shimmer-text tracking-tighter leading-tight">HONEY<br>ENTERTAINMENT</h1>
 </header>
 <section class="video-feed-section">
     <h2 class="animated-title"><span>▶</span> <span id="feedTitleText">Trending Shorts</span></h2>
