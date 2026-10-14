@@ -264,24 +264,30 @@ footer { animation: fadeInUp 0.6s ease-out forwards; animation-delay: 1.5s; opac
 /* ===== HORIZONTAL VIDEO FEED ===== */
 .video-feed-section { width: 100%; margin-bottom: 10px; overflow: hidden; }
 .horizontal-feed-container {
-    display: flex;
-    gap: 20px;
-    padding: 20px 0;
-    overflow: hidden;
-    width: 100%;
+display: flex;
+gap: 20px;
+padding: 20px 0;
+overflow-x: scroll;
+width: 100%;
+scroll-behavior: smooth;
+scrollbar-width: none;
+-ms-overflow-style: none;
+scroll-snap-type: x mandatory;
 }
+.horizontal-feed-container::-webkit-scrollbar { display: none; }
 .feed-item {
-    flex-shrink: 0;
-    width: 130px;
-    height: 190px;
-    cursor: pointer;
-    transition: transform 0.1s linear, opacity 0.1s linear;
-    position: relative;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    border: 2px solid rgba(255,255,255,0.1);
-    transform-origin: center center;
+flex-shrink: 0;
+width: 130px;
+height: 190px;
+cursor: pointer;
+position: relative;
+border-radius: 15px;
+overflow: hidden;
+box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+border: 2px solid rgba(255,255,255,0.1);
+transform-origin: center center;
+transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s ease;
+scroll-snap-align: center;
 }
 .feed-item img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
 .feed-item-title {
@@ -1333,111 +1339,134 @@ function renderVideoFeed() {
             openVideoFeed(item.dataset.ytid, item.dataset.title);
         });
     });
-    startFeedAnimation();
+  initFeedCarousel();
 }
 
-let feedPaused = false;
-let feedStepTimeout = null;
+// ===== NEW SMOOTH CAROUSEL SYSTEM =====
+const feedContainer = document.getElementById('videoFeedContainer');
+let feedAutoScrollTimeout = null;
+let isFeedPaused = false;
 
-function startFeedAnimation() {
-    const container = document.getElementById('videoFeedContainer');
-    if (!container) return;
-    
-    const itemWidth = 130;
-    const gap = 20;
-    const stepSize = itemWidth + gap;
-    let currentStep = 0;
-    
-    function scrollToNextStep() {
-        if (feedPaused) return;
-        
-        currentStep++;
-        const targetScroll = currentStep * stepSize;
-        
-        container.scrollTo({
-            left: targetScroll,
+// ১. মাঝখানের আইটেম বড় করার স্মুথ লজিক
+function updateFeedScales() {
+    const items = feedContainer.querySelectorAll('.feed-item');
+    const containerRect = feedContainer.getBoundingClientRect();
+    const containerCenter = containerRect.left + containerRect.width / 2;
+
+    items.forEach(item => {
+        const itemRect = item.getBoundingClientRect();
+        const itemCenter = itemRect.left + itemRect.width / 2;
+        const distance = Math.abs(containerCenter - itemCenter);
+        const maxDistance = containerRect.width / 2;
+
+        // স্কেল এবং অপাসিটি হিসাব
+        const scale = 1.15 - (distance / maxDistance) * 0.45;
+        const clampedScale = Math.max(0.7, Math.min(1.15, scale));
+
+        item.style.transform = `scale(${clampedScale})`;
+        item.style.opacity = 0.5 + (clampedScale - 0.7) * 1.2;
+    });
+}
+
+// স্ক্রল হওয়ার সাথে সাথে স্কেল আপডেট করা
+feedContainer.addEventListener('scroll', updateFeedScales);
+
+// ২. অটোমেটিক স্মুথ স্ক্রল এবং ৩ সেকেন্ড পজের লজিক
+function scrollToNextFeedItem() {
+    if (isFeedPaused) return;
+    const itemWidth = 150; // 130px width + 20px gap
+    const nextScroll = feedContainer.scrollLeft + itemWidth;
+
+    if (nextScroll >= feedContainer.scrollWidth - feedContainer.clientWidth - 10) {
+        feedContainer.scrollTo({ left: 0, behavior: 'smooth' });
+    } else {
+        feedContainer.scrollTo({ left: nextScroll, behavior: 'smooth' });
+    }
+
+    // ৩ সেকেন্ড মাঝখানে দেখাবে, তারপর পরেরটা আসবে (3000ms pause + 500ms scroll time)
+    feedAutoScrollTimeout = setTimeout(() => {
+        scrollToNextFeedItem();
+    }, 3500); 
+}
+
+function startFeedAutoScroll() {
+    isFeedPaused = false;
+    clearTimeout(feedAutoScrollTimeout);
+    feedAutoScrollTimeout = setTimeout(scrollToNextFeedItem, 2000);
+}
+
+function stopFeedAutoScroll() {
+    isFeedPaused = true;
+    clearTimeout(feedAutoScrollTimeout);
+}
+
+// ৩. হাত দিয়ে টেনে সরানোর (Swipe) লজিক
+let feedTouchStartX = 0;
+let isSwipingFeed = false;
+
+feedContainer.addEventListener('touchstart', (e) => {
+    stopFeedAutoScroll();
+    feedTouchStartX = e.touches[0].clientX;
+    isSwipingFeed = true;
+}, { passive: true });
+
+feedContainer.addEventListener('touchend', (e) => {
+    if (!isSwipingFeed) return;
+    isSwipingFeed = false;
+    snapToNearestFeedItem();
+    // ৩ সেকেন্ড পর আবার অটোমেটিক চালু হবে
+    feedAutoScrollTimeout = setTimeout(() => { startFeedAutoScroll(); }, 3000);
+}, { passive: true });
+
+// পিসির জন্য মাউস ড্র্যাগ লজিক
+feedContainer.addEventListener('mousedown', (e) => {
+    stopFeedAutoScroll();
+    feedTouchStartX = e.clientX;
+    isSwipingFeed = true;
+});
+
+window.addEventListener('mouseup', (e) => {
+    if (!isSwipingFeed) return;
+    isSwipingFeed = false;
+    snapToNearestFeedItem();
+    feedAutoScrollTimeout = setTimeout(() => { startFeedAutoScroll(); }, 3000);
+});
+
+// নিকটতম আইটেমের দিকে স্ন্যাপ করার ফাংশন
+function snapToNearestFeedItem() {
+    const items = feedContainer.querySelectorAll('.feed-item');
+    const containerRect = feedContainer.getBoundingClientRect();
+    const containerCenter = containerRect.left + containerRect.width / 2;
+    let closestItem = null;
+    let minDistance = Infinity;
+
+    items.forEach(item => {
+        const itemRect = item.getBoundingClientRect();
+        const itemCenter = itemRect.left + itemRect.width / 2;
+        const distance = Math.abs(containerCenter - itemCenter);
+        if (distance < minDistance) {
+            minDistance = distance;
+            closestItem = item;
+        }
+    });
+
+    if (closestItem) {
+        const itemRect = closestItem.getBoundingClientRect();
+        const itemCenter = itemRect.left + itemRect.width / 2;
+        const offset = itemCenter - containerCenter;
+        feedContainer.scrollTo({
+            left: feedContainer.scrollLeft + offset,
             behavior: 'smooth'
         });
-        
-        if (currentStep >= originalFeedData.length) {
-            setTimeout(() => {
-                if (!feedPaused) {
-                    container.style.scrollBehavior = 'auto';
-                    container.scrollLeft = 0;
-                    container.style.scrollBehavior = '';
-                    currentStep = 0;
-                }
-            }, 1200);
-        }
-        
-        feedStepTimeout = setTimeout(scrollToNextStep, 3500); // ১ সেকেন্ড স্ক্রল + ২.৫ সেকেন্ড পজ
     }
-    
-    feedStepTimeout = setTimeout(scrollToNextStep, 2500);
-    
-    function updateScales() {
-        if (feedPaused) {
-            requestAnimationFrame(updateScales);
-            return;
-        }
-        const items = container.querySelectorAll('.feed-item');
-        const containerRect = container.getBoundingClientRect();
-        const containerCenter = containerRect.left + containerRect.width / 2;
-        items.forEach(item => {
-            const itemRect = item.getBoundingClientRect();
-            const itemCenter = itemRect.left + itemRect.width / 2;
-            const distance = Math.abs(containerCenter - itemCenter);
-            const maxDistance = containerRect.width / 2;
-            const scale = 1.15 - (distance / maxDistance) * 0.55;
-            const clampedScale = Math.max(0.6, Math.min(1.15, scale));
-            item.style.transform = 'scale(' + clampedScale + ')';
-            item.style.opacity = 0.4 + (clampedScale - 0.6) * 1.6;
-        });
-        requestAnimationFrame(updateScales);
-    }
-    updateScales();
 }
 
-// ভিডিও ওপেন হলে ফিড থামানোর ফাংশন
-function pauseFeed() {
-    const overlay = document.getElementById('videoOverlay'); if(overlay) overlay.style.pointerEvents = 'none';
-    feedPaused = true;
-    if (feedStepTimeout) clearTimeout(feedStepTimeout);
+// ৪. সব কিছু চালু করার মাস্টার ফাংশন
+function initFeedCarousel() {
+    updateFeedScales();
+    startFeedAutoScroll();
 }
-
-// ভিডিও ক্লোজ হলে ফিড আবার চালু করার ফাংশন
-function resumeFeed() {
-    const overlay = document.getElementById('videoOverlay'); if(overlay) overlay.style.pointerEvents = '';
-    feedPaused = false;
-    const container = document.getElementById('videoFeedContainer');
-    if (!container) return;
-    
-    const stepSize = 150;
-    let currentStep = Math.round(container.scrollLeft / stepSize);
-    
-    function scrollToNextStep() {
-        if (feedPaused) return;
-        currentStep++;
-        const targetScroll = currentStep * stepSize;
-        container.scrollTo({ left: targetScroll, behavior: 'smooth' });
-        
-        if (currentStep >= originalFeedData.length) {
-            setTimeout(() => {
-                if (!feedPaused) {
-                    container.style.scrollBehavior = 'auto';
-                    container.scrollLeft = 0;
-                    container.style.scrollBehavior = '';
-                    currentStep = 0;
-                }
-            }, 1200);
-        }
-        
-        feedStepTimeout = setTimeout(scrollToNextStep, 3500);
-    }
-    
-    feedStepTimeout = setTimeout(scrollToNextStep, 2500);
-}
-
+// ===== END NEW SMOOTH CAROUSEL SYSTEM =====
 let currentFeedIndex = 0;
 let isFeedVideoPlaying = true;
 let playPauseIconTimer = null;
@@ -1598,7 +1627,7 @@ function closeVideoFeed() {
     overlay.classList.remove('active');
     document.body.style.overflow = '';
     
-    resumeFeed();
+startFeedAutoScroll();
     if (typeof SOUNDS !== 'undefined') SOUNDS.imageClose();
 }
 
