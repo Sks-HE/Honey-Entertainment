@@ -3917,8 +3917,8 @@ backToTopBtn.addEventListener('mouseenter', () => SOUNDS.hover());
 });
 </script>
 <script>
-// ===== SOURCE CODE PROTECTION SYSTEM =====
-// ১. রাইট ক্লিক মেনু বন্ধ করা
+// ===== SOURCE CODE PROTECTION SYSTEM (ENHANCED) =====
+// ১. রাইট ক্লিক মেনু বন্ধ করা (আপনার আগের কোড)
 document.addEventListener('contextmenu', function(e) {
     e.preventDefault();
     // ডিটেক্ট করা হচ্ছে ফোন নাকি কম্পিউটার
@@ -3929,6 +3929,28 @@ document.addEventListener('contextmenu', function(e) {
     }
 });
 
+// ২. কিবোর্ড শর্টকাট ব্লক করা (Source Code & DevTools)
+document.addEventListener('keydown', function(e) {
+    // F12 কী ব্লক করা (DevTools Open)
+    if (e.key === 'F12') {
+        e.preventDefault();
+        return false;
+    }
+    
+    // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C ব্লক করা (Inspect Element & Console)
+    // Mac এর জন্য Cmd+Option+I, Cmd+Option+J, Cmd+Option+C ব্লক করা
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && ['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key)) {
+        e.preventDefault();
+        return false;
+    }
+    
+    // Ctrl+U ব্লক করা (View Page Source)
+    // Mac এর জন্য Cmd+U ব্লক করা
+    if ((e.ctrlKey || e.metaKey) && ['U', 'u'].includes(e.key)) {
+        e.preventDefault();
+        return false;
+    }
+});
 </script>
 <div id="videoOverlay">
     <div class="short-player-wrapper">
