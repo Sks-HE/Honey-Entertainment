@@ -280,7 +280,9 @@ transform: translateY(-7.5px) rotate(-45deg) !important;
 .shimmer-text { background: linear-gradient(90deg, var(--text-color), var(--accent), #fb923c, var(--text-color)); background-size: 300% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 4s linear infinite; }
 @keyframes shine { to { background-position: 300% center; } }
 .animated-title { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 18px; margin-bottom: 15px; position: relative; }
-.animated-title span { color: var(--accent); display: inline-block; animation: arrowBounce 1.5s infinite ease-in-out; }
+.animated-title > span:first-child { color: var(--accent); display: inline-block; animation: arrowBounce 1.5s infinite ease-in-out; }
+.animated-title #feedTitleText { color: var(--text-color); animation: none !important; display: inline; font-weight: 900; }
+.animated-title #feedTitleText:hover { color: var(--accent); }
 @keyframes arrowBounce { 0%, 100% { transform: translateX(0); opacity: 1; } 50% { transform: translateX(8px); opacity: 0.5; } }
 .btn-premium { padding: 14px 28px; border-radius: 50px; font-weight: 900; text-transform: uppercase; font-size: 14px; background: linear-gradient(90deg, var(--accent), #fb923c); color: #fff; animation: heartbeat 2s infinite ease-in-out; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 12px; border: none; cursor: pointer; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease; width: fit-content; position: relative; overflow: hidden; will-change: transform; }
 .btn-premium::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: left 0.6s ease; }
@@ -1537,6 +1539,282 @@ body.dark-mode .zoom-hint-container svg {
     0%, 100% { box-shadow: 0 4px 15px rgba(255, 0, 0, 0.5); }
     50% { box-shadow: 0 4px 25px rgba(255, 0, 0, 0.9); }
 }
+/* ===== WELCOME PAGE (FULL EPISODE VIEW) ===== */
+.welcome-page {
+    display: none;
+    width: 100%;
+    min-height: 80vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    gap: 30px;
+    animation: fadeInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.welcome-page.active {
+    display: flex;
+}
+.main-content.hidden {
+    display: none !important;
+}
+.back-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.back-button.active {
+    display: flex;
+    animation: slideFromLeft 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.back-button:hover {
+    transform: scale(1.1) translateX(-3px);
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 8px 25px var(--glow-color);
+}
+.back-button svg {
+    width: 22px;
+    height: 22px;
+    stroke: currentColor;
+    stroke-width: 2.5;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.welcome-placeholder {
+    text-align: center;
+    color: var(--text-color);
+    opacity: 0.7;
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 40px 30px;
+    border: 2px dashed var(--accent);
+    border-radius: 25px;
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    max-width: 400px;
+    width: 100%;
+    letter-spacing: 0.5px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+.welcome-placeholder .emoji {
+    font-size: 40px;
+    display: block;
+    margin-bottom: 15px;
+}
+/* মোবাইলে ব্যাক বাটন হেডারের পাশে */
+.welcome-page .welcome-header {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 15px;
+}
+
+.welcome-page .back-button {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 45px;
+    height: 45px;
+    flex-shrink: 0;
+}
+@media (min-width: 992px) {
+/* ===== WELCOME PAGE - DESKTOP OPTIMIZATION ===== */
+
+/* Welcome Page Container */
+.welcome-page {
+    min-height: 85vh;
+    padding: 60px 40px;
+    gap: 45px;
+}
+
+/* Welcome Page Header - বাম পাশে aligned */
+.welcome-page .welcome-header {
+    gap: 20px;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Back Button inside header - ডেস্কটপে */
+.welcome-page .back-button {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 55px;
+    height: 55px;
+    flex-shrink: 0;
+}
+
+.welcome-page .back-button svg {
+    width: 26px;
+    height: 26px;
+}
+
+.welcome-page .back-button:hover {
+    transform: scale(1.15) translateX(-5px);
+}
+
+/* Welcome Page Logo & Title - বড় */
+.welcome-page .custom-logo-placeholder {
+    width: 90px;
+    height: 90px;
+    border-radius: 15px;
+    border-width: 3px;
+}
+
+.welcome-page .custom-logo-placeholder:hover {
+    transform: scale(1.08) rotate(-5deg);
+}
+
+.welcome-page .custom-logo-placeholder img {
+    transform: scale(1.6);
+}
+
+.welcome-page .header-wrapper h1 {
+    height: 90px !important;
+    font-size: 36px !important;
+    line-height: 1.15 !important;
+    letter-spacing: -1px;
+}
+.welcome-page .custom-logo-placeholder {
+    width: 90px;
+    height: 90px;
+    border-radius: 15px;
+    border-width: 3px;
+}
+.welcome-page .custom-logo-placeholder:hover {
+    transform: scale(1.08) rotate(-5deg);
+}
+.welcome-page .custom-logo-placeholder img {
+    transform: scale(1.6);
+}
+.welcome-page .header-wrapper h1 {
+    height: 90px !important;
+    font-size: 36px !important;
+    line-height: 1.15 !important;
+    letter-spacing: -1px;
+}
+
+/* Welcome Page Placeholder - বড় ও সুন্দর */
+.welcome-placeholder {
+    font-size: 22px;
+    padding: 60px 50px;
+    max-width: 600px;
+    border-width: 3px;
+    border-radius: 30px;
+}
+.welcome-placeholder .emoji {
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+.welcome-placeholder:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15), 0 0 25px var(--glow-color);
+}
+
+/* Welcome Page Thank You Bar - বড় */
+.welcome-page .thank-you-bar {
+    width: 50%;
+    padding: 18px 30px;
+    max-width: 500px;
+}
+.welcome-page .thank-you-text {
+    font-size: 20px;
+    letter-spacing: 1px;
+}
+
+/* Welcome Page Footer */
+.welcome-page footer {
+    font-size: 12px !important;
+    letter-spacing: 0.5em !important;
+    padding: 12px 0 !important;
+}
+}
+/* ===== FULL EPISODE BUTTON (NO ANIMATION) ===== */
+.full-episode-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+.full-episode-title {
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-color);
+    text-align: center;
+    letter-spacing: 0.3px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.full-episode-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 13px 28px;
+    border-radius: 50px;
+    background: linear-gradient(90deg, var(--accent), #fb923c);
+    color: #fff;
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: fit-content;
+    position: relative;
+    overflow: hidden;
+}
+.full-episode-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    transition: left 0.6s ease;
+}
+.full-episode-btn:hover::before {
+    left: 100%;
+}
+.full-episode-btn:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.25), 0 0 18px var(--glow-color);
+}
+.full-episode-btn:active {
+    transform: scale(0.97);
+}
+.full-episode-btn svg {
+    width: 22px;
+    height: 22px;
+    fill: #ffffff;
+    flex-shrink: 0;
+}
 /* ===== DESKTOP / LAPTOP VIEW OPTIMIZATION ===== */
 @media (min-width: 992px) {
     /* Main container ke wide kora */
@@ -1672,6 +1950,34 @@ body.dark-mode .zoom-hint-container svg {
 </g>
 </svg>
 </div>
+<!-- ===== WELCOME PAGE (FULL EPISODE VIEW) ===== -->
+<div class="welcome-page" id="welcomePage">
+    <!-- Welcome Page Header with Back Button -->
+    <header class="header-wrapper welcome-header">
+        <!-- Back Button inside header -->
+        <button class="back-button" id="backButton" onclick="showMainPage()" aria-label="Back to main">
+            <svg viewBox="0 0 24 24">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+        </button>
+        <div class="custom-logo-placeholder">
+            <img src="https://i.pinimg.com/736x/bc/38/0b/bc380b8ba3de65f7b3804331c148ce2a.jpg" alt="Logo">
+        </div>
+        <h1 class="text-4xl font-black shimmer-text tracking-tighter leading-tight">HONEY<br>ENTERTAINMENT</h1>
+    </header>
+    
+    <!-- Welcome Page Main Content -->
+    <div class="welcome-placeholder" id="welcomePlaceholder">
+        <span class="emoji">✨</span>
+        <span id="welcomeText">Content coming soon...</span>
+    </div>
+    
+    <!-- Welcome Page Footer -->
+    <div class="thank-you-bar" onclick="triggerEffect(event); event.stopPropagation()">
+        <div class="thank-you-text" id="welcomeThankYouTxt">Thank You For Visiting!</div>
+    </div>
+    <footer class="opacity-30 text-[10px] font-black uppercase tracking-[0.4em] py-8 text-center">© @Honey_sajeeb</footer>
+</div>
 <div class="menu-container">
 <button class="menu-btn" id="menuBtn" onclick="toggleMenu(); event.stopPropagation()">
 <div class="bar"></div>
@@ -1720,7 +2026,7 @@ body.dark-mode .zoom-hint-container svg {
 </a>
 </div>
 </div>
-<div class="app-container">
+<div id="mainContent" class="app-container main-content">
 <header class="header-wrapper">
 <div class="custom-logo-placeholder">
 <img src="https://i.pinimg.com/736x/bc/38/0b/bc380b8ba3de65f7b3804331c148ce2a.jpg" alt="Logo">
@@ -1728,10 +2034,17 @@ body.dark-mode .zoom-hint-container svg {
 <h1 class="text-4xl font-black shimmer-text tracking-tighter leading-tight">HONEY<br>ENTERTAINMENT</h1>
 </header>
 <section class="video-feed-section">
-    <h2 class="animated-title"><span>▶</span> <span id="feedTitleText">Trending Shorts</span></h2>
+    <h2 class="animated-title"><span>▶</span> <span id="feedTitleText">Trending Shorts :-</span></h2>
     <div class="horizontal-feed-container" id="videoFeedContainer">
         <!-- JS এখান থেকে ভিডিও লোড করবে -->
     </div>
+</section>
+<section class="full-episode-section">
+    <div class="full-episode-title" id="fullEpisodeTitle">Honey Bunny Full episode</div>
+   <button class="full-episode-btn" onclick="showWelcomePage()">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" opacity="0"/><rect x="2" y="4" width="20" height="16" rx="3" fill="white"/><polygon points="10,8 10,16 16,12" fill="#fb923c"/></svg>
+        <span id="fullEpisodeBtnText">Watch Full Episode</span>
+    </button>
 </section>
 
 
@@ -2191,6 +2504,7 @@ function toggleShortPlayPause() {
 }
 // ===== END SHORTS PLAYER TAP & SWIPE SYSTEM =====
 window.galleryItems = [ 
+{ img: "https://i.pinimg.com/736x/33/3a/1f/333a1f69f10d82f9dacebb6867beae0c.jpg", cap: "HONEY BUNNY ❤️🥰", date: "2026-10-27", time: "6:15 PM", ytId: "Sfjx06cNVKM", start: 00, end: 35 },
  { img: "https://i.pinimg.com/1200x/76/f9/ef/76f9ef07bb0d60638b88612858ef5dd7.jpg", cap: "Cute Honey ❤️", date: "2026-10-19", time: "6:55 PM", ytId: "WikAeXGsmHY", start: 11, end: 42 },    
 { img: "https://i.pinimg.com/1200x/fd/ef/47/fdef47722b191ae8fb3512d2e214e551.jpg", cap: "ব্যাচেলর গীতি 🥰", date: "2026-10-18", time: "5:55 PM", ytId: "4i207X6PMRA", start: 45, end: 68 },    
 { img: "https://i.pinimg.com/736x/3e/94/a1/3e94a10eee20dfaed6cb34c81b743e08.jpg", cap: "খোকা 🥺", date: "2026-10-11", time: "12:55 PM", ytId: "8qSV3gvqN00", start: 35, end: 74 },
@@ -2629,8 +2943,10 @@ filterEmoji: '😃',
 filterFifa: 'FIFA 2026',
 rightClickDisabled: '⚠️ Right Click is disabled on HE',
 longPressDisabled: '⚠️ Long Press is disabled on HE',
-feedTitle: 'Trending Shorts',
+feedTitle: 'Trending Shorts :-',
 subBtn: 'Subscribe',
+fullEpisodeTitle: 'Honey Bunny Full episode',
+fullEpisodeBtn: 'Watch Full Episode',
 menuFbGroup: 'Facebook Group',menuOwnerProfile: 'Owner Profile',menuYoutube: 'YouTube Channel',menuFbPage: 'Facebook Page',menuTiktok: 'TikTok',menuInstagram: 'Instagram',
 },
 BN: {
@@ -2667,8 +2983,10 @@ filterEmoji: '😃',
 filterFifa: 'FIFA 2026',
 rightClickDisabled: '⚠️ রাইট ক্লিক এই HE তে নিষিদ্ধ',
 longPressDisabled: '⚠️ লং প্রেস এই HE তে নিষিদ্ধ',
-feedTitle: 'Trending Shorts',
+feedTitle: 'Trending Shorts :-',
 subBtn: 'সাবস্ক্রাইব',
+fullEpisodeTitle: 'Honey Bunny সম্পূর্ণ পর্ব',
+fullEpisodeBtn: 'সম্পূর্ণ পর্ব দেখুন',
 menuFbGroup: 'ফেসবুক গ্রুপ',menuOwnerProfile: 'Owner Profile',menuYoutube: 'ইউটিউব চ্যানেল',menuFbPage: 'ফেসবুক পেজ',menuTiktok: 'Tiktok',menuInstagram: 'Instagram',
 }
 };
@@ -2862,7 +3180,7 @@ function resetMenuTimer() {
             if (dropdown.classList.contains('active')) {
                 toggleMenu();
             }
-        }, 30000);
+        }, 5000);
     }
 }
 
@@ -2903,10 +3221,51 @@ document.body.className = mode + '-mode';
 SOUNDS.modeChange();
 toggleMenu();
 }
+// ===== WELCOME PAGE NAVIGATION =====
+function showWelcomePage() {
+    const mainContent = document.getElementById('mainContent');
+    const welcomePage = document.getElementById('welcomePage');
+    const backButton = document.getElementById('backButton');
+    
+    if (mainContent) mainContent.classList.add('hidden');
+    if (welcomePage) welcomePage.classList.add('active');
+    if (backButton) backButton.classList.add('active');
+    
+    // উপরে স্ক্রল করুন
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // সাউন্ড প্লে করুন
+    if (typeof SOUNDS !== 'undefined' && SOUNDS.imageOpen) {
+        SOUNDS.imageOpen();
+    }
+}
+
+function showMainPage() {
+    const mainContent = document.getElementById('mainContent');
+    const welcomePage = document.getElementById('welcomePage');
+    const backButton = document.getElementById('backButton');
+    
+    if (mainContent) mainContent.classList.remove('hidden');
+    if (welcomePage) welcomePage.classList.remove('active');
+    if (backButton) backButton.classList.remove('active');
+    
+    // উপরে স্ক্রল করুন
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // সাউন্ড প্লে করুন
+    if (typeof SOUNDS !== 'undefined' && SOUNDS.imageClose) {
+        SOUNDS.imageClose();
+    }
+}
+// ===== END WELCOME PAGE NAVIGATION =====
 function toggleLang() {
 currentLang = currentLang === 'EN' ? 'BN' : 'EN';
 const t = translations[currentLang];
 document.getElementById('feedTitleText').innerText = t.feedTitle;
+var welcomeTxt=document.getElementById('welcomeText');if(welcomeTxt)welcomeTxt.innerText=currentLang==='BN'?'শীঘ্রই কন্টেন্ট আসছে...':'Content coming soon...';
+var welcomeThanksTxt=document.getElementById('welcomeThankYouTxt');if(welcomeThanksTxt)welcomeThanksTxt.innerText=t.thanks;
+var feTitle=document.getElementById('fullEpisodeTitle');if(feTitle)feTitle.innerText=t.fullEpisodeTitle;
+var feBtn=document.getElementById('fullEpisodeBtnText');if(feBtn)feBtn.innerText=t.fullEpisodeBtn;
 var subTxt=document.getElementById('shortSubText');if(subTxt)subTxt.innerText=t.subBtn;
 document.getElementById('followTxt').innerText = t.follow;
 document.getElementById('fbGroupTxt').innerHTML = `<span>▶</span> ${t.fbGroup}`;
