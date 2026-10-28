@@ -1975,6 +1975,31 @@ aspect-ratio: 16/9;
     padding: 12px 0 !important;
 }
 }
+/* ===== NEW BADGE (একদম কোণার সাথে মিশে থাকবে) ===== */
+.new-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 6px 14px;
+    background: linear-gradient(135deg, #ef4444, #dc2626, #b91c1c);
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 0 15px 0 15px; /* একদম কোণার সাথে মিশে থাকার জন্য */
+    z-index: 10;
+    pointer-events: none;
+    box-shadow: -2px 2px 8px rgba(0, 0, 0, 0.4);
+    animation: newBadgeShine 2.5s linear infinite;
+    background-size: 200% auto;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+@keyframes newBadgeShine {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
 /* ===== FULL EPISODE BUTTON (NO ANIMATION) ===== */
 .full-episode-section {
     width: 100%;
@@ -2318,7 +2343,7 @@ const gallery = document.getElementById('gallery');
 // ===== HORIZONTAL VIDEO FEED =====
 const originalFeedData = [
         { thumb: "https://i.pinimg.com/736x/f0/ff/f4/f0fff487df727e9a2bb8c23fe513506b.jpg", title: "Antique Engine | Part 14", ytId: "26T0WRRZMZc" },
-        { thumb: "https://i.pinimg.com/736x/64/02/10/640210b03b554d4d6c6138cb0d335e51.jpg", title: "Honey Entertainment", ytId: "PAZutRSsHhU" },
+        { thumb: "https://i.pinimg.com/736x/64/02/10/640210b03b554d4d6c6138cb0d335e51.jpg", title: "Honey Entertainment", ytId: "PAZutRSsHhU", isNew: true },
     { thumb: "https://i.pinimg.com/736x/bf/bf/7c/bfbf7cf9b83f5e23c5e5d225ec16056b.jpg", title: "মৃত Pet | part 1", ytId: "5fb6N2xyaow" },
     { thumb: "https://i.pinimg.com/736x/0d/e2/61/0de2616c0d67388288d99121695261c7.jpg", title: "Honey 🤫", ytId: "xq1uhe1qZa0" },
     { thumb: "https://i.pinimg.com/736x/99/f1/49/99f1493c8ee226727b01649b1dcf359b.jpg", title: "পাগল মামা | Part 1", ytId: "lp3ZL8Dehrk" },
@@ -2335,12 +2360,7 @@ let feedScaleFrame = null;
 function renderVideoFeed() {
     const container = document.getElementById('videoFeedContainer');
     if (!container) return;
-    container.innerHTML = videoFeedData.map(item => `
-        <div class="feed-item" data-ytid="${item.ytId}" data-title="${item.title.replace(/"/g, '&quot;')}">
-            <img src="${item.thumb}" alt="${item.title}" loading="lazy">
-            <div class="feed-item-title">${item.title}</div>
-        </div>
-    `).join('');
+   container.innerHTML = videoFeedData.map(item => `<div class="feed-item" data-ytid="${item.ytId}" data-title="${item.title.replace(/"/g, '&quot;')}"><img src="${item.thumb}" alt="${item.title}" loading="lazy">${item.isNew ? '<div class="new-badge">NEW</div>' : ''}<div class="feed-item-title">${item.title}</div></div>`).join('');
     container.querySelectorAll('.feed-item').forEach(item => {
         item.addEventListener('click', () => {
             openVideoFeed(item.dataset.ytid, item.dataset.title);
@@ -3474,7 +3494,7 @@ toggleMenu();
 // thumbnail: '' দিলে: মূল HONEY লোগো দেখাবে
 
 const welcomeVideoData = [
-    { type:'youtube', id:'xieqo1tLVCU', thumb:'https://i.pinimg.com/736x/5a/84/a3/5a84a355eb5114ae1f077b2b010706ca.jpg' },
+    { type:'youtube', id:'xieqo1tLVCU', thumb:'https://i.pinimg.com/736x/5a/84/a3/5a84a355eb5114ae1f077b2b010706ca.jpg', isNew: true },
     { type:'youtube', id:'6vJ7VI8y30E', thumb:'https://i.pinimg.com/736x/ae/a9/61/aea961860c5277e7e5e6eb5dbf041883.jpg' },
     { type:'youtube', id:'CZpEGV12U1Q', thumb:'https://i.pinimg.com/736x/dd/52/0a/dd520a5b4881cbd528a4f2dc9c67caf3.jpg' },
     { type:'youtube', id:'a5GOeCX-Rq4', thumb:'https://i.pinimg.com/736x/39/44/ee/3944ee14d8d24437d36face206c29233.jpg' },
@@ -3524,15 +3544,15 @@ function renderWelcomeVideoGrid() {
     let html = '';
     welcomeVideoData.forEach((video, index) => {
         const thumb = getWelcomeThumb(video);
-        html += `
-            <div class="welcome-video-card" onclick="openWelcomeVideoModal(${index})">
-                <img class="welcome-video-thumbnail" src="${thumb}" alt="Video" loading="lazy" draggable="false"
-                     onerror="this.onerror=null;this.src='${HE_DEFAULT_THUMB}'">
-                <div class="welcome-video-play-icon">
-                    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                </div>
-                <div class="welcome-video-overlay"></div>
-            </div>`;
+        html += `<div class="welcome-video-card" onclick="openWelcomeVideoModal(${index})">
+    <img class="welcome-video-thumbnail" src="${thumb}" alt="Video" loading="lazy" draggable="false"
+         onerror="this.onerror=null;this.src='${HE_DEFAULT_THUMB}'">
+    ${video.isNew ? '<div class="new-badge">NEW</div>' : ''}
+    <div class="welcome-video-play-icon">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </div>
+    <div class="welcome-video-overlay"></div>
+</div>`;
     });
     grid.innerHTML = html;
 }
