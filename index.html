@@ -898,6 +898,215 @@ margin-bottom: 35px !important;
 .collection-grid.is-filtering .collection-card {
     animation: none !important;
 }
+/* ===== SEARCH BAR STYLES ===== */
+.search-container {
+width: 100%;
+margin-bottom: 15px;
+position: relative;
+}
+.search-wrapper {
+position: relative;
+display: flex;
+align-items: center;
+background: var(--card-bg);
+border: 2px solid rgba(128, 128, 128, 0.2);
+border-radius: 50px;
+padding: 4px 4px 4px 20px;
+transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+.search-wrapper:focus-within {
+border-color: var(--accent);
+box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1), 0 0 0 3px rgba(244, 114, 182, 0.1);
+transform: translateY(-2px);
+}
+.search-input {
+flex: 1;
+background: transparent;
+border: none;
+outline: none;
+color: var(--text-color);
+font-size: 14px;
+font-family: 'Inter', 'Hind Siliguri', sans-serif;
+font-weight: 500;
+padding: 10px 0;
+letter-spacing: 0.3px;
+}
+.search-input::placeholder {
+color: var(--text-color);
+font-weight: 400;
+animation: placeholderPulse 2.5s ease-in-out infinite;
+}
+@keyframes placeholderPulse {
+0%, 100% { opacity: 0.3; }
+50% { opacity: 0.75; }
+}
+.search-btn {
+width: 42px;
+height: 42px;
+border-radius: 50%;
+background: linear-gradient(135deg, var(--accent), #fb923c);
+border: none;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+box-shadow: 0 4px 12px rgba(244, 114, 182, 0.3);
+flex-shrink: 0;
+}
+.search-btn svg {
+width: 18px;
+height: 18px;
+color: white;
+stroke: white;
+transition: transform 0.3s ease;
+}
+.search-btn:hover {
+transform: scale(1.08) rotate(5deg);
+box-shadow: 0 6px 18px rgba(244, 114, 182, 0.5);
+}
+.search-btn:active {
+transform: scale(0.95);
+}
+.search-clear-btn {
+width: 36px;
+height: 36px;
+border-radius: 50%;
+background: rgba(128, 128, 128, 0.15);
+border: none;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all 0.3s ease;
+margin-left: 8px;
+flex-shrink: 0;
+}
+.search-clear-btn svg {
+width: 16px;
+height: 16px;
+color: var(--text-color);
+stroke: var(--text-color);
+opacity: 0.7;
+}
+.search-clear-btn:hover {
+background: rgba(239, 68, 68, 0.2);
+transform: scale(1.1);
+}
+.search-clear-btn:hover svg {
+color: #ef4444;
+stroke: #ef4444;
+opacity: 1;
+}
+.search-result-info {
+text-align: center;
+margin-top: 12px;
+font-size: 12px;
+font-family: 'Inter', sans-serif;
+color: var(--accent);
+font-weight: 600;
+letter-spacing: 0.5px;
+animation: fadeInSlide 0.3s ease;
+}
+.search-no-result {
+text-align: center;
+padding: 40px 20px;
+animation: fadeInUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.no-result-icon {
+font-size: 48px;
+margin-bottom: 15px;
+animation: bounce 2s infinite;
+}
+@keyframes bounce {
+0%, 100% { transform: translateY(0); }
+50% { transform: translateY(-10px); }
+}
+.no-result-title {
+font-size: 18px;
+font-weight: 800;
+color: var(--text-color);
+margin-bottom: 8px;
+font-family: 'Inter', 'Hind Siliguri', sans-serif;
+letter-spacing: 0.5px;
+}
+.no-result-subtitle {
+font-size: 13px;
+color: var(--text-color);
+opacity: 0.6;
+font-family: 'Inter', 'Hind Siliguri', sans-serif;
+font-weight: 500;
+}
+/* Loading animation for search */
+.gallery-item-wrapper.search-loading {
+animation: searchPulse 1.5s ease-in-out infinite;
+}
+@keyframes searchPulse {
+0%, 100% { opacity: 0.3; transform: scale(0.95); }
+50% { opacity: 0.6; transform: scale(1); }
+}
+/* Mobile optimization */
+@media (max-width: 600px) {
+.search-wrapper {
+padding: 3px 3px 3px 16px;
+}
+.search-input {
+font-size: 13px;
+padding: 8px 0;
+}
+.search-btn {
+width: 38px;
+height: 38px;
+}
+.search-btn svg {
+width: 16px;
+height: 16px;
+}
+.search-clear-btn {
+width: 32px;
+height: 32px;
+}
+.no-result-icon {
+font-size: 40px;
+}
+.no-result-title {
+font-size: 16px;
+}
+.no-result-subtitle {
+font-size: 12px;
+}
+}
+/* Dark mode specific */
+body.dark-mode .search-wrapper {
+background: rgba(255, 255, 255, 0.05);
+border-color: rgba(255, 255, 255, 0.1);
+}
+body.dark-mode .search-wrapper:focus-within {
+border-color: var(--accent);
+box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 0 3px rgba(244, 114, 182, 0.15);
+}
+/* Honey mode specific */
+body.honey-mode .search-wrapper {
+background: rgba(217, 119, 6, 0.05);
+border-color: rgba(217, 119, 6, 0.15);
+}
+body.honey-mode .search-wrapper:focus-within {
+border-color: var(--accent);
+box-shadow: 0 6px 20px rgba(217, 119, 6, 0.15), 0 0 0 3px rgba(217, 119, 6, 0.1);
+}
+/* Light mode specific */
+body.light-mode .search-wrapper {
+background: rgba(0, 0, 0, 0.03);
+border-color: rgba(0, 0, 0, 0.1);
+}
+body.light-mode .search-wrapper:focus-within {
+border-color: var(--accent);
+box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1), 0 0 0 3px rgba(219, 39, 119, 0.1);
+}
+/* ===== END SEARCH BAR STYLES ===== */
 /* ===== FILTER BAR ===== */
 .filter-bar {
     display: flex;
@@ -1423,32 +1632,85 @@ body.dark-mode .zoom-hint-container svg {
 
 /* ===== CUSTOM TOAST NOTIFICATION ===== */
 #customToast {
-    position: fixed;
-    bottom: 150px;
-    left: 50%;
-    transform: translateX(-50%) translateY(50px);
-    background: rgba(0, 0, 0, 0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 2px solid var(--accent);
-    border-radius: 15px;
-    padding: 12px 20px;
-    z-index: 9998;
-    opacity: 0;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-    color: white;
-    font-size: 13px;
-    font-weight: 600;
-    font-family: 'Hind Siliguri', sans-serif;
-    text-align: center;
-    max-width: 85vw;
-    line-height: 1.5;
+position: fixed;
+bottom: 85px;
+right: 20px;
+left: auto;
+transform: translateY(30px) translateX(10px);
+background: linear-gradient(145deg, rgba(15, 15, 15, 0.98), rgba(30, 30, 30, 0.98));
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+border: 1.5px solid var(--accent);
+border-radius: 20px;
+padding: 16px 20px 16px 48px;
+z-index: 9998;
+opacity: 0;
+visibility: hidden;
+transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px var(--glow-color), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+color: white;
+font-size: 13px;
+font-weight: 500;
+font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+text-align: left;
+max-width: 280px;
+min-width: 200px;
+line-height: 1.5;
+letter-spacing: 0.3px;
 }
-
+#customToast::before {
+content: '"';
+position: absolute;
+top: -12px;
+left: 14px;
+font-size: 65px;
+font-family: 'Georgia', serif;
+font-weight: 900;
+color: var(--accent);
+line-height: 1;
+text-shadow: 0 3px 12px var(--glow-color), 0 0 25px var(--accent);
+pointer-events: none;
+opacity: 0.95;
+}
+#customToast::after {
+content: '';
+position: absolute;
+bottom: -11px;
+right: 28px;
+width: 0;
+height: 0;
+border-left: 11px solid transparent;
+border-right: 11px solid transparent;
+border-top: 13px solid var(--accent);
+filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.4));
+}
 #customToast.active {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
+opacity: 1;
+visibility: visible;
+transform: translateY(0) translateX(0);
+}
+@media (max-width: 600px) {
+#customToast {
+max-width: calc(100vw - 40px);
+min-width: 180px;
+font-size: 12px;
+padding: 14px 16px 14px 42px;
+right: 15px;
+bottom: 80px;
+border-radius: 18px;
+}
+#customToast::before {
+font-size: 50px;
+top: -8px;
+left: 12px;
+}
+#customToast::after {
+right: 22px;
+border-left: 9px solid transparent;
+border-right: 9px solid transparent;
+border-top: 11px solid var(--accent);
+bottom: -9px;
+}
 }
 /* ===== YOUTUBE MINI PLAYER & PLAY/PAUSE STYLES ===== */
 .yt-mini-player-container {
@@ -2096,7 +2358,7 @@ aspect-ratio: 16/9;
         gap: 30px;
     }
 
-    /* Trending shorts er card ektu boro kora */
+    /* shorts Video er card ektu boro kora */
     .feed-item {
         width: 160px;
         height: 230px;
@@ -2299,7 +2561,7 @@ aspect-ratio: 16/9;
 <h1 class="text-4xl font-black shimmer-text tracking-tighter leading-tight">HONEY<br>ENTERTAINMENT</h1>
 </header>
 <section class="video-feed-section">
-    <h2 class="animated-title"><span>▶</span> <span id="feedTitleText">Trending Shorts :-</span></h2>
+    <h2 class="animated-title"><span>▶</span> <span id="feedTitleText">Shorts Video :-</span></h2>
     <div class="horizontal-feed-container" id="videoFeedContainer">
         <!-- JS এখান থেকে ভিডিও লোড করবে -->
     </div>
@@ -2315,6 +2577,33 @@ aspect-ratio: 16/9;
 
 <section class="w-full">
 <h2 class="animated-title" id="collTxt"><span>▶</span> Some of our collections :-</h2>
+<!-- ===== SEARCH BAR ===== -->
+<div class="search-container" id="searchContainer">
+<div class="search-wrapper">
+<input type="text" id="searchInput" class="search-input" placeholder="Search by emoji or text..." autocomplete="off">
+<button class="search-btn" id="searchBtn" aria-label="Search">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="11" cy="11" r="8"/>
+<path d="M21 21l-4.35-4.35"/>
+</svg>
+</button>
+<button class="search-clear-btn" id="searchClearBtn" aria-label="Clear search" style="display: none;">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+<line x1="18" y1="6" x2="6" y2="18"/>
+<line x1="6" y1="6" x2="18" y2="18"/>
+</svg>
+</button>
+</div>
+<div class="search-result-info" id="searchResultInfo" style="display: none;">
+<span id="searchResultCount">0</span> <span id="searchResultText">results found</span>
+</div>
+<div class="search-no-result" id="searchNoResult" style="display: none;">
+<div class="no-result-icon">🔍</div>
+<div class="no-result-title" id="noResultTitle">No Found</div>
+<div class="no-result-subtitle" id="noResultSubtitle">Try searching with something else</div>
+</div>
+</div>
+<!-- ===== END SEARCH BAR ===== -->
 <div class="filter-bar" id="filterBar">
 <button class="filter-btn active" id="filterAll" data-filter="all" onclick="applyFilter('all', this)">All</button>
 <button class="filter-btn" id="filterHoneySticker" data-filter="honey-sticker" onclick="applyFilter('honey-sticker', this)">Honey Sticker🥀</button>
@@ -3203,9 +3492,13 @@ filter2026: '2026',
 filter2025: '2025',
 filterEmoji: '😃',
 filterFifa: 'FIFA 2026',
+fetchingImage: 'Fetching image...',
+processing: 'Processing...',
+downloadFailed: '⚠️ Download failed!',
+browserChange: '❗Please change your browser or check your browser settings and resolve the issue',
 rightClickDisabled: '⚠️ Right Click is disabled on HE',
 longPressDisabled: '⚠️ Long Press is disabled on HE',
-feedTitle: 'Trending Shorts :-',
+feedTitle: 'Shorts Video :-',
 subBtn: 'Subscribe',
 fullEpisodeTitle: 'Honey Bunny Full episode',
 fullEpisodeBtn: 'Watch Full Episode',
@@ -3243,9 +3536,12 @@ filter2026: '2026',
 filter2025: '2025',
 filterEmoji: '😃',
 filterFifa: 'FIFA 2026',
-rightClickDisabled: '⚠️ রাইট ক্লিক এই HE তে নিষিদ্ধ',
-longPressDisabled: '⚠️ লং প্রেস এই HE তে নিষিদ্ধ',
-feedTitle: 'Trending Shorts :-',
+fetchingImage: 'ছবি আনা হচ্ছে...',
+processing: 'প্রসেসিং হচ্ছে...',
+downloadFailed: '⚠️ ডাউনলোড সম্ভব হয়নি!',
+browserChange: '❗আপনি ব্রাউজারটি পরিবর্তন করুন অথবা আপনার ব্রাউজারের সেটিংসে কোনো সমস্যা আছে দয়া করে সমস্যাটির সমাধান করুন ',
+rightClickDisabled: '⚠️ রাইট ক্লিক এই HE তে বন্ধ',
+feedTitle: 'Shorts ভিডিও :-',
 subBtn: 'সাবস্ক্রাইব',
 fullEpisodeTitle: 'Honey Bunny সম্পূর্ণ পর্ব',
 fullEpisodeBtn: 'সম্পূর্ণ পর্ব দেখুন',
@@ -3725,6 +4021,7 @@ document.getElementById('filterFifa').innerText = t.filterFifa;
 
 const soundLabel = document.getElementById('soundToggleLabel');
 soundLabel.innerText = soundEnabled ? t.soundOn : t.soundOff;
+updateSearchPlaceholder();
 SOUNDS.langSwitch();
 toggleMenu();
 }
@@ -4321,16 +4618,54 @@ function hideDownloadProgress() {
     }
 }
 
-function showToast(message, duration = 3000) {
-    let toast = document.getElementById('customToast');
-    if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'customToast';
-        document.body.appendChild(toast);
-    }
-    toast.textContent = message;
-    toast.classList.add('active');
-    setTimeout(() => toast.classList.remove('active'), duration);
+// Global timer variable (শুধু একবার declare হবে)
+let toastTimer = null;
+let toastHoldActive = false;
+
+function showToast(message, duration = null) {
+let toast = document.getElementById('customToast');
+if (!toast) {
+toast = document.createElement('div');
+toast.id = 'customToast';
+// Hold-to-keep events (শুধু একবার attach হবে)
+toast.addEventListener('mouseenter', () => {
+if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+toastHoldActive = true;
+});
+toast.addEventListener('mouseleave', () => {
+toastHoldActive = false;
+toast.classList.remove('active');
+});
+toast.addEventListener('touchstart', (e) => {
+if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+toastHoldActive = true;
+}, { passive: true });
+toast.addEventListener('touchend', () => {
+toastHoldActive = false;
+toast.classList.remove('active');
+});
+toast.addEventListener('touchcancel', () => {
+toastHoldActive = false;
+toast.classList.remove('active');
+});
+document.body.appendChild(toast);
+}
+toast.textContent = message;
+toast.classList.add('active');
+// Auto duration based on message length
+if (duration === null) {
+const charCount = message.length;
+duration = charCount > 50 ? 4000 : 3000;
+}
+// আগের timer cancel করি
+if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+// নতুন timer সেট করি
+toastTimer = setTimeout(() => {
+if (!toastHoldActive) {
+toast.classList.remove('active');
+}
+toastTimer = null;
+}, duration);
 }
 async function downloadImg() {
     const imgSrc = document.getElementById('fullImg').src;
@@ -4348,17 +4683,14 @@ async function downloadImg() {
     showDownloadProgress(t.loading || 'Downloading...', 10);
 
     try {
-        // Pinterest এর ছবি সরাসরি ডাউনলোড হয় না, তাই Proxy সার্ভার ব্যবহার করছি
-        const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(imgSrc);
-        showDownloadProgress('Fetching image...', 30);
-        const response = await fetch(proxyUrl);
-        
-        if (!response.ok) throw new Error('Network error');
-        
-        showDownloadProgress('Processing...', 70);
-        const blob = await response.blob();
-        const blobUrl = URL.createObjectURL(blob);
-        
+// Pinterest এর ছবি সরাসরি ডাউনলোড হয় না, তাই Proxy সার্ভার ব্যবহার করছি
+const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(imgSrc);
+showDownloadProgress(t.fetchingImage || 'Fetching image...', 30);
+const response = await fetch(proxyUrl);
+if (!response.ok) throw new Error('Network error');
+showDownloadProgress(t.processing || 'Processing...', 70);
+const blob = await response.blob();
+
         // Blob URL দিয়ে সরাসরি গ্যালারিতে/ডাউনলোডে সেভ হবে
         const link = document.createElement('a');
         link.href = blobUrl;
@@ -4373,12 +4705,13 @@ async function downloadImg() {
         setTimeout(() => SOUNDS.success(), 300);
         
     } catch (error) {
-        console.error('Download failed:', error);
-        hideDownloadProgress();
-        // যদি প্রক্সিও কাজ না করে, তখন বাধ্য হয়ে নতুন ট্যাবে খুলব
-        window.open(imgSrc, '_blank');
-        showToast('⚠️ সরাসরি ডাউনলোড সম্ভব হয়নি। নতুন ট্যাবে ছবির ওপর লং প্রেস করে সেভ করুন।', 4000);
-    }
+console.error('Download failed:', error);
+hideDownloadProgress();
+// যদি প্রক্সিও কাজ না করে, তখন বাধ্য হয়ে নতুন ট্যাবে খুলব
+window.open(imgSrc, '_blank');
+const failMsg = (t.downloadFailed || '⚠️ Download failed!') + '\n' + (t.browserChange || 'Please change your browser.');
+showToast(failMsg, 5000);
+}
 }
 
 function isMobileDevice() {
@@ -4408,16 +4741,29 @@ function hideDownloadProgress() {
     }
 }
 
-function showToast(message, duration = 3000) {
-    let toast = document.getElementById('customToast');
-    if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'customToast';
-        document.body.appendChild(toast);
-    }
-    toast.textContent = message;
-    toast.classList.add('active');
-    setTimeout(() => toast.classList.remove('active'), duration);
+function showToast(message, duration = null) {
+let toast = document.getElementById('customToast');
+if (!toast) {
+toast = document.createElement('div');
+toast.id = 'customToast';
+document.body.appendChild(toast);
+}
+toast.textContent = message;
+toast.classList.add('active');
+// Auto duration based on message length
+if (duration === null) {
+const charCount = message.length;
+duration = charCount > 50 ? 4000 : 3000;
+}
+// আগের timer cancel করি
+if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+// নতুন timer সেট করি
+toastTimer = setTimeout(() => {
+if (!toastHoldActive) {
+toast.classList.remove('active');
+}
+toastTimer = null;
+}, duration);
 }
 function togglePhotoMenu() {
 const menu = document.getElementById('photoDetailsMenu');
@@ -4601,6 +4947,280 @@ function initScrollReveal() {
         elements.forEach(el => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; });
     }
 }
+// ===== SEARCH FUNCTIONALITY =====
+let currentSearchQuery = '';
+let searchTimeout = null;
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+const searchClearBtn = document.getElementById('searchClearBtn');
+const searchResultInfo = document.getElementById('searchResultInfo');
+const searchResultCount = document.getElementById('searchResultCount');
+const searchResultText = document.getElementById('searchResultText');
+const searchNoResult = document.getElementById('searchNoResult');
+const noResultTitle = document.getElementById('noResultTitle');
+const noResultSubtitle = document.getElementById('noResultSubtitle');
+// Extract emojis from text
+function extractEmojis(text) {
+const emojiRegex = /[\p{Emoji_Presentation}\p{Extended_Pictographic}\p{Emoji}]/gu;
+const matches = text.match(emojiRegex);
+return matches || [];
+}
+// Check if text contains only emojis
+function isOnlyEmojis(text) {
+const trimmed = text.replace(/\s/g, '');
+if (trimmed.length === 0) return false;
+const emojis = extractEmojis(trimmed);
+const emojiString = emojis.join('');
+return emojiString.length === trimmed.length;
+}
+// Check if text contains emojis
+function containsEmojis(text) {
+return extractEmojis(text).length > 0;
+}
+// Normalize text for search (remove special chars, lowercase)
+function normalizeText(text) {
+return text
+.toLowerCase()
+.replace(/[^\p{L}\p{N}\s]/gu, ' ')
+.replace(/\s+/g, ' ')
+.trim();
+}
+// Check if search query matches caption
+function matchesSearch(caption, query) {
+if (!query || query.trim() === '') return true;
+const queryEmojis = extractEmojis(query);
+const captionEmojis = extractEmojis(caption);
+const normalizedCaption = normalizeText(caption);
+const normalizedQuery = normalizeText(query);
+// যদি query তে emoji থাকে কিন্তু caption এ না থাকে, তাহলে match হবে না
+if (queryEmojis.length > 0 && captionEmojis.length === 0) return false;
+// যদি query তে emoji থাকে, তাহলে কমপক্ষে একটা emoji match করতে হবে
+if (queryEmojis.length > 0) {
+const emojiMatch = queryEmojis.some(e => captionEmojis.includes(e));
+if (!emojiMatch) return false;
+}
+// Text part চেক করা (যদি text থাকে)
+const queryText = query.replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}\p{Emoji}]/gu, '').trim();
+if (queryText.length > 0) {
+const normalizedText = normalizeText(queryText);
+const queryWords = normalizedText.split(' ').filter(w => w.length > 0);
+if (queryWords.length > 0) {
+return queryWords.every(word => normalizedCaption.includes(word));
+}
+}
+// যদি শুধু emoji দিয়ে সার্চ হয় এবং emoji match করে, তাহলে true
+return queryEmojis.length > 0;
+}
+// Sort search results based on relevance
+function sortSearchResults(items, query) {
+if (!query || query.trim() === '') return items;
+const queryEmojis = extractEmojis(query);
+const hasEmojiSearch = queryEmojis.length > 0;
+const queryText = query.replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}\p{Emoji}]/gu, '').trim();
+const normalizedQueryText = normalizeText(queryText);
+return items.sort((a, b) => {
+const captionA = a.cap || '';
+const captionB = b.cap || '';
+const emojisA = extractEmojis(captionA);
+const emojisB = extractEmojis(captionB);
+const hasEmojisA = emojisA.length > 0;
+const hasEmojisB = emojisB.length > 0;
+// Priority 1: EXACT emoji match (সবচেয়ে গুরুত্বপূর্ণ)
+// যে ইমোজি দিয়ে সার্চ করা হয়েছে, সেই exact emoji যে caption এ আছে সে সবার প্রথমে
+if (hasEmojiSearch) {
+const allEmojiMatchA = queryEmojis.every(e => emojisA.includes(e));
+const allEmojiMatchB = queryEmojis.every(e => emojisB.includes(e));
+const anyEmojiMatchA = queryEmojis.some(e => emojisA.includes(e));
+const anyEmojiMatchB = queryEmojis.some(e => emojisB.includes(e));
+// Exact all emoji match > partial emoji match
+if (allEmojiMatchA && !allEmojiMatchB) return -1;
+if (!allEmojiMatchA && allEmojiMatchB) return 1;
+if (anyEmojiMatchA && !anyEmojiMatchB) return -1;
+if (!anyEmojiMatchA && anyEmojiMatchB) return 1;
+}
+// Priority 2: Text match (যদি text দিয়ে সার্চ হয়)
+if (normalizedQueryText.length > 0) {
+const normalizedA = normalizeText(captionA);
+const normalizedB = normalizeText(captionB);
+const exactMatchA = normalizedA.includes(normalizedQueryText);
+const exactMatchB = normalizedB.includes(normalizedQueryText);
+if (exactMatchA && !exactMatchB) return -1;
+if (!exactMatchA && exactMatchB) return 1;
+// Word match count
+const queryWords = normalizedQueryText.split(' ').filter(w => w.length > 0);
+const matchCountA = queryWords.filter(w => normalizedA.includes(w)).length;
+const matchCountB = queryWords.filter(w => normalizedB.includes(w)).length;
+if (matchCountA !== matchCountB) return matchCountB - matchCountA;
+}
+// Priority 3: Emoji-only captions (যদি emoji search হয়)
+if (hasEmojiSearch) {
+const isOnlyEmojiA = isOnlyEmojis(captionA);
+const isOnlyEmojiB = isOnlyEmojis(captionB);
+if (isOnlyEmojiA && !isOnlyEmojiB) return -1;
+if (!isOnlyEmojiA && isOnlyEmojiB) return 1;
+}
+// Priority 4: Has emojis vs no emojis
+if (hasEmojisA && !hasEmojisB) return -1;
+if (!hasEmojisA && hasEmojisB) return 1;
+return 0;
+});
+}
+// Perform search
+function performSearch() {
+const query = searchInput.value.trim();
+currentSearchQuery = query;
+const gallery = document.getElementById('gallery');
+const items = Array.from(document.querySelectorAll('.gallery-item-wrapper'));
+// Show/hide clear button
+searchClearBtn.style.display = query ? 'flex' : 'none';
+// If query is empty, show all items
+if (!query) {
+items.forEach(item => {
+item.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+item.style.display = '';
+item.style.opacity = '1';
+item.style.transform = 'scale(1)';
+item.style.pointerEvents = 'auto';
+});
+searchResultInfo.style.display = 'none';
+searchNoResult.style.display = 'none';
+return;
+}
+// ===== FILTER KEYWORD DETECTION =====
+// সার্চ বক্সে ফিল্টার কিওয়ার্ড লিখলে সেই ফিল্টারের ছবি দেখাবে
+const lowerQuery = query.toLowerCase();
+const filterKeywords = {
+'honey sticker': 'honey-sticker',
+'honey স্টিকার': 'honey-sticker',
+'2026': '2026',
+'2025': '2025',
+'emoji': 'emoji',
+'ইমোজি': 'emoji',
+'fifa': 'fifa',
+'fifa 2026': 'fifa'
+};
+let filterType = null;
+for (const keyword in filterKeywords) {
+if (lowerQuery.includes(keyword)) {
+filterType = filterKeywords[keyword];
+break;
+}
+}
+// ===== FILTER AND SORT =====
+let matchingItems = [];
+if (filterType) {
+// ফিল্টার কিওয়ার্ড ম্যাচ হলে সেই ফিল্টারের ছবি দেখাও
+items.forEach(item => {
+if (checkFilter(item, filterType)) {
+const caption = item.querySelector('.post-caption')?.textContent || '';
+matchingItems.push({
+element: item,
+cap: caption
+});
+}
+});
+} else {
+// সাধারণ সার্চ
+items.forEach(item => {
+const caption = item.querySelector('.post-caption')?.textContent || '';
+if (matchesSearch(caption, query)) {
+matchingItems.push({
+element: item,
+cap: caption
+});
+}
+});
+// Sort by relevance
+matchingItems = sortSearchResults(matchingItems, query);
+}
+// ===== SMOOTH TRANSITION (NO STAGGER) =====
+// প্রথমে সব item কে transition সেট করি
+items.forEach(item => {
+item.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+});
+// তারপর non-matching items hide করি
+items.forEach(item => {
+const isMatch = matchingItems.some(m => m.element === item);
+if (!isMatch) {
+item.style.opacity = '0';
+item.style.transform = 'scale(0.9)';
+item.style.pointerEvents = 'none';
+// Transition শেষে display none করি
+setTimeout(() => {
+if (item.style.opacity === '0') {
+item.style.display = 'none';
+}
+}, 300);
+}
+});
+// matching items গুলো smooth ভাবে দেখাও
+if (matchingItems.length > 0) {
+matchingItems.forEach((item, index) => {
+item.element.style.display = '';
+// একটু delay দিয়ে smooth effect
+setTimeout(() => {
+item.element.style.opacity = '1';
+item.element.style.transform = 'scale(1)';
+item.element.style.pointerEvents = 'auto';
+}, 50);
+});
+// Show result count
+searchResultCount.textContent = matchingItems.length;
+searchResultInfo.style.display = 'block';
+searchNoResult.style.display = 'none';
+// Update result text based on language
+searchResultText.textContent = currentLang === 'BN' ? 'টা ফলাফল পাওয়া গেছে' : 'results found';
+} else {
+// No results found
+searchResultInfo.style.display = 'none';
+searchNoResult.style.display = 'block';
+// Update no result text based on language
+if (currentLang === 'BN') {
+noResultTitle.textContent = 'পাওয়া যায়নি';
+noResultSubtitle.textContent = 'অন্য কিছু দিয়ে চেষ্টা করুন';
+} else {
+noResultTitle.textContent = 'No Found';
+noResultSubtitle.textContent = 'Try searching with something else';
+}
+}
+}
+// Real-time search with debounce
+searchInput.addEventListener('input', () => {
+clearTimeout(searchTimeout);
+searchTimeout = setTimeout(performSearch, 300);
+});
+// Search button click
+searchBtn.addEventListener('click', () => {
+performSearch();
+searchInput.blur();
+if (typeof SOUNDS !== 'undefined' && SOUNDS.click) SOUNDS.click();
+});
+// Clear button click
+searchClearBtn.addEventListener('click', () => {
+searchInput.value = '';
+currentSearchQuery = '';
+performSearch();
+searchInput.focus();
+if (typeof SOUNDS !== 'undefined' && SOUNDS.click) SOUNDS.click();
+});
+// Enter key press
+searchInput.addEventListener('keypress', (e) => {
+if (e.key === 'Enter') {
+performSearch();
+searchInput.blur();
+if (typeof SOUNDS !== 'undefined' && SOUNDS.click) SOUNDS.click();
+}
+});
+// Update search placeholder based on language
+function updateSearchPlaceholder() {
+const t = translations[currentLang];
+if (currentLang === 'BN') {
+searchInput.placeholder = 'ইমোজি বা লেখা দিয়ে সার্চ করুন...';
+} else {
+searchInput.placeholder = 'Search by emoji or text...';
+}
+}
+// ===== END SEARCH FUNCTIONALITY =====
 // ===== FILTER FUNCTIONALITY =====
 let currentFilter = 'all';
 let isFiltering = false;
