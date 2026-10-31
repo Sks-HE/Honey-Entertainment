@@ -4018,7 +4018,20 @@ document.getElementById('filter2026').innerText = t.filter2026;
 document.getElementById('filter2025').innerText = t.filter2025;
 document.getElementById('filterEmoji').innerText = t.filterEmoji;
 document.getElementById('filterFifa').innerText = t.filterFifa;
-
+// Search result text আপডেট করি
+const searchResultTextEl = document.getElementById('searchResultText');
+if (searchResultTextEl) {
+searchResultTextEl.textContent = currentLang === 'BN' ? 'টা ফলাফল পাওয়া গেছে' : 'results found';
+}
+// No result text আপডেট করি
+const noResultTitleEl = document.getElementById('noResultTitle');
+const noResultSubtitleEl = document.getElementById('noResultSubtitle');
+if (noResultTitleEl) {
+noResultTitleEl.textContent = currentLang === 'BN' ? 'পাওয়া যায়নি' : 'No Found';
+}
+if (noResultSubtitleEl) {
+noResultSubtitleEl.textContent = currentLang === 'BN' ? 'অন্য কিছু দিয়ে চেষ্টা করুন' : 'Try searching with something else';
+}
 const soundLabel = document.getElementById('soundToggleLabel');
 soundLabel.innerText = soundEnabled ? t.soundOn : t.soundOff;
 updateSearchPlaceholder();
@@ -4639,11 +4652,33 @@ toast.classList.remove('active');
 toast.addEventListener('touchstart', (e) => {
 if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
 toastHoldActive = true;
-}, { passive: true });
-toast.addEventListener('touchend', () => {
+e.stopPropagation(); // Contextmenu event বন্ধ করতে
+}, { passive: false });
+toast.addEventListener('touchend', (e) => {
 toastHoldActive = false;
 toast.classList.remove('active');
-});
+e.stopPropagation();
+}, { passive: false });
+toast.addEventListener('touchcancel', (e) => {
+toastHoldActive = false;
+toast.classList.remove('active');
+e.stopPropagation();
+}, { passive: false });
+// Mobile এ long press detect করতে
+let touchTimer = null;
+toast.addEventListener('touchstart', (e) => {
+touchTimer = setTimeout(() => {
+// Long press detected - toast দাঁড় করিয়ে রাখি
+if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+toastHoldActive = true;
+}, 500); // 500ms পর long press ধরবো
+}, { passive: true });
+toast.addEventListener('touchend', () => {
+if (touchTimer) { clearTimeout(touchTimer); touchTimer = null; }
+}, { passive: true });
+toast.addEventListener('touchmove', () => {
+if (touchTimer) { clearTimeout(touchTimer); touchTimer = null; }
+}, { passive: true });
 toast.addEventListener('touchcancel', () => {
 toastHoldActive = false;
 toast.classList.remove('active');
@@ -5071,9 +5106,10 @@ const query = searchInput.value.trim();
 currentSearchQuery = query;
 const gallery = document.getElementById('gallery');
 const items = Array.from(document.querySelectorAll('.gallery-item-wrapper'));
+const filterBar = document.getElementById('filterBar');
 // Show/hide clear button
 searchClearBtn.style.display = query ? 'flex' : 'none';
-// If query is empty, show all items
+// If query is empty, show all items and filter bar
 if (!query) {
 items.forEach(item => {
 item.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
@@ -5084,7 +5120,27 @@ item.style.pointerEvents = 'auto';
 });
 searchResultInfo.style.display = 'none';
 searchNoResult.style.display = 'none';
+// Filter bar আবার দেখাও
+if (filterBar) {
+filterBar.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+filterBar.style.opacity = '1';
+filterBar.style.transform = 'translateY(0)';
+filterBar.style.pointerEvents = 'auto';
+filterBar.style.display = 'flex';
+}
 return;
+}
+// সার্চ চললে filter bar hide করি
+if (filterBar) {
+filterBar.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+filterBar.style.opacity = '0';
+filterBar.style.transform = 'translateY(-10px)';
+filterBar.style.pointerEvents = 'none';
+setTimeout(() => {
+if (currentSearchQuery) {
+filterBar.style.display = 'none';
+}
+}, 300);
 }
 // ===== FILTER KEYWORD DETECTION =====
 // সার্চ বক্সে ফিল্টার কিওয়ার্ড লিখলে সেই ফিল্টারের ছবি দেখাবে
@@ -5334,15 +5390,24 @@ backToTopBtn.addEventListener('mouseenter', () => SOUNDS.hover());
 // ===== SOURCE CODE PROTECTION SYSTEM (ENHANCED) =====
 // ১. রাইট ক্লিক মেনু বন্ধ করা (আপনার আগের কোড)
 document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-    // ডিটেক্ট করা হচ্ছে ফোন নাকি কম্পিউটার
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || e.pointerType === 'touch';
-    const msg = isMobile ? translations[currentLang].longPressDisabled : translations[currentLang].rightClickDisabled;
-    if (typeof showToast === 'function') {
-        showToast(msg, 2500);
-    }
+const target = e.target;
+// শুধু Toast message এর উপর হলে কিছু করবো না
+if (target.closest('#customToast')) {
+return; // Toast এর উপর রাইট ক্লিক/লং প্রেস allow
+}
+// শুধু সার্চ ইনপুট বক্সের ভেতরে হলে কিছু করবো না (পেস্ট করার জন্য)
+if (target.closest('.search-input')) {
+return; // শুধু ইনপুট বক্সে রাইট ক্লিক/লং প্রেস allow
+}
+// বাকি সব জায়গায় (সার্চ বাটন, ক্লিয়ার বাটন, No Found, সার্চ আইকন, পুরো সাইট) ডিসেবল
+e.preventDefault();
+// ডিটেক্ট করা হচ্ছে ফোন নাকি কম্পিউটার
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || e.pointerType === 'touch';
+const msg = isMobile ? translations[currentLang].longPressDisabled : translations[currentLang].rightClickDisabled;
+if (typeof showToast === 'function') {
+showToast(msg, 2500);
+}
 });
-
 // ২. কিবোর্ড শর্টকাট ব্লক করা (Source Code & DevTools)
 document.addEventListener('keydown', function(e) {
     // F12 কী ব্লক করা (DevTools Open)
