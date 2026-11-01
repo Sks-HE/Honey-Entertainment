@@ -5685,15 +5685,10 @@ item.element.style.pointerEvents = 'auto';
 });
 // Show result count
 const finalCount = matchingItems.length;
-if (searchResultCountEl) {
-    searchResultCountEl.textContent = finalCount;
-}
+const resTxt = currentLang === 'BN' ? 'টা ফলাফল পাওয়া গেছে' : 'results found';
+searchResultInfo.innerHTML = `<span id="searchResultCount">${finalCount}</span> <span id="searchResultText">${resTxt}</span>`;
 searchResultInfo.style.display = 'block';
 searchNoResult.style.display = 'none';
-// Update result text based on language
-if (searchResultText) {
-    searchResultText.textContent = currentLang === 'BN' ? 'টা ফলাফল পাওয়া গেছে' : 'results found';
-}
 } else {
 // No results found
 searchResultInfo.style.display = 'none';
