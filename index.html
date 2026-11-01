@@ -5846,51 +5846,60 @@ const items = Array.from(document.querySelectorAll('.gallery-item-wrapper'));
 const filterBar = document.getElementById('filterBar');
 // ===== SPECIAL EASTER EGG CHECK =====
 const resultInfo = document.getElementById('searchResultInfo');
+const searchResultCountEl = document.getElementById('searchResultCount'); // কাউন্ট এলিমেন্ট ধরা হলো
+
 if (query && isSpecialSearch(query)) {
-// সব আইটেম দেখাও
-searchClearBtn.style.display = 'flex';
-items.forEach(item => {
-item.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-item.style.display = '';
-item.style.opacity = '1';
-item.style.transform = 'scale(1)';
-item.style.pointerEvents = 'auto';
-});
+    // সব আইটেম দেখাও
+    searchClearBtn.style.display = 'flex';
+    
+    // ফিল্টার করা আইটেমের কাউন্ট নেওয়া (এখানে সব আইটেম দেখানো হচ্ছে তাই items.length)
+    let visibleCount = 0;
+    items.forEach(item => {
+        item.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        item.style.display = '';
+        item.style.opacity = '1';
+        item.style.transform = 'scale(1)';
+        item.style.pointerEvents = 'auto';
+        visibleCount++; // প্রতিটি আইটেমের জন্য কাউন্ট বাড়ানো হলো
+    });
 
-// Filter bar hide করো
-if (filterBar) {
-filterBar.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-filterBar.style.opacity = '0';
-filterBar.style.transform = 'translateY(-10px)';
-filterBar.style.pointerEvents = 'none';
-setTimeout(() => {
-if (currentSearchQuery && isSpecialSearch(currentSearchQuery)) {
-filterBar.style.display = 'none';
-}
-}, 300);
-}
+    // Filter bar hide করো
+    if (filterBar) {
+        filterBar.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        filterBar.style.opacity = '0';
+        filterBar.style.transform = 'translateY(-10px)';
+        filterBar.style.pointerEvents = 'none';
+        setTimeout(() => {
+            if (currentSearchQuery && isSpecialSearch(currentSearchQuery)) {
+                filterBar.style.display = 'none';
+            }
+        }, 300);
+    }
 
-// মোট আইটেম গণনা করো
-const totalItems = items.length;
+    // স্পেশাল রেজাল্ট ইনফো দেখাও
+    resultInfo.classList.add('special');
+    resultInfo.style.display = 'block';
+    searchNoResult.style.display = 'none';
 
-// স্পেশাল রেজাল্ট ইনফো দেখাও
-resultInfo.classList.add('special');
-resultInfo.style.display = 'block';
-searchNoResult.style.display = 'none';
+    // কাউন্ট এলিমেন্ট আপডেট করা (যদি আলাদাভাবে থাকে)
+    if (searchResultCountEl) {
+        searchResultCountEl.textContent = visibleCount;
+    }
 
-// ভাষা অনুযায়ী স্পেশাল মেসেজ
-const specialText = currentLang === 'BN'
-? `মোট <span class="special-count">${totalItems}</span> টি ছবি পাওয়া গেছে`
-: `Total <span class="special-count">${totalItems}</span> Photos Found`;
-resultInfo.innerHTML = specialText;
+    // ভাষা অনুযায়ী স্পেশাল মেসেজ
+    const specialText = currentLang === 'BN'
+        ? `মোট <span class="special-count">${visibleCount}</span> টি ছবি পাওয়া গেছে`
+        : `Total <span class="special-count">${visibleCount}</span> Photos Found`;
+    
+    resultInfo.innerHTML = specialText;
 
-// সাউন্ড প্লে করো
-if (typeof SOUNDS !== 'undefined' && SOUNDS.success) SOUNDS.success();
+    // সাউন্ড প্লে করো
+    if (typeof SOUNDS !== 'undefined' && SOUNDS.success) SOUNDS.success();
 
-return;
+    return;
 } else {
-// সাধারণ সার্চ হলে স্পেশাল ক্লাস রিমুভ করো
-resultInfo.classList.remove('special');
+    // সাধারণ সার্চ হলে স্পেশাল ক্লাস রিমুভ করো
+    resultInfo.classList.remove('special');
 }
 // ===== END SPECIAL EASTER EGG CHECK =====
 // Show/hide clear button
@@ -6007,11 +6016,16 @@ item.element.style.pointerEvents = 'auto';
 }, 50);
 });
 // Show result count
-searchResultCount.textContent = matchingItems.length;
+const finalCount = matchingItems.length;
+if (searchResultCountEl) {
+    searchResultCountEl.textContent = finalCount;
+}
 searchResultInfo.style.display = 'block';
 searchNoResult.style.display = 'none';
 // Update result text based on language
-searchResultText.textContent = currentLang === 'BN' ? 'টা ফলাফল পাওয়া গেছে' : 'results found';
+if (searchResultText) {
+    searchResultText.textContent = currentLang === 'BN' ? 'টা ফলাফল পাওয়া গেছে' : 'results found';
+}
 } else {
 // No results found
 searchResultInfo.style.display = 'none';
