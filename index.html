@@ -1330,6 +1330,139 @@ body.light-mode .search-wrapper:focus-within {
 border-color: var(--accent);
 box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1), 0 0 0 3px rgba(219, 39, 119, 0.1);
 }
+/* ===== SPECIAL EASTER EGG SEARCH STYLE ===== */
+.search-result-info.special {
+font-size: 16px !important;
+font-weight: 800 !important;
+color: #22c55e !important;
+font-family: 'Inter', sans-serif !important;
+text-shadow: 0 0 20px rgba(34, 197, 94, 0.6), 0 0 35px rgba(34, 197, 94, 0.3) !important;
+letter-spacing: 2.5px !important;
+text-transform: uppercase !important;
+animation: specialPulse 2.5s ease-in-out infinite !important;
+background: linear-gradient(145deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.05)) !important;
+padding: 16px 32px !important;
+border-radius: 60px !important;
+border: 2px solid rgba(34, 197, 94, 0.5) !important;
+box-shadow: 
+0 4px 25px rgba(34, 197, 94, 0.3), 
+0 0 40px rgba(34, 197, 94, 0.15),
+inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+margin: 18px auto !important;
+display: inline-block !important;
+text-align: center !important;
+line-height: 1.5 !important;
+font-style: italic !important;
+backdrop-filter: blur(10px) !important;
+-webkit-backdrop-filter: blur(10px) !important;
+position: relative !important;
+overflow: hidden !important;
+}
+.search-result-info.special::before {
+content: '' !important;
+position: absolute !important;
+top: 0 !important;
+left: -100% !important;
+width: 100% !important;
+height: 100% !important;
+background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent) !important;
+animation: specialShine 3s linear infinite !important;
+}
+@keyframes specialShine {
+0% { left: -100%; }
+100% { left: 100%; }
+}
+@keyframes specialPulse {
+0%, 100% { 
+transform: scale(1); 
+box-shadow: 0 4px 25px rgba(34, 197, 94, 0.3), 0 0 40px rgba(34, 197, 94, 0.15);
+}
+50% { 
+transform: scale(1.02); 
+box-shadow: 0 6px 35px rgba(34, 197, 94, 0.5), 0 0 50px rgba(34, 197, 94, 0.25);
+}
+}
+.search-result-info.special .special-count {
+font-size: 28px !important;
+font-weight: 900 !important;
+color: #16a34a !important;
+display: inline-block !important;
+margin: 0 10px !important;
+text-shadow: 
+0 0 20px rgba(22, 163, 74, 0.8), 
+0 0 35px rgba(22, 163, 74, 0.5),
+0 2px 4px rgba(0,0,0,0.3) !important;
+animation: countBounce 1.8s ease-in-out infinite !important;
+font-style: normal !important;
+letter-spacing: 1px !important;
+}
+@keyframes countBounce {
+0%, 100% { transform: scale(1); }
+50% { transform: scale(1.08); }
+}
+body.light-mode .search-result-info.special {
+color: #15803d !important;
+border-color: rgba(21, 128, 61, 0.5) !important;
+background: linear-gradient(145deg, rgba(21, 128, 61, 0.15), rgba(21, 128, 61, 0.05)) !important;
+box-shadow: 0 4px 25px rgba(21, 128, 61, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
+}
+body.light-mode .search-result-info.special .special-count {
+color: #15803d !important;
+text-shadow: 0 0 15px rgba(21, 128, 61, 0.6) !important;
+}
+body.honey-mode .search-result-info.special {
+color: #15803d !important;
+border-color: rgba(21, 128, 61, 0.5) !important;
+background: linear-gradient(145deg, rgba(21, 128, 61, 0.18), rgba(21, 128, 61, 0.06)) !important;
+box-shadow: 0 4px 25px rgba(21, 128, 61, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+body.honey-mode .search-result-info.special .special-count {
+color: #166534 !important;
+text-shadow: 0 0 18px rgba(22, 101, 52, 0.7) !important;
+}
+@media (max-width: 600px) {
+.search-result-info.special {
+font-size: 14px !important;
+padding: 14px 22px !important;
+letter-spacing: 2px !important;
+}
+.search-result-info.special .special-count {
+font-size: 22px !important;
+}
+}
+/* Light mode */
+body.light-mode .search-result-info.special {
+color: #16a34a !important;
+border-color: rgba(22, 163, 74, 0.5) !important;
+background: linear-gradient(145deg, rgba(22, 163, 74, 0.12), rgba(22, 163, 74, 0.05)) !important;
+box-shadow: 0 4px 25px rgba(22, 163, 74, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
+}
+body.light-mode .search-result-info.special .special-count {
+color: #15803d !important;
+text-shadow: 0 0 10px rgba(21, 128, 61, 0.5) !important;
+}
+/* Honey mode */
+body.honey-mode .search-result-info.special {
+color: #15803d !important;
+border-color: rgba(21, 128, 61, 0.5) !important;
+background: linear-gradient(145deg, rgba(21, 128, 61, 0.15), rgba(21, 128, 61, 0.06)) !important;
+box-shadow: 0 4px 25px rgba(21, 128, 61, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+body.honey-mode .search-result-info.special .special-count {
+color: #166534 !important;
+text-shadow: 0 0 12px rgba(22, 101, 52, 0.6) !important;
+}
+/* Mobile responsive */
+@media (max-width: 600px) {
+.search-result-info.special {
+font-size: 15px !important;
+padding: 12px 18px !important;
+}
+.search-result-info.special .special-count {
+font-size: 22px !important;
+}
+}
+/* ===== END SPECIAL EASTER EGG SEARCH STYLE ===== */
 /* ===== END SEARCH BAR STYLES ===== */
 /* ===== FILTER BAR ===== */
 .filter-bar {
@@ -4367,6 +4500,7 @@ toggleMenu();
 // thumbnail: '' দিলে: মূল HONEY লোগো দেখাবে
 
 const welcomeVideoData = [
+    { type:'youtube', id:'wgISugIBMpo', thumb:'https://i.pinimg.com/736x/a0/82/30/a08230ccf1628365ae3adb49a163ad24.jpg', isNew: true },
     { type:'youtube', id:'rjgDaQ0m4HU', thumb:'https://i.pinimg.com/736x/e3/e1/f2/e3e1f27495aa2f9be1a946bfa8c014b5.jpg', isNew: true },
     { type:'youtube', id:'xieqo1tLVCU', thumb:'https://i.pinimg.com/736x/5a/84/a3/5a84a355eb5114ae1f077b2b010706ca.jpg', isNew: true },
     { type:'youtube', id:'6cle5wAU5hw', thumb:'https://i.pinimg.com/736x/5f/ff/57/5fff571f0b0bf36b23eab36718b75c6f.jpg', isNew: true },
@@ -5562,6 +5696,30 @@ function initScrollReveal() {
     }
 }
 // ===== SEARCH FUNCTIONALITY =====
+// ===== SPECIAL EASTER EGG KEYWORDS =====
+const specialKeywords = [
+'sajeeb',
+'sajeeb saha',
+'sajeb',
+'sajeb saha',
+'সজীব',
+'সজীব সাহা',
+'সজিব',
+'সজিব সাহা'
+];
+
+function isSpecialSearch(query) {
+if (!query) return false;
+// শুধুমাত্র exact match - পুরো লেখা মিলতে হবে
+const normalizedQuery = query.toLowerCase().trim();
+// specialKeywords অ্যারে থেকে exact match চেক
+return specialKeywords.some(keyword => {
+const normalizedKeyword = keyword.toLowerCase().trim();
+// Exact match - কোনো partial match নয়
+return normalizedQuery === normalizedKeyword;
+});
+}
+// ===== END SPECIAL EASTER EGG KEYWORDS =====
 let currentSearchQuery = '';
 let searchTimeout = null;
 const searchInput = document.getElementById('searchInput');
@@ -5686,6 +5844,55 @@ currentSearchQuery = query;
 const gallery = document.getElementById('gallery');
 const items = Array.from(document.querySelectorAll('.gallery-item-wrapper'));
 const filterBar = document.getElementById('filterBar');
+// ===== SPECIAL EASTER EGG CHECK =====
+const resultInfo = document.getElementById('searchResultInfo');
+if (query && isSpecialSearch(query)) {
+// সব আইটেম দেখাও
+searchClearBtn.style.display = 'flex';
+items.forEach(item => {
+item.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+item.style.display = '';
+item.style.opacity = '1';
+item.style.transform = 'scale(1)';
+item.style.pointerEvents = 'auto';
+});
+
+// Filter bar hide করো
+if (filterBar) {
+filterBar.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+filterBar.style.opacity = '0';
+filterBar.style.transform = 'translateY(-10px)';
+filterBar.style.pointerEvents = 'none';
+setTimeout(() => {
+if (currentSearchQuery && isSpecialSearch(currentSearchQuery)) {
+filterBar.style.display = 'none';
+}
+}, 300);
+}
+
+// মোট আইটেম গণনা করো
+const totalItems = items.length;
+
+// স্পেশাল রেজাল্ট ইনফো দেখাও
+resultInfo.classList.add('special');
+resultInfo.style.display = 'block';
+searchNoResult.style.display = 'none';
+
+// ভাষা অনুযায়ী স্পেশাল মেসেজ
+const specialText = currentLang === 'BN'
+? `মোট <span class="special-count">${totalItems}</span> টি ছবি পাওয়া গেছে`
+: `Total <span class="special-count">${totalItems}</span> Photos Found`;
+resultInfo.innerHTML = specialText;
+
+// সাউন্ড প্লে করো
+if (typeof SOUNDS !== 'undefined' && SOUNDS.success) SOUNDS.success();
+
+return;
+} else {
+// সাধারণ সার্চ হলে স্পেশাল ক্লাস রিমুভ করো
+resultInfo.classList.remove('special');
+}
+// ===== END SPECIAL EASTER EGG CHECK =====
 // Show/hide clear button
 searchClearBtn.style.display = query ? 'flex' : 'none';
 // If query is empty, show all items and filter bar
