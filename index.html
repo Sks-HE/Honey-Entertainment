@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="https://www.youtube.com/iframe_api"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Honey Entertainment | sajeeb saha </title>
@@ -93,8 +92,6 @@ body {
     pointer-events: none;
     z-index: 3;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 20%, transparent 80%, rgba(255, 255, 255, 0.02) 100%);
-    backdrop-filter: blur(0.3px);
-    -webkit-backdrop-filter: blur(0.3px);
 }
 body.light-mode .glass-overlay {
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, transparent 15%, transparent 85%, rgba(0, 0, 0, 0.02) 100%);
@@ -172,7 +169,7 @@ body.honey-mode .glass-overlay {
 .thank-you-bar { animation: slideInFromBottom 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 1.3s; opacity: 0; }
 footer { animation: fadeInUp 0.6s ease-out forwards; animation-delay: 1.5s; opacity: 0; }.collection-grid .flex { animation: simpleFade 0.4s ease-out forwards; opacity: 0; }.post-datetime { animation: simpleFade 0.4s ease-out forwards; opacity: 0; }@keyframes simpleFade { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
 .post-datetime { animation: fadeInSlide 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; opacity: 0; }
-.ai-status-text, .visit-status-text { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 700; text-align: center; letter-spacing: 1.5px; text-transform: uppercase; background: linear-gradient(90deg, var(--text-color), var(--accent), #fb923c, var(--text-color)); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block; margin-bottom: 5px; }
+.ai-status-text, .visit-status-text { font-family: 'Orbitron', 'Hind Siliguri', 'Noto Sans Bengali', sans-serif; font-size: 14px; font-weight: 700; text-align: center; letter-spacing: 1.5px; text-transform: uppercase; background: linear-gradient(90deg, var(--text-color), var(--accent), #fb923c, var(--text-color)); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block; margin-bottom: 5px; }
 .ai-status-text .highlight-ai { font-size: 20px; vertical-align: middle; display: inline-block; margin-right: 2px; }
 .ai-status-text { margin-top: 10px; }
 .visit-status-text { margin-bottom: -15px; display: flex; align-items: center; justify-content: center; gap: 8px; }
@@ -273,7 +270,7 @@ transform: scaleX(0) !important;
 .menu-btn.active .bar:nth-child(3) {
 transform: translateY(-7.5px) rotate(-45deg) !important;
 }
-.social-container { display: flex; gap: 25px; perspective: 1000px; }
+.social-container { display: flex; justify-content: center; align-items: center; width: 100%; gap: 25px; perspective: 1000px; }
 .social-box { position: relative; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; border-radius: 22px; background: var(--bg-color); z-index: 10; cursor: pointer; transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
 .social-box:nth-child(2) { animation-delay: 0.5s; }
 .social-box:nth-child(3) { animation-delay: 1s; }
@@ -294,294 +291,11 @@ transform: translateY(-7.5px) rotate(-45deg) !important;
 @keyframes move-forever { 0% { transform: translate3d(-90px, 0, 0); } 100% { transform: translate3d(85px, 0, 0); } }
 .app-container { width: 100%; max-width: 450px; padding: 40px 25px; display: flex; flex-direction: column; gap: 40px; z-index: 10; }
 .menu-container { position: fixed; top: 20px; right: 20px; z-index: 100; }
-/*ei khan theke kete deya holo 1no
-.header-wrapper { display: flex; align-items: center; gap: 15px; }
-.header-wrapper h1 {
-    height: 60px; /* লোগোর হাইটের (60px) সমান করে দিলাম */
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* লেখাটা লোগোর ঠিক মাঝখানে সেট হবে */
-    margin: 0;
-    font-size: 22px !important; /* ফন্ট সাইজ ছোট করে লোগোর ভেতরে ফিট করা হলো */
-    line-height: 1.15 !important;
-}
-.custom-logo-placeholder { width: 60px; height: 60px; border-radius: 12px; border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; background: var(--card-bg); flex-shrink: 0; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease; }
-.custom-logo-placeholder:hover { transform: scale(1.05) rotate(-3deg); box-shadow: 0 8px 20px var(--glow-color); }
-.custom-logo-placeholder img { 
-    width: 100%; 
-    height: 100%; 
-    object-fit: cover; 
-    transform: scale(1.5); 
-    transition: transform 0.4s ease; 
-    -webkit-user-drag: none; 
-    -webkit-touch-callout: none; 
-    -webkit-user-select: none; 
-    user-select: none; 
-    pointer-events: none; 
-}
-.shimmer-text { background: linear-gradient(90deg, var(--text-color), var(--accent), #fb923c, var(--text-color)); background-size: 300% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 4s linear infinite; }
-@keyframes shine { to { background-position: 300% center; } }
-.animated-title { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 18px; margin-bottom: 15px; position: relative; }
+
+
 .animated-title > span:first-child { color: var(--accent); display: inline-block; animation: arrowBounce 1.5s infinite ease-in-out; }
 .animated-title #feedTitleText { color: var(--text-color); animation: none !important; display: inline; font-weight: 900; }
 .animated-title #feedTitleText:hover { color: var(--accent); }
-@keyframes arrowBounce { 0%, 100% { transform: translateX(0); opacity: 1; } 50% { transform: translateX(8px); opacity: 0.5; } }
-.btn-premium { padding: 14px 28px; border-radius: 50px; font-weight: 900; text-transform: uppercase; font-size: 14px; background: linear-gradient(90deg, var(--accent), #fb923c); color: #fff; animation: heartbeat 2s infinite ease-in-out; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 12px; border: none; cursor: pointer; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease; width: fit-content; position: relative; overflow: hidden; will-change: transform; }
-.btn-premium::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: left 0.6s ease; }
-.btn-premium:hover::before { left: 100%; }
-.btn-premium:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 15px 30px rgba(0,0,0,0.2), 0 0 20px var(--accent); }
-@keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-.collection-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; }
-.post-caption { font-size: 16px; background: var(--card-bg); padding: 10px 14px; border-radius: 12px; border-left: 4px solid var(--accent); line-height: 1.6; color: var(--text-color); font-family: 'Hind Siliguri', cursive, serif; letter-spacing: 0.5px; transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); cursor: pointer; position: relative; z-index: 50; }
-.post-datetime { display: flex; flex-direction: column; gap: 2px; padding: 0 4px; margin-top: 4px; }
-.post-date { font-size: 11px; font-family: 'Hind Siliguri', sans-serif; color: var(--text-color); opacity: 0.6; font-weight: 500; letter-spacing: 0.3px; }
-.post-time { font-size: 10px; font-family: 'Orbitron', sans-serif; color: var(--accent); opacity: 0.5; font-weight: 400; letter-spacing: 0.5px; }
-.post-caption.caption-active { transform: translateY(-15px) scale(1.05); background: var(--accent); color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.3); border-left-color: white; }
-.collection-card { position: relative; aspect-ratio: 1/1; border-radius: 15px; padding: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--bg-color); cursor: pointer; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-.collection-card::before { content: ''; position: absolute; width: 200%; height: 200%; background: var(--frame-gradient); animation: rotateFrame 4s linear infinite; z-index: 0; }
-@keyframes rotateFrame { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-.collection-card .inner-img { position: relative; z-index: 1; width: 100%; height: 100%; background: var(--bg-color); border-radius: 12px; overflow: hidden; }
-.collection-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-.collection-card:hover img { transform: scale(1.08); }
-.thank-you-bar { width: 85%; margin: 20px auto; padding: 12px 20px; background: var(--card-bg); border-radius: 100px; text-align: center; cursor: pointer; position: relative; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); display: flex; align-items: center; justify-content: center; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease; }
-.thank-you-bar:hover { transform: translateY(-3px); box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.3), 0 0 20px var(--glow-color); }
-.thank-you-text { font-size: 16px; font-weight: 800; text-transform: uppercase; background: linear-gradient(90deg, var(--text-color), var(--accent), #fb923c, var(--text-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
-/* ===== HORIZONTAL VIDEO FEED ===== */
-.video-feed-section { width: 100%; margin-bottom: 10px; overflow: hidden; }
-.horizontal-feed-container {
-display: flex;
-gap: 20px;
-padding: 20px 0;
-overflow-x: scroll;
-width: 100%;
-scroll-behavior: smooth;
-scrollbar-width: none;
--ms-overflow-style: none;
-scroll-snap-type: x mandatory;
-}
-.horizontal-feed-container::-webkit-scrollbar { display: none; }
-.feed-item {
-flex-shrink: 0;
-width: 130px;
-height: 190px;
-cursor: pointer;
-position: relative;
-border-radius: 15px;
-overflow: hidden;
-box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-border: 2px solid rgba(255,255,255,0.1);
-transform-origin: center center;
-transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s ease;
-scroll-snap-align: center;
-}
-.feed-item img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
-.feed-item-title {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-    color: white;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 25px 8px 8px;
-    text-align: center;
-    font-family: 'Hind Siliguri', sans-serif;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-    pointer-events: none;
-}
-/* ===== VIDEO OVERLAY (SHORTS PLAYER) ===== */
-#videoOverlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-background: transparent;
-backdrop-filter: blur(25px) saturate(180%);
--webkit-backdrop-filter: blur(25px) saturate(180%);
-    z-index: 3000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-backdrop-filter: blur(8px);-webkit-backdrop-filter: blur(8px);
-    touch-action: pan-y;
-    padding: 10px; /* স্ক্রিনের একদম কিনারা থেকে একটু ফাঁকা রাখা হলো */
-    box-sizing: border-box;
-}
-#videoOverlay.active { display: flex; }
-
-.short-player-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 420px;
-    height: 92dvh; /* মোবাইল ব্রাউজারের বারের জন্য ডাইনামিক হাইট */
-    max-height: 92vh; /* পুরনো ব্রাউজারের জন্য ফলব্যাক */
-    background: #000;
-    overflow: hidden;
-    box-shadow: 0 0 60px rgba(0,0,0,0.8);
-    border-radius: 15px; /* মোবাইলে দেখতে সুন্দর লাগবে */
-}
-
-@media (min-width: 500px) {
-    .short-player-wrapper {
-        height: 88vh;
-        max-height: 850px;
-        border-radius: 20px;
-        border: 2px solid rgba(255,255,255,0.1);
-    }
-}
-
-.short-video-container {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: #000;
-}
-.short-video-container iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    pointer-events: none;
-}
-
-.short-tap-layer {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 3200;
-    cursor: pointer;
-}
-
-/* ===== CLOSE BUTTON (PAUSE UI) ===== */
-.close-video-btn {
-    position: absolute;
-    top: 20px; left: 20px;
-    width: 45px; height: 45px;
-    border-radius: 50%;
-    background: rgba(0,0,0,0.5);
-    border: 2px solid rgba(255,255,255,0.3);
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 3300;
-    backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
-}
-.close-video-btn:hover { transform: scale(1.1) rotate(90deg); background: var(--accent); border-color: var(--accent); }
-
-/* ===== YT COUNTER BUTTON (PAUSE UI) ===== */
-.short-yt-btn {
-    position: absolute;
-    top: 25px; right: 20px;
-    background: rgba(0,0,0,0.6);
-    color: white;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 6px 12px;
-    border-radius: 20px;
-    z-index: 3300;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.2);
-    letter-spacing: 1px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: all 0.3s ease;
-}
-.short-yt-btn svg { width: 14px; height: 14px; fill: #FF0000; }
-
-/* ===== PAUSE VISIBILITY LOGIC ===== */
-.overlay-pause-ui {
-    opacity: 0 !important;
-    pointer-events: none !important;
-    transition: opacity 0.3s ease;
-}
-.short-player-wrapper.is-paused .overlay-pause-ui {
-    opacity: 1 !important;
-    pointer-events: auto !important;
-}
-
-/* ===== CAPTION POSITION ADJUSTMENT ===== */
-.short-caption-bar {
-position: absolute;
-bottom: 90px;
-left: 20px;
-right: 20px;
-z-index: 3250;
-color: white;
-font-family: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
-font-size: 15px;
-font-weight: 600;
-line-height: 1.5;
-text-shadow: 0 2px 8px rgba(0,0,0,0.9);
-pointer-events: none;
-padding: 10px 15px;
-background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-border-radius: 12px;
-}
-/* ===== SUBSCRIBE BUTTON ===== */
-.short-subscribe-btn {
-    position: absolute;
-    bottom: 20px; left: 20px; right: 20px;
-    z-index: 3250;
-    background: #FF0000;
-    color: white;
-    border: none;
-    border-radius: 30px;
-    padding: 10px 20px;
-    font-family: 'Hind Siliguri', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
-    animation: subPulse 2s infinite;
-    transition: transform 0.2s;
-}
-.short-subscribe-btn:active { transform: scale(0.95); }
-@keyframes subPulse {
-    0%, 100% { box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4); }
-    50% { box-shadow: 0 4px 25px rgba(255, 0, 0, 0.8); }
-}
-/* ===== VIDEO COUNTER ===== */
-.short-video-counter {
-    position: absolute;
-    top: 25px; right: 20px;
-    background: rgba(0,0,0,0.5);
-    color: white;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 6px 12px;
-    border-radius: 20px;
-    z-index: 3300;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.2);
-    letter-spacing: 1px;
-}
-/* ===== ONLY BOTTOM MOVED SECTIONS SPACING ===== */
-/* শুধুমাত্র নিচে সরানো সেকশনগুলোর উপরে ফাঁকা জায়গা তৈরি হবে */
-#fbGroupTxt,
-#watchTxt,
-#ownerProfileTxt,
-#newTxt,
-#followTxt,
-#aiStatusTxt {
-    margin-top: 35px !important; 
-}
-
-/* ওই সেকশনগুলোর টাইটেল এবং নিচের বাটনের মাঝে সুন্দর গ্যাপ */
-#fbGroupTxt, 
-#watchTxt, 
-#newTxt, 
-#followTxt {
-    margin-bottom: 35px !important;
-}
 /* ===== RESTORED MAIN LAYOUT CSS ===== */
 .header-wrapper { display: flex; align-items: center; gap: 15px; }
 .header-wrapper h1 {
@@ -1519,10 +1233,11 @@ font-size: 22px !important;
 .gallery-item-wrapper {
     transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
                 transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    will-change: opacity, transform;
     transform: translateZ(0);
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
+    content-visibility: auto;
+    contain-intrinsic-size: 220px;
 }
 .gallery-item-wrapper.filter-hiding {
     opacity: 0 !important;
@@ -3811,7 +3526,7 @@ gallery.insertAdjacentHTML('beforeend', html);
 </button>
 </section>
 <div class="flex flex-col items-center">
-<span class="ai-status-text" id="aiStatusTxt"><span class="highlight-ai">Subscribe</span>to Honey Entertainment's YouTube channel to get all the cartoon videos first</span>
+<span class="ai-status-text" id="aiStatusTxt"><span class="highlight-ai" id="subscribeWord">Subscribe</span> <span id="subscribeRest">to Honey Entertainment's YouTube channel to get all the cartoon videos first</span></span>
 <div class="visit-status-text">
 <span id="visitStatusTxt">Subscribe</span>
 <svg class="bell-icon" width="20" height="20" viewBox="0 0 24 24">
@@ -3827,8 +3542,8 @@ gallery.insertAdjacentHTML('beforeend', html);
 <span>HE</span>
 </button>
 </section>
-<section>
-<p class="text-[13px] opacity-60 font-black uppercase tracking-[0.25em] mb-6" id="followTxt">❁Follow us to stay connected❁</p>
+<section class="w-full flex flex-col items-center text-center">
+<p class="text-[13px] opacity-60 font-black uppercase tracking-[0.25em] mb-6 text-center w-full" id="followTxt">❁Follow us to stay connected❁</p>
 <div class="social-container">
 <a href="https://www.facebook.com/share/1APsixLhgv/" target="_blank" class="social-box">
 <svg width="32" height="32" fill="#1877F2" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
@@ -4046,6 +3761,7 @@ watchNow: 'Watch Now',
 lang: '🌐🇬🇧',
 thanks: 'Thank You For Visiting!',
 new: 'YouTube :-',
+aiStatus: '<span class="highlight-ai">Subscribe</span> to Honey Entertainment\'s YouTube channel to get all the cartoon videos first',
 visit: 'Subscribe',
 photoDetails: 'More',
 dateLabel: 'Date',
@@ -4094,7 +3810,8 @@ watchNow: 'এখনই দেখুন',
 lang: '🌐🇧🇩',
 thanks: 'পরিদর্শনের জন্য আপনাকে ধন্যবাদ!',
 new: 'YouTube :-',
-visit: 'সাবস্ক্রাইব করুন',
+aiStatus: 'সব কার্টুন ভিডিও সবার আগে পেতে Honey Entertainment এর ইউটিউব চ্যানেলটি <span class="highlight-ai">Subscribe</span> করুন',
+visit: 'Subscribe',
 photoDetails: 'আরও',
 dateLabel: 'তারিখ',
 timeLabel: 'সময়',
@@ -4712,6 +4429,7 @@ document.getElementById('fbGroupTxt').innerHTML = `<span>▶</span> ${t.fbGroup}
 document.getElementById('watchTxt').innerHTML = `<span>▶</span> ${t.watch}`;
 document.getElementById('collTxt').innerHTML = `<span>▶</span> ${t.coll}`;
 document.getElementById('newTxt').innerHTML = `<span>▶</span> ${t.new}`;
+document.getElementById('aiStatusTxt').innerHTML = t.aiStatus;
 document.getElementById('visitStatusTxt').innerText = t.visit;
 document.getElementById('joinBtnText').innerText = t.join;
 document.getElementById('watchBtnText').innerText = t.watchNow;
@@ -5221,94 +4939,72 @@ startSwipeHintTimer();
 // Start zoom hint cycle for new image
 startZoomHintCycle();
 }
-async function downloadImg() {
-    const imgSrc = document.getElementById('fullImg').src;
-    const t = translations[currentLang];
-    const currentIndex = currentGalleryIndex;
-    const currentItem = window.galleryItems[currentIndex];
-    
-    let fileName = 'Honey_Collection';
-    if (currentItem && currentItem.cap) {
-        fileName = currentItem.cap
-            .replace(/[^\w\s\u0980-\u09FF]/g, '')
-            .replace(/\s+/g, '_')
-            .substring(0, 30) || 'Honey_Collection';
-    }
-    fileName = `${fileName}_${Date.now()}.jpg`;
-    
-    SOUNDS.download();
-    showDownloadProgress(t.loading || 'Downloading...', 0);
-    
-    // মেথড ১: সরাসরি ডাউনলোড (সবচেয়ে ফাস্ট)
-    try {
-        const link = document.createElement('a');
-        link.href = imgSrc;
-        link.download = fileName;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        showDownloadProgress('✓ Download Started!', 100);
-        setTimeout(() => hideDownloadProgress(), 2000);
-        setTimeout(() => SOUNDS.success(), 300);
-        
-        // মোবাইলে হিন্ট দেখাও
-        if (isMobileDevice()) {
-            setTimeout(() => {
-                const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-                const message = isIOS ? 
-                    '📲 ছবি সেভ করতে লং প্রেস করুন → "Save to Photos"' :
-                    '📲 ছবি সেভ করতে লং প্রেস করুন → "Save image" অথবা ⋮ মেনু থেকে "Download image"';
-                showToast(message, 4000);
-            }, 1000);
-        }
-        
-    } catch (error) {
-        console.error('Method 1 failed:', error);
-        
-        // মেথড ২: CORS proxy দিয়ে ট্রাই করি
-        try {
-            showDownloadProgress('Trying alternative method...', 30);
-            
-            const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(imgSrc);
-            const response = await fetch(proxyUrl);
-            
-            if (!response.ok) throw new Error('Proxy failed');
-            
-            const blob = await response.blob();
-            const blobUrl = URL.createObjectURL(blob);
-            
-            const link = document.createElement('a');
-            link.href = blobUrl;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showDownloadProgress('✓ Download Complete!', 100);
-            setTimeout(() => hideDownloadProgress(), 2000);
-            setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
-            setTimeout(() => SOUNDS.success(), 300);
-            
-        } catch (proxyError) {
-            console.error('Method 2 failed:', proxyError);
-            hideDownloadProgress();
-            
-            // মেথড ৩: নতুন ট্যাবে খুলি
-            window.open(imgSrc, '_blank');
-            
-            setTimeout(() => {
-                const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-                const message = isIOS ? 
-                    '📲 নতুন ট্যাবে ছবি লং প্রেস করে "Save to Photos" দিন' :
-                    '📲 নতুন ট্যাবে ছবি লং প্রেস করে "Save image" দিন';
-                showToast(message, 4000);
-                SOUNDS.success();
+// Global timer variable (শুধু একবার declare হবে)
+let toastTimer = null;
+let toastHoldActive = false;
+
+function showToast(message, duration = null) {
+    let toast = document.getElementById('customToast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'customToast';
+        // Hold-to-keep events (শুধু একবার attach হবে)
+        toast.addEventListener('mouseenter', () => {
+            if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+            toastHoldActive = true;
+        });
+        toast.addEventListener('mouseleave', () => {
+            toastHoldActive = false;
+            toast.classList.remove('active');
+        });
+        toast.addEventListener('touchstart', (e) => {
+            if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+            toastHoldActive = true;
+            e.stopPropagation(); // Contextmenu event বন্ধ করতে
+        }, { passive: false });
+        toast.addEventListener('touchend', (e) => {
+            toastHoldActive = false;
+            toast.classList.remove('active');
+            e.stopPropagation();
+        }, { passive: false });
+        toast.addEventListener('touchcancel', (e) => {
+            toastHoldActive = false;
+            toast.classList.remove('active');
+            e.stopPropagation();
+        }, { passive: false });
+        // Mobile এ long press detect করতে
+        let touchTimer = null;
+        toast.addEventListener('touchstart', (e) => {
+            touchTimer = setTimeout(() => {
+                if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+                toastHoldActive = true;
             }, 500);
-        }
+        }, { passive: true });
+        toast.addEventListener('touchend', () => {
+            if (touchTimer) { clearTimeout(touchTimer); touchTimer = null; }
+        }, { passive: true });
+        toast.addEventListener('touchmove', () => {
+            if (touchTimer) { clearTimeout(touchTimer); touchTimer = null; }
+        }, { passive: true });
+        toast.addEventListener('touchcancel', () => {
+            toastHoldActive = false;
+            toast.classList.remove('active');
+        });
+        document.body.appendChild(toast);
     }
+    toast.textContent = message;
+    toast.classList.add('active');
+    if (duration === null) {
+        const charCount = message.length;
+        duration = charCount > 50 ? 4000 : 3000;
+    }
+    if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+    toastTimer = setTimeout(() => {
+        if (!toastHoldActive) {
+            toast.classList.remove('active');
+        }
+        toastTimer = null;
+    }, duration);
 }
 
 function isMobileDevice() {
@@ -5320,13 +5016,7 @@ function showDownloadProgress(text, progress) {
     if (!progressBar) {
         progressBar = document.createElement('div');
         progressBar.id = 'downloadProgressBar';
-        progressBar.innerHTML = `
-            <div class="download-progress-content">
-                <div class="download-progress-text"></div>
-                <div class="download-progress-bar">
-                    <div class="download-progress-fill"></div>
-                </div>
-            </div>`;
+        progressBar.innerHTML = `<div class="download-progress-content"><div class="download-progress-text"></div><div class="download-progress-bar"><div class="download-progress-fill"></div></div></div>`;
         document.body.appendChild(progressBar);
     }
     progressBar.querySelector('.download-progress-text').textContent = text;
@@ -5344,76 +5034,52 @@ function hideDownloadProgress() {
     }
 }
 
-// Global timer variable (শুধু একবার declare হবে)
-let toastTimer = null;
-let toastHoldActive = false;
+async function downloadImg() {
+    const imgSrc = document.getElementById('fullImg').src;
+    const t = translations[currentLang];
+    const currentIndex = currentGalleryIndex;
+    const currentItem = window.galleryItems[currentIndex];
+    
+    let fileName = 'Honey_Collection';
+    if (currentItem && currentItem.cap) {
+        fileName = currentItem.cap.replace(/[^\w\s\u0980-\u09FF]/g, '').replace(/\s+/g, '_').substring(0, 30) || 'Honey_Collection';
+    }
+    fileName = `${fileName}_${Date.now()}.jpg`;
+    
+    SOUNDS.download();
+    showDownloadProgress(t.loading || 'Downloading...', 10);
 
-function showToast(message, duration = null) {
-let toast = document.getElementById('customToast');
-if (!toast) {
-toast = document.createElement('div');
-toast.id = 'customToast';
-// Hold-to-keep events (শুধু একবার attach হবে)
-toast.addEventListener('mouseenter', () => {
-if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
-toastHoldActive = true;
-});
-toast.addEventListener('mouseleave', () => {
-toastHoldActive = false;
-toast.classList.remove('active');
-});
-toast.addEventListener('touchstart', (e) => {
-if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
-toastHoldActive = true;
-e.stopPropagation(); // Contextmenu event বন্ধ করতে
-}, { passive: false });
-toast.addEventListener('touchend', (e) => {
-toastHoldActive = false;
-toast.classList.remove('active');
-e.stopPropagation();
-}, { passive: false });
-toast.addEventListener('touchcancel', (e) => {
-toastHoldActive = false;
-toast.classList.remove('active');
-e.stopPropagation();
-}, { passive: false });
-// Mobile এ long press detect করতে
-let touchTimer = null;
-toast.addEventListener('touchstart', (e) => {
-touchTimer = setTimeout(() => {
-// Long press detected - toast দাঁড় করিয়ে রাখি
-if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
-toastHoldActive = true;
-}, 500); // 500ms পর long press ধরবো
-}, { passive: true });
-toast.addEventListener('touchend', () => {
-if (touchTimer) { clearTimeout(touchTimer); touchTimer = null; }
-}, { passive: true });
-toast.addEventListener('touchmove', () => {
-if (touchTimer) { clearTimeout(touchTimer); touchTimer = null; }
-}, { passive: true });
-toast.addEventListener('touchcancel', () => {
-toastHoldActive = false;
-toast.classList.remove('active');
-});
-document.body.appendChild(toast);
-}
-toast.textContent = message;
-toast.classList.add('active');
-// Auto duration based on message length
-if (duration === null) {
-const charCount = message.length;
-duration = charCount > 50 ? 4000 : 3000;
-}
-// আগের timer cancel করি
-if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
-// নতুন timer সেট করি
-toastTimer = setTimeout(() => {
-if (!toastHoldActive) {
-toast.classList.remove('active');
-}
-toastTimer = null;
-}, duration);
+    try {
+        // Pinterest এর ছবি সরাসরি ডাউনলোড হয় না, তাই Proxy সার্ভার ব্যবহার করছি
+        const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(imgSrc);
+        showDownloadProgress(t.fetchingImage || 'Fetching image...', 30);
+        const response = await fetch(proxyUrl);
+        if (!response.ok) throw new Error('Network error');
+        showDownloadProgress(t.processing || 'Processing...', 70);
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+
+        // Blob URL দিয়ে সরাসরি গ্যালারিতে/ডাউনলোডে সেভ হবে
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        showDownloadProgress('✓ Download Complete!', 100);
+        setTimeout(() => hideDownloadProgress(), 2500);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
+        setTimeout(() => SOUNDS.success(), 300);
+        
+    } catch (error) {
+        console.error('Download failed:', error);
+        hideDownloadProgress();
+        // যদি প্রক্সিও কাজ না করে, তখন বাধ্য হয়ে নতুন ট্যাবে খুলব
+        window.open(imgSrc, '_blank');
+        const failMsg = (t.downloadFailed || '⚠️ Download failed!') + '\n' + (t.browserChange || 'Please change your browser.');
+        showToast(failMsg, 5000);
+    }
 }
 async function downloadImg() {
     const imgSrc = document.getElementById('fullImg').src;
@@ -5642,19 +5308,21 @@ p.animate([
 }
 }
 const cursorGlow = document.getElementById('cursorGlow');
-let glowX = window.innerWidth / 2;
-let glowY = window.innerHeight / 2;
-let targetX = glowX;
-let targetY = glowY;
-document.addEventListener('mousemove', (e) => { targetX = e.clientX; targetY = e.clientY; });
-function animateGlow() {
-glowX += (targetX - glowX) * 0.08;
-glowY += (targetY - glowY) * 0.08;
-cursorGlow.style.left = glowX + 'px';
-cursorGlow.style.top = glowY + 'px';
-requestAnimationFrame(animateGlow);
+if (window.matchMedia('(min-width: 769px) and (pointer: fine)').matches && cursorGlow) {
+    let glowX = window.innerWidth / 2;
+    let glowY = window.innerHeight / 2;
+    let targetX = glowX;
+    let targetY = glowY;
+    document.addEventListener('mousemove', (e) => { targetX = e.clientX; targetY = e.clientY; }, { passive: true });
+    function animateGlow() {
+        glowX += (targetX - glowX) * 0.08;
+        glowY += (targetY - glowY) * 0.08;
+        cursorGlow.style.left = glowX + 'px';
+        cursorGlow.style.top = glowY + 'px';
+        requestAnimationFrame(animateGlow);
+    }
+    animateGlow();
 }
-animateGlow();
 const backToTopBtn = document.getElementById('backToTopBtn');
 let lastScrollY = 0;
 let ticking = false;
