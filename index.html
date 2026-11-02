@@ -4133,7 +4133,7 @@ phonePermTitle: 'Phone Popup Permission',
 phonePermDesc: 'Allow Phone Popup to keep watching this video over any app on your phone screen?',
 phonePermAllow: 'Allow',
 phonePermCancel: 'Cancel',
-phonePipGuide: '📱 Press your phone\'s Home button now — the video will float over other apps!',
+phonePipGuide: '📱 Phone Popup is now active! You can drag it anywhere on your screen.',
 menuFbGroup: 'Facebook Group',menuOwnerProfile: 'Owner Profile',menuYoutube: 'YouTube Channel',menuFbPage: 'Facebook Page',menuTiktok: 'TikTok',menuInstagram: 'Instagram',
 },
 BN: {
@@ -4195,7 +4195,7 @@ phonePermTitle: 'ফোন পপআপের অনুমতি',
 phonePermDesc: 'ফোনের যেকোনো অ্যাপের ওপর পপআপ স্ক্রিনে ভিডিওটি চালু রাখার অনুমতি দিতে চান?',
 phonePermAllow: 'অনুমতি দিন',
 phonePermCancel: 'বাতিল',
-phonePipGuide: '📱 এবার আপনার ফোনের Home বাটনে চাপ দিন — ভিডিওটি যেকোনো অ্যাপের ওপর পপআপ হয়ে চলবে!',
+phonePipGuide: '📱 ফোন পপআপ চালু হয়েছে! এখন এটি স্ক্রিনের যেকোনো জায়গায় টেনে সরাতে পারবেন।',
 menuFbGroup: 'ফেসবুক গ্রুপ',menuOwnerProfile: 'Owner Profile',menuYoutube: 'ইউটিউব চ্যানেল',menuFbPage: 'ফেসবুক পেজ',menuTiktok: 'Tiktok',menuInstagram: 'Instagram',
 }
 };
@@ -4696,6 +4696,35 @@ function closePhonePopupPermission() {
     if (typeof SOUNDS !== 'undefined' && SOUNDS.menuClose) SOUNDS.menuClose();
 }
 
+let phoneFloatingPopupWin = null;
+let phoneNativePipVideo = null;
+let phoneNativePipAnimId = null;
+
+function stopPhoneNativePip() {
+    if (phoneNativePipAnimId) {
+        cancelAnimationFrame(phoneNativePipAnimId);
+        phoneNativePipAnimId = null;
+    }
+    if (document.pictureInPictureElement && document.exitPictureInPicture) {
+        document.exitPictureInPicture().catch(() => {});
+    }
+    if (phoneNativePipVideo) {
+        try {
+            phoneNativePipVideo.pause();
+            phoneNativePipVideo.remove();
+        } catch (e) {}
+        phoneNativePipVideo = null;
+    }
+    if (phoneFloatingPopupWin && !phoneFloatingPopupWin.closed) {
+        try { phoneFloatingPopupWin.close(); } catch (e) {}
+        phoneFloatingPopupWin = null;
+    }
+    if (phonePopupPipWindow) {
+        try { phonePopupPipWindow.close(); } catch (e) {}
+        phonePopupPipWindow = null;
+    }
+}
+
 async function confirmPhonePopupPermission() {
     const permOverlay = document.getElementById('phonePipPermOverlay');
     if (permOverlay) permOverlay.classList.remove('active');
@@ -4708,12 +4737,17 @@ async function confirmPhonePopupPermission() {
     const iframe = holder ? holder.querySelector('iframe') : null;
     if (!iframe) return;
 
-    // ১. আধুনিক ব্রাউজারের Document Picture-in-Picture API (সরাসরি আলাদা ফ্লোটিং উইন্ডো)
+    // ১. প্রথমে কখনোই ফুলস্ক্রিন না করে সরাসরি মিনি পপআপ স্ক্রিনে নিয়ে যাওয়া (যাতে ব্রাউজারের ভেতরেও কোণায় ভাসে ও সরানো যায়)
+    if (!isWelcomePopupMode) {
+        toggleWelcomeVideoPopup();
+    }
+
+    // ২. যদি ব্রাউজারে Document Picture-in-Picture সাপোর্ট থাকে (অন্য সব অ্যাপের ওপর ভাসমান আসল পপআপ উইন্ডো)
     if ('documentPictureInPicture' in window) {
         try {
             const pipWin = await window.documentPictureInPicture.requestWindow({
-                width: 360,
-                height: 215
+                width: 320,
+                height: 190
             });
             phonePopupPipWindow = pipWin;
             pipWin.document.body.style.margin = '0';
@@ -4724,10 +4758,7 @@ async function confirmPhonePopupPermission() {
             iframe.style.border = 'none';
             pipWin.document.body.appendChild(iframe);
 
-            // মেইন পেজ আনলক করে পপআপ মোডে রাখা
-            modal.classList.add('popup-mode');
             content.style.display = 'none';
-            document.body.style.overflow = '';
 
             pipWin.addEventListener('pagehide', () => {
                 if (holder && iframe) {
@@ -4736,32 +4767,80 @@ async function confirmPhonePopupPermission() {
                     holder.appendChild(iframe);
                 }
                 content.style.display = '';
-                modal.classList.remove('popup-mode');
                 phonePopupPipWindow = null;
             });
+            if (typeof showToast === 'function') showToast(t.phonePipGuide, 4000);
             return;
         } catch (err) {
             console.warn('Document PiP fallback:', err);
         }
     }
 
-    // ২. মোবাইল ফোনের জন্য: অটোমেটিক ফুলস্ক্রিন ও ল্যান্ডস্কেপ করে সিস্টেম PiP রেডি করা
+    // ৩. ফোনের সিস্টেম ওভারলে পপআপ (Native Picture-in-Picture ব্রিজ - যাতে অন্য অ্যাপে গেলেও ফোনের স্ক্রিনে পপআপ থাকে)
     try {
-        const targetEl = iframe.requestFullscreen ? iframe : content;
-        if (targetEl.requestFullscreen) {
-            await targetEl.requestFullscreen();
-        } else if (targetEl.webkitRequestFullscreen) {
-            targetEl.webkitRequestFullscreen();
+        if (document.pictureInPictureEnabled && !document.pictureInPictureElement) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 480;
+            canvas.height = 270;
+            const ctx = canvas.getContext('2d');
+
+            const currentIdx = window.currentWelcomeVideoIndex || 0;
+            const vData = welcomeVideoData[currentIdx];
+            const thumbUrl = getWelcomeThumb(vData);
+            const thumbImg = new Image();
+            thumbImg.crossOrigin = 'anonymous';
+            thumbImg.src = thumbUrl;
+
+            function drawPipFrame() {
+                ctx.fillStyle = '#0f0f0f';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                if (thumbImg.complete && thumbImg.naturalWidth > 0) {
+                    ctx.drawImage(thumbImg, 0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+                ctx.fillStyle = '#f472b6';
+                ctx.font = 'bold 20px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('HONEY ENTERTAINMENT', canvas.width / 2, canvas.height - 25);
+                phoneNativePipAnimId = requestAnimationFrame(drawPipFrame);
+            }
+            drawPipFrame();
+
+            const pipVid = document.createElement('video');
+            pipVid.muted = true;
+            pipVid.playsInline = true;
+            pipVid.style.position = 'fixed';
+            pipVid.style.width = '1px';
+            pipVid.style.height = '1px';
+            pipVid.style.opacity = '0.01';
+            pipVid.style.pointerEvents = 'none';
+            pipVid.srcObject = canvas.captureStream(15);
+            document.body.appendChild(pipVid);
+            phoneNativePipVideo = pipVid;
+
+            await pipVid.play();
+            if (pipVid.requestPictureInPicture) {
+                await pipVid.requestPictureInPicture();
+            }
+            pipVid.addEventListener('leavepictureinpicture', () => {
+                if (phoneNativePipAnimId) {
+                    cancelAnimationFrame(phoneNativePipAnimId);
+                    phoneNativePipAnimId = null;
+                }
+                try { pipVid.remove(); } catch (e) {}
+                phoneNativePipVideo = null;
+            });
         }
-        if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock('landscape').catch(() => {});
-        }
-    } catch (e) {}
+    } catch (e) {
+        console.warn('Native PiP fallback:', e);
+    }
 
     if (typeof showToast === 'function') {
-        showToast(t.phonePipGuide, 5500);
+        showToast(t.phonePipGuide, 4500);
     }
 }
+
 function resetWelcomePopupInlineStyles(content) {
     if (!content) return;
     content.style.left = '';
@@ -4772,11 +4851,13 @@ function resetWelcomePopupInlineStyles(content) {
     content.style.height = '';
     content.style.aspectRatio = '16/9';
     content.style.maxWidth = '900px';
+    content.style.display = '';
 }
 
 function openWelcomeVideoModal(index) {
     const video = welcomeVideoData[index];
     if (!video) return;
+    window.currentWelcomeVideoIndex = index;
 
     const embedUrl = buildWelcomeEmbedUrl(video);
     if (!embedUrl) {
@@ -4788,6 +4869,8 @@ function openWelcomeVideoModal(index) {
     const content = document.getElementById('welcomeVideoModalContent');
     const holder = document.getElementById('welcomeIframeHolder');
     if (!modal || !content || !holder) return;
+
+    stopPhoneNativePip();
 
     // মেনু ছাড়াও মেইন পেজে পপআপ সচল রাখতে modal-কে সরাসরি body-তে রাখা হচ্ছে
     if (modal.parentElement !== document.body) {
@@ -4815,6 +4898,8 @@ function closeWelcomeVideoModal() {
     const holder = document.getElementById('welcomeIframeHolder');
     if (!modal || !content) return;
 
+    stopPhoneNativePip();
+
     if (document.fullscreenElement && document.exitFullscreen) {
         document.exitFullscreen().catch(()=>{});
     } else if (document.webkitFullscreenElement && document.webkitExitFullscreen) {
@@ -4830,7 +4915,6 @@ function closeWelcomeVideoModal() {
 
     if (typeof SOUNDS !== 'undefined' && SOUNDS.imageClose) SOUNDS.imageClose();
 }
-
 function toggleWelcomeVideoPopup() {
     const modal = document.getElementById('welcomeVideoModal');
     const content = document.getElementById('welcomeVideoModalContent');
