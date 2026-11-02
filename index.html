@@ -2216,31 +2216,158 @@ bottom: -9px;
     fill: white;
 }
 
-.welcome-video-modal-popup {
+.welcome-video-modal-popup,
+.welcome-video-modal-phone-popup {
     position: absolute;
-    bottom: 15px; right: 67px;
-    width: 42px; height: 42px;
-    border-radius: 50%;
-    background: rgba(0,0,0,0.6);
+    height: 42px;
+    padding: 0 15px;
+    border-radius: 25px;
+    background: rgba(0,0,0,0.65);
     border: 2px solid rgba(255,255,255,0.3);
     color: white;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 7px;
     z-index: 5100;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     transition: all 0.3s ease;
+    font-family: 'Hind Siliguri', 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
 }
-.welcome-video-modal-popup:hover {
-    transform: scale(1.1);
+.welcome-video-modal-popup {
+    bottom: 15px;
+    right: 67px;
+}
+.welcome-video-modal-phone-popup {
+    top: 15px;
+    right: 67px;
+}
+.welcome-video-modal-popup:hover,
+.welcome-video-modal-phone-popup:hover {
+    transform: scale(1.06);
     background: var(--accent);
     border-color: var(--accent);
+    box-shadow: 0 0 20px var(--glow-color);
 }
-.welcome-video-modal-popup svg {
-    width: 20px; height: 20px;
+.welcome-video-modal-popup svg,
+.welcome-video-modal-phone-popup svg {
+    width: 18px;
+    height: 18px;
     fill: white;
+    flex-shrink: 0;
+}
+@media (max-width: 600px) {
+    .welcome-video-modal-popup,
+    .welcome-video-modal-phone-popup {
+        height: 38px;
+        padding: 0 12px;
+        font-size: 12px;
+        right: 62px;
+    }
+}
+
+/* ===== PHONE POPUP PERMISSION MODAL ===== */
+.phone-pip-perm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.78);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 99999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.phone-pip-perm-overlay.active {
+    display: flex;
+    animation: fadeInUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.phone-pip-perm-box {
+    background: linear-gradient(145deg, #161616, #0a0a0a);
+    border: 2px solid var(--accent);
+    border-radius: 22px;
+    padding: 24px 22px;
+    max-width: 360px;
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.85), 0 0 30px var(--glow-color);
+    font-family: 'Hind Siliguri', 'Inter', sans-serif;
+}
+body.light-mode .phone-pip-perm-box {
+    background: linear-gradient(145deg, #ffffff, #f3f4f6);
+    color: #1a1a1a;
+}
+body.honey-mode .phone-pip-perm-box {
+    background: linear-gradient(145deg, #fffbeb, #fef3c7);
+    color: #78350f;
+}
+.phone-pip-perm-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #fb923c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
+    box-shadow: 0 6px 20px var(--glow-color);
+}
+.phone-pip-perm-icon svg {
+    width: 28px;
+    height: 28px;
+    fill: #fff;
+}
+.phone-pip-perm-title {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+.phone-pip-perm-desc {
+    font-size: 13.5px;
+    line-height: 1.55;
+    opacity: 0.88;
+    margin-bottom: 20px;
+}
+.phone-pip-perm-btns {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+.phone-pip-btn {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 50px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: all 0.25s ease;
+    font-family: 'Hind Siliguri', 'Inter', sans-serif;
+}
+.phone-pip-btn.cancel {
+    background: rgba(128,128,128,0.2);
+    color: inherit;
+}
+.phone-pip-btn.cancel:hover {
+    background: rgba(239,68,68,0.25);
+    color: #ef4444;
+}
+.phone-pip-btn.allow {
+    background: linear-gradient(90deg, var(--accent), #fb923c);
+    color: #fff;
+    box-shadow: 0 4px 15px var(--glow-color);
+}
+.phone-pip-btn.allow:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px var(--glow-color);
 }
 
 /* ===== POPUP (MINI PLAYER) MODE ===== */
@@ -2255,7 +2382,8 @@ bottom: -9px;
 }
 .welcome-video-modal.popup-mode > .welcome-video-modal-close,
 .welcome-video-modal.popup-mode > .welcome-video-modal-fullscreen,
-.welcome-video-modal.popup-mode > .welcome-video-modal-popup {
+.welcome-video-modal.popup-mode > .welcome-video-modal-popup,
+.welcome-video-modal.popup-mode > .welcome-video-modal-phone-popup {
     display: none !important;
 }
 .welcome-video-modal.popup-mode .welcome-video-modal-content {
@@ -2923,9 +3051,15 @@ height: 22px !important;
     </div>
 </section>
 
-<!-- Video Modal (বড় প্লেয়ার ও পপআপ) -->
+<!-- Video Modal (বড় প্লেয়ার, ব্রাউজার পপআপ ও ফোন পপআপ) -->
 <div class="welcome-video-modal" id="welcomeVideoModal">
+    <!-- উপরে ক্রস বাটনের পাশে Phone Popup বাটন -->
+    <button class="welcome-video-modal-phone-popup" id="welcomeModalPhonePopupBtn" onclick="requestPhonePopupPermission()" title="Phone Popup">
+        <svg viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14zm-2-6h-4v4h4v-4z"/></svg>
+        <span id="phonePopupBtnText">Phone Popup</span>
+    </button>
     <button class="welcome-video-modal-close" id="welcomeModalCloseBtn" onclick="closeWelcomeVideoModal()" title="Close">×</button>
+
     <div class="welcome-video-modal-content" id="welcomeVideoModalContent">
         <div class="popup-header-bar" id="popupHeaderBar" title="Drag to move">
             <span class="popup-drag-title">⠿ <span id="popupHeaderText">Drag to move</span></span>
@@ -2941,14 +3075,31 @@ height: 22px !important;
         </div>
         <div class="popup-resize-handle" id="popupResizeHandle" title="Drag corner to resize"></div>
     </div>
-    <button class="welcome-video-modal-popup" id="welcomeModalPopupBtn" onclick="toggleWelcomeVideoPopup()" title="Popup Player">
+
+    <!-- নিচে ফুলস্ক্রিন বাটনের পাশে Browser Popup বাটন -->
+    <button class="welcome-video-modal-popup" id="welcomeModalPopupBtn" onclick="toggleWelcomeVideoPopup()" title="Browser Popup">
         <svg viewBox="0 0 24 24"><path d="M19 11h-8v6h8v-6zm4 8V4.98C23 3.88 22.1 3 21 3H3c-1.1 0-2 .88-2 1.98V19c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2zm-2 .02H3V4.97h18v14.05z"/></svg>
+        <span id="browserPopupBtnText">Browser Popup</span>
     </button>
     <button class="welcome-video-modal-fullscreen" id="welcomeModalFullscreenBtn" onclick="toggleWelcomeVideoFullscreen()" title="Fullscreen">
         <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
     </button>
 </div>
-    
+
+<!-- Phone Popup Permission Modal -->
+<div class="phone-pip-perm-overlay" id="phonePipPermOverlay">
+    <div class="phone-pip-perm-box">
+        <div class="phone-pip-perm-icon">
+            <svg viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14zm-2-6h-4v4h4v-4z"/></svg>
+        </div>
+        <div class="phone-pip-perm-title" id="phonePipPermTitle">Phone Popup Permission</div>
+        <div class="phone-pip-perm-desc" id="phonePipPermDesc">Allow Phone Popup to keep watching the video across any app on your phone screen?</div>
+        <div class="phone-pip-perm-btns">
+            <button class="phone-pip-btn cancel" id="phonePipCancelBtn" onclick="closePhonePopupPermission()">Cancel</button>
+            <button class="phone-pip-btn allow" id="phonePipAllowBtn" onclick="confirmPhonePopupPermission()">Allow</button>
+        </div>
+    </div>
+</div>   
     <!-- Welcome Page Footer -->
     <div class="thank-you-bar" onclick="triggerEffect(event); event.stopPropagation()">
         <div class="thank-you-text" id="welcomeThankYouTxt">Thank You For Visiting!</div>
@@ -3970,11 +4121,19 @@ subBtn: 'Subscribe',
 fullEpisodeTitle: 'Honey Bunny Full episode',
 fullEpisodeBtn: 'Watch Full Episode',
 fullscreenTip: 'Fullscreen',
-popupTip: 'Popup Player',
+popupTip: 'Browser Popup',
+phonePopupTip: 'Phone Popup',
+browserPopupText: 'Browser Popup',
+phonePopupText: 'Phone Popup',
 expandTip: 'Expand Player',
 closeTip: 'Close',
 resizeTip: 'Drag corner to resize',
 dragTitle: 'Drag to move',
+phonePermTitle: 'Phone Popup Permission',
+phonePermDesc: 'Allow Phone Popup to keep watching this video over any app on your phone screen?',
+phonePermAllow: 'Allow',
+phonePermCancel: 'Cancel',
+phonePipGuide: '📱 Press your phone\'s Home button now — the video will float over other apps!',
 menuFbGroup: 'Facebook Group',menuOwnerProfile: 'Owner Profile',menuYoutube: 'YouTube Channel',menuFbPage: 'Facebook Page',menuTiktok: 'TikTok',menuInstagram: 'Instagram',
 },
 BN: {
@@ -4024,11 +4183,19 @@ subBtn: 'সাবস্ক্রাইব',
 fullEpisodeTitle: 'Honey Bunny সম্পূর্ণ পর্ব',
 fullEpisodeBtn: 'সম্পূর্ণ পর্ব দেখুন',
 fullscreenTip: 'ফুলস্ক্রিন',
-popupTip: 'পপআপ প্লেয়ার',
+popupTip: 'ব্রাউজার পপআপ',
+phonePopupTip: 'ফোন পপআপ',
+browserPopupText: 'ব্রাউজার পপআপ',
+phonePopupText: 'ফোন পপআপ',
 expandTip: 'বড় স্ক্রিন করুন',
 closeTip: 'বন্ধ করুন',
 resizeTip: 'কোণা ধরে ছোট-বড় করুন',
 dragTitle: 'সরাতে টেনে নিন',
+phonePermTitle: 'ফোন পপআপের অনুমতি',
+phonePermDesc: 'ফোনের যেকোনো অ্যাপের ওপর পপআপ স্ক্রিনে ভিডিওটি চালু রাখার অনুমতি দিতে চান?',
+phonePermAllow: 'অনুমতি দিন',
+phonePermCancel: 'বাতিল',
+phonePipGuide: '📱 এবার আপনার ফোনের Home বাটনে চাপ দিন — ভিডিওটি যেকোনো অ্যাপের ওপর পপআপ হয়ে চলবে!',
 menuFbGroup: 'ফেসবুক গ্রুপ',menuOwnerProfile: 'Owner Profile',menuYoutube: 'ইউটিউব চ্যানেল',menuFbPage: 'ফেসবুক পেজ',menuTiktok: 'Tiktok',menuInstagram: 'Instagram',
 }
 };
@@ -4475,28 +4642,126 @@ function renderWelcomeVideoGrid() {
 
 let isWelcomePopupMode = false;
 
+let phonePopupPipWindow = null;
+
 function updateWelcomeModalTooltips() {
     const t = translations[currentLang];
     if (!t) return;
     const fsBtn = document.getElementById('welcomeModalFullscreenBtn');
     const popBtn = document.getElementById('welcomeModalPopupBtn');
+    const phonePopBtn = document.getElementById('welcomeModalPhonePopupBtn');
+    const browserPopTxt = document.getElementById('browserPopupBtnText');
+    const phonePopTxt = document.getElementById('phonePopupBtnText');
     const closeBtn = document.getElementById('welcomeModalCloseBtn');
     const expBtn = document.getElementById('popupExpandBtn');
     const miniCloseBtn = document.getElementById('popupMiniCloseBtn');
     const resizeHandle = document.getElementById('popupResizeHandle');
     const headerBar = document.getElementById('popupHeaderBar');
     const headerText = document.getElementById('popupHeaderText');
+    const permTitle = document.getElementById('phonePipPermTitle');
+    const permDesc = document.getElementById('phonePipPermDesc');
+    const permAllow = document.getElementById('phonePipAllowBtn');
+    const permCancel = document.getElementById('phonePipCancelBtn');
 
     if (fsBtn) fsBtn.title = t.fullscreenTip;
     if (popBtn) popBtn.title = t.popupTip;
+    if (phonePopBtn) phonePopBtn.title = t.phonePopupTip;
+    if (browserPopTxt) browserPopTxt.textContent = t.browserPopupText;
+    if (phonePopTxt) phonePopTxt.textContent = t.phonePopupText;
     if (closeBtn) closeBtn.title = t.closeTip;
     if (expBtn) expBtn.title = t.expandTip;
     if (miniCloseBtn) miniCloseBtn.title = t.closeTip;
     if (resizeHandle) resizeHandle.title = t.resizeTip;
     if (headerBar) headerBar.title = t.dragTitle;
     if (headerText) headerText.textContent = t.dragTitle;
+    if (permTitle) permTitle.textContent = t.phonePermTitle;
+    if (permDesc) permDesc.textContent = t.phonePermDesc;
+    if (permAllow) permAllow.textContent = t.phonePermAllow;
+    if (permCancel) permCancel.textContent = t.phonePermCancel;
 }
 
+function requestPhonePopupPermission() {
+    updateWelcomeModalTooltips();
+    const permOverlay = document.getElementById('phonePipPermOverlay');
+    if (permOverlay && permOverlay.parentElement !== document.body) {
+        document.body.appendChild(permOverlay);
+    }
+    if (permOverlay) permOverlay.classList.add('active');
+    if (typeof SOUNDS !== 'undefined' && SOUNDS.menuOpen) SOUNDS.menuOpen();
+}
+
+function closePhonePopupPermission() {
+    const permOverlay = document.getElementById('phonePipPermOverlay');
+    if (permOverlay) permOverlay.classList.remove('active');
+    if (typeof SOUNDS !== 'undefined' && SOUNDS.menuClose) SOUNDS.menuClose();
+}
+
+async function confirmPhonePopupPermission() {
+    const permOverlay = document.getElementById('phonePipPermOverlay');
+    if (permOverlay) permOverlay.classList.remove('active');
+    if (typeof SOUNDS !== 'undefined' && SOUNDS.success) SOUNDS.success();
+
+    const t = translations[currentLang];
+    const modal = document.getElementById('welcomeVideoModal');
+    const content = document.getElementById('welcomeVideoModalContent');
+    const holder = document.getElementById('welcomeIframeHolder');
+    const iframe = holder ? holder.querySelector('iframe') : null;
+    if (!iframe) return;
+
+    // ১. আধুনিক ব্রাউজারের Document Picture-in-Picture API (সরাসরি আলাদা ফ্লোটিং উইন্ডো)
+    if ('documentPictureInPicture' in window) {
+        try {
+            const pipWin = await window.documentPictureInPicture.requestWindow({
+                width: 360,
+                height: 215
+            });
+            phonePopupPipWindow = pipWin;
+            pipWin.document.body.style.margin = '0';
+            pipWin.document.body.style.background = '#000';
+            pipWin.document.body.style.overflow = 'hidden';
+            iframe.style.width = '100vw';
+            iframe.style.height = '100vh';
+            iframe.style.border = 'none';
+            pipWin.document.body.appendChild(iframe);
+
+            // মেইন পেজ আনলক করে পপআপ মোডে রাখা
+            modal.classList.add('popup-mode');
+            content.style.display = 'none';
+            document.body.style.overflow = '';
+
+            pipWin.addEventListener('pagehide', () => {
+                if (holder && iframe) {
+                    iframe.style.width = '100%';
+                    iframe.style.height = '100%';
+                    holder.appendChild(iframe);
+                }
+                content.style.display = '';
+                modal.classList.remove('popup-mode');
+                phonePopupPipWindow = null;
+            });
+            return;
+        } catch (err) {
+            console.warn('Document PiP fallback:', err);
+        }
+    }
+
+    // ২. মোবাইল ফোনের জন্য: অটোমেটিক ফুলস্ক্রিন ও ল্যান্ডস্কেপ করে সিস্টেম PiP রেডি করা
+    try {
+        const targetEl = iframe.requestFullscreen ? iframe : content;
+        if (targetEl.requestFullscreen) {
+            await targetEl.requestFullscreen();
+        } else if (targetEl.webkitRequestFullscreen) {
+            targetEl.webkitRequestFullscreen();
+        }
+        if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape').catch(() => {});
+        }
+    } catch (e) {}
+
+    if (typeof showToast === 'function') {
+        showToast(t.phonePipGuide, 5500);
+    }
+}
 function resetWelcomePopupInlineStyles(content) {
     if (!content) return;
     content.style.left = '';
