@@ -2216,6 +2216,165 @@ bottom: -9px;
     fill: white;
 }
 
+.welcome-video-modal-popup {
+    position: absolute;
+    bottom: 15px; right: 67px;
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.6);
+    border: 2px solid rgba(255,255,255,0.3);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5100;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+.welcome-video-modal-popup:hover {
+    transform: scale(1.1);
+    background: var(--accent);
+    border-color: var(--accent);
+}
+.welcome-video-modal-popup svg {
+    width: 20px; height: 20px;
+    fill: white;
+}
+
+/* ===== POPUP (MINI PLAYER) MODE ===== */
+.welcome-video-modal.popup-mode {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    pointer-events: none !important;
+    padding: 0 !important;
+    display: block !important;
+    z-index: 9500 !important;
+}
+.welcome-video-modal.popup-mode > .welcome-video-modal-close,
+.welcome-video-modal.popup-mode > .welcome-video-modal-fullscreen,
+.welcome-video-modal.popup-mode > .welcome-video-modal-popup {
+    display: none !important;
+}
+.welcome-video-modal.popup-mode .welcome-video-modal-content {
+    pointer-events: auto !important;
+    position: fixed !important;
+    width: 320px;
+    height: 205px;
+    min-width: 210px;
+    min-height: 140px;
+    max-width: 94vw !important;
+    max-height: 80vh !important;
+    aspect-ratio: auto !important;
+    border-radius: 14px !important;
+    border: 2px solid var(--accent) !important;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.75), 0 0 20px var(--glow-color) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    background: #000 !important;
+    transition: box-shadow 0.2s ease;
+}
+.popup-header-bar {
+    display: none;
+    height: 32px;
+    background: linear-gradient(90deg, #111, #222);
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    flex-shrink: 0;
+    z-index: 20;
+}
+.popup-header-bar:active {
+    cursor: grabbing;
+}
+.welcome-video-modal.popup-mode .popup-header-bar {
+    display: flex !important;
+}
+.popup-drag-title {
+    color: #fff;
+    font-size: 11px;
+    font-family: 'Hind Siliguri', 'Inter', sans-serif;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    opacity: 0.9;
+    pointer-events: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.popup-ctrl-btns {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.popup-ctrl-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+.popup-ctrl-btn:hover {
+    background: var(--accent);
+    transform: scale(1.1);
+}
+.popup-ctrl-btn svg {
+    width: 13px;
+    height: 13px;
+    fill: white;
+}
+.welcome-iframe-holder {
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    position: relative;
+    background: #000;
+}
+.welcome-iframe-holder iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+.popup-resize-handle {
+    display: none;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 24px;
+    height: 24px;
+    cursor: nwse-resize;
+    z-index: 30;
+    touch-action: none;
+    background: linear-gradient(135deg, transparent 50%, var(--accent) 50%);
+    border-bottom-right-radius: 10px;
+    opacity: 0.85;
+}
+.welcome-video-modal.popup-mode .popup-resize-handle {
+    display: block !important;
+}
+.welcome-video-modal.is-interacting .welcome-iframe-holder iframe {
+    pointer-events: none !important;
+}
+
 /* Fullscreen mode */
 .welcome-video-modal-content.fullscreen-mode {
     max-width: 100%;
@@ -2764,13 +2923,28 @@ height: 22px !important;
     </div>
 </section>
 
-<!-- Video Modal (বড় প্লেয়ার) -->
+<!-- Video Modal (বড় প্লেয়ার ও পপআপ) -->
 <div class="welcome-video-modal" id="welcomeVideoModal">
-    <button class="welcome-video-modal-close" onclick="closeWelcomeVideoModal()">×</button>
+    <button class="welcome-video-modal-close" id="welcomeModalCloseBtn" onclick="closeWelcomeVideoModal()" title="Close">×</button>
     <div class="welcome-video-modal-content" id="welcomeVideoModalContent">
-        <!-- iframe এখানে লোড হবে -->
+        <div class="popup-header-bar" id="popupHeaderBar" title="Drag to move">
+            <span class="popup-drag-title">⠿ <span id="popupHeaderText">Drag to move</span></span>
+            <div class="popup-ctrl-btns">
+                <button class="popup-ctrl-btn" id="popupExpandBtn" onclick="toggleWelcomeVideoPopup(); event.stopPropagation();" title="Expand Player">
+                    <svg viewBox="0 0 24 24"><path d="M15 3h6v6h-2V6.41l-4.29 4.3-1.42-1.42L17.59 5H15V3zM3 15v6h6v-2H6.41l4.3-4.29-1.42-1.42L5 17.59V15H3z"/></svg>
+                </button>
+                <button class="popup-ctrl-btn" id="popupMiniCloseBtn" onclick="closeWelcomeVideoModal(); event.stopPropagation();" title="Close">✕</button>
+            </div>
+        </div>
+        <div class="welcome-iframe-holder" id="welcomeIframeHolder">
+            <!-- iframe এখানে লোড হবে -->
+        </div>
+        <div class="popup-resize-handle" id="popupResizeHandle" title="Drag corner to resize"></div>
     </div>
-    <button class="welcome-video-modal-fullscreen" onclick="toggleWelcomeVideoFullscreen()" title="Fullscreen">
+    <button class="welcome-video-modal-popup" id="welcomeModalPopupBtn" onclick="toggleWelcomeVideoPopup()" title="Popup Player">
+        <svg viewBox="0 0 24 24"><path d="M19 11h-8v6h8v-6zm4 8V4.98C23 3.88 22.1 3 21 3H3c-1.1 0-2 .88-2 1.98V19c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2zm-2 .02H3V4.97h18v14.05z"/></svg>
+    </button>
+    <button class="welcome-video-modal-fullscreen" id="welcomeModalFullscreenBtn" onclick="toggleWelcomeVideoFullscreen()" title="Fullscreen">
         <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
     </button>
 </div>
@@ -3795,6 +3969,12 @@ feedTitle: 'Shorts Video :-',
 subBtn: 'Subscribe',
 fullEpisodeTitle: 'Honey Bunny Full episode',
 fullEpisodeBtn: 'Watch Full Episode',
+fullscreenTip: 'Fullscreen',
+popupTip: 'Popup Player',
+expandTip: 'Expand Player',
+closeTip: 'Close',
+resizeTip: 'Drag corner to resize',
+dragTitle: 'Drag to move',
 menuFbGroup: 'Facebook Group',menuOwnerProfile: 'Owner Profile',menuYoutube: 'YouTube Channel',menuFbPage: 'Facebook Page',menuTiktok: 'TikTok',menuInstagram: 'Instagram',
 },
 BN: {
@@ -3843,6 +4023,12 @@ feedTitle: 'Shorts ভিডিও :-',
 subBtn: 'সাবস্ক্রাইব',
 fullEpisodeTitle: 'Honey Bunny সম্পূর্ণ পর্ব',
 fullEpisodeBtn: 'সম্পূর্ণ পর্ব দেখুন',
+fullscreenTip: 'ফুলস্ক্রিন',
+popupTip: 'পপআপ প্লেয়ার',
+expandTip: 'বড় স্ক্রিন করুন',
+closeTip: 'বন্ধ করুন',
+resizeTip: 'কোণা ধরে ছোট-বড় করুন',
+dragTitle: 'সরাতে টেনে নিন',
 menuFbGroup: 'ফেসবুক গ্রুপ',menuOwnerProfile: 'Owner Profile',menuYoutube: 'ইউটিউব চ্যানেল',menuFbPage: 'ফেসবুক পেজ',menuTiktok: 'Tiktok',menuInstagram: 'Instagram',
 }
 };
@@ -4287,6 +4473,42 @@ function renderWelcomeVideoGrid() {
     grid.innerHTML = html;
 }
 
+let isWelcomePopupMode = false;
+
+function updateWelcomeModalTooltips() {
+    const t = translations[currentLang];
+    if (!t) return;
+    const fsBtn = document.getElementById('welcomeModalFullscreenBtn');
+    const popBtn = document.getElementById('welcomeModalPopupBtn');
+    const closeBtn = document.getElementById('welcomeModalCloseBtn');
+    const expBtn = document.getElementById('popupExpandBtn');
+    const miniCloseBtn = document.getElementById('popupMiniCloseBtn');
+    const resizeHandle = document.getElementById('popupResizeHandle');
+    const headerBar = document.getElementById('popupHeaderBar');
+    const headerText = document.getElementById('popupHeaderText');
+
+    if (fsBtn) fsBtn.title = t.fullscreenTip;
+    if (popBtn) popBtn.title = t.popupTip;
+    if (closeBtn) closeBtn.title = t.closeTip;
+    if (expBtn) expBtn.title = t.expandTip;
+    if (miniCloseBtn) miniCloseBtn.title = t.closeTip;
+    if (resizeHandle) resizeHandle.title = t.resizeTip;
+    if (headerBar) headerBar.title = t.dragTitle;
+    if (headerText) headerText.textContent = t.dragTitle;
+}
+
+function resetWelcomePopupInlineStyles(content) {
+    if (!content) return;
+    content.style.left = '';
+    content.style.top = '';
+    content.style.right = '';
+    content.style.bottom = '';
+    content.style.width = '100%';
+    content.style.height = '';
+    content.style.aspectRatio = '16/9';
+    content.style.maxWidth = '900px';
+}
+
 function openWelcomeVideoModal(index) {
     const video = welcomeVideoData[index];
     if (!video) return;
@@ -4299,16 +4521,21 @@ function openWelcomeVideoModal(index) {
 
     const modal = document.getElementById('welcomeVideoModal');
     const content = document.getElementById('welcomeVideoModalContent');
-    if (!modal || !content) return;
+    const holder = document.getElementById('welcomeIframeHolder');
+    if (!modal || !content || !holder) return;
 
+    // মেনু ছাড়াও মেইন পেজে পপআপ সচল রাখতে modal-কে সরাসরি body-তে রাখা হচ্ছে
+    if (modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+    }
+
+    isWelcomePopupMode = false;
+    modal.classList.remove('popup-mode');
     content.classList.remove('fullscreen-mode');
-    content.style.aspectRatio = '16/9';
-    content.style.maxWidth = '900px';
-    content.style.width = '100%';
+    resetWelcomePopupInlineStyles(content);
+    updateWelcomeModalTooltips();
 
-    // allow attributes: autoplay, fullscreen, picture-in-picture
-    // কিন্তু কোনো লিংকে ক্লিক করলে YouTube এ যাবে না (noopener + sandbox ব্যবহার)
-    content.innerHTML = `<iframe src="${embedUrl}" title="Full Episode Video" frameborder="0" 
+    holder.innerHTML = `<iframe src="${embedUrl}" title="Full Episode Video" frameborder="0" 
         allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen; webkit-fullscreen; mozfullscreen" 
         allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>`;
 
@@ -4320,29 +4547,75 @@ function openWelcomeVideoModal(index) {
 function closeWelcomeVideoModal() {
     const modal = document.getElementById('welcomeVideoModal');
     const content = document.getElementById('welcomeVideoModalContent');
+    const holder = document.getElementById('welcomeIframeHolder');
     if (!modal || !content) return;
 
-    // Fullscreen থেকে বের হওয়া
     if (document.fullscreenElement && document.exitFullscreen) {
         document.exitFullscreen().catch(()=>{});
     } else if (document.webkitFullscreenElement && document.webkitExitFullscreen) {
         document.webkitExitFullscreen();
     }
 
-    content.innerHTML = '';
+    if (holder) holder.innerHTML = '';
+    isWelcomePopupMode = false;
+    modal.classList.remove('active', 'popup-mode', 'is-interacting');
     content.classList.remove('fullscreen-mode');
-    content.style.aspectRatio = '';
-    content.style.maxWidth = '';
-    modal.classList.remove('active');
+    resetWelcomePopupInlineStyles(content);
     document.body.style.overflow = '';
 
     if (typeof SOUNDS !== 'undefined' && SOUNDS.imageClose) SOUNDS.imageClose();
+}
+
+function toggleWelcomeVideoPopup() {
+    const modal = document.getElementById('welcomeVideoModal');
+    const content = document.getElementById('welcomeVideoModalContent');
+    if (!modal || !content) return;
+
+    // যদি ফুলস্ক্রিনে থাকে, আগে ফুলস্ক্রিন থেকে বের করা হবে
+    if (document.fullscreenElement || document.webkitFullscreenElement) {
+        if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        content.classList.remove('fullscreen-mode');
+    }
+
+    if (!isWelcomePopupMode) {
+        isWelcomePopupMode = true;
+        modal.classList.add('popup-mode');
+        document.body.style.overflow = ''; // পেছনের পেজ স্ক্রল করার জন্য খুলে দেওয়া হলো
+
+        const isMobile = window.innerWidth <= 600;
+        const popW = isMobile ? 250 : 340;
+        const popH = isMobile ? 172 : 222;
+        const startLeft = Math.max(10, window.innerWidth - popW - 16);
+        const startTop = Math.max(10, window.innerHeight - popH - 24);
+
+        content.style.aspectRatio = 'auto';
+        content.style.maxWidth = '94vw';
+        content.style.width = popW + 'px';
+        content.style.height = popH + 'px';
+        content.style.left = startLeft + 'px';
+        content.style.top = startTop + 'px';
+        content.style.right = 'auto';
+        content.style.bottom = 'auto';
+    } else {
+        isWelcomePopupMode = false;
+        modal.classList.remove('popup-mode');
+        resetWelcomePopupInlineStyles(content);
+        document.body.style.overflow = 'hidden';
+    }
+
+    updateWelcomeModalTooltips();
+    if (typeof SOUNDS !== 'undefined' && SOUNDS.click) SOUNDS.click();
 }
 
 function toggleWelcomeVideoFullscreen() {
     const modal = document.getElementById('welcomeVideoModal');
     const content = document.getElementById('welcomeVideoModalContent');
     if (!modal || !content) return;
+
+    if (isWelcomePopupMode) {
+        toggleWelcomeVideoPopup();
+    }
 
     if (document.fullscreenElement || document.webkitFullscreenElement) {
         if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
@@ -4358,6 +4631,124 @@ function toggleWelcomeVideoFullscreen() {
     if (typeof SOUNDS !== 'undefined' && SOUNDS.click) SOUNDS.click();
 }
 
+// ===== POPUP DRAG (এদিক-ওদিক সরানো) & RESIZE (ছোট-বড় করা) =====
+(function initWelcomePopupDragAndResize() {
+    let isDragging = false;
+    let isResizing = false;
+    let startX = 0, startY = 0;
+    let initialLeft = 0, initialTop = 0;
+    let initialW = 0, initialH = 0;
+
+    function getCoords(e) {
+        if (e.touches && e.touches.length > 0) {
+            return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        }
+        return { x: e.clientX, y: e.clientY };
+    }
+
+    function onDragStart(e) {
+        if (!isWelcomePopupMode) return;
+        if (e.target.closest('.popup-ctrl-btn')) return;
+        const modal = document.getElementById('welcomeVideoModal');
+        const content = document.getElementById('welcomeVideoModalContent');
+        if (!content || !modal) return;
+
+        isDragging = true;
+        modal.classList.add('is-interacting');
+        const pos = getCoords(e);
+        startX = pos.x;
+        startY = pos.y;
+        const rect = content.getBoundingClientRect();
+        initialLeft = rect.left;
+        initialTop = rect.top;
+        if (e.cancelable) e.preventDefault();
+    }
+
+    function onResizeStart(e) {
+        if (!isWelcomePopupMode) return;
+        const modal = document.getElementById('welcomeVideoModal');
+        const content = document.getElementById('welcomeVideoModalContent');
+        if (!content || !modal) return;
+
+        isResizing = true;
+        modal.classList.add('is-interacting');
+        const pos = getCoords(e);
+        startX = pos.x;
+        startY = pos.y;
+        const rect = content.getBoundingClientRect();
+        initialW = rect.width;
+        initialH = rect.height;
+        initialLeft = rect.left;
+        initialTop = rect.top;
+        if (e.cancelable) e.preventDefault();
+        e.stopPropagation();
+    }
+
+    function onMove(e) {
+        if (!isDragging && !isResizing) return;
+        const content = document.getElementById('welcomeVideoModalContent');
+        if (!content) return;
+        const pos = getCoords(e);
+        const dx = pos.x - startX;
+        const dy = pos.y - startY;
+
+        if (isDragging) {
+            const rect = content.getBoundingClientRect();
+            let newLeft = initialLeft + dx;
+            let newTop = initialTop + dy;
+            const maxLeft = window.innerWidth - rect.width - 6;
+            const maxTop = window.innerHeight - rect.height - 6;
+
+            newLeft = Math.max(6, Math.min(maxLeft, newLeft));
+            newTop = Math.max(6, Math.min(maxTop, newTop));
+
+            content.style.left = newLeft + 'px';
+            content.style.top = newTop + 'px';
+        } else if (isResizing) {
+            const minW = 200;
+            const maxW = Math.min(window.innerWidth - initialLeft - 8, window.innerWidth * 0.94);
+            let newW = Math.max(minW, Math.min(maxW, initialW + dx));
+            // 16:9 ভিডিওর অনুপাত + উপরের 32px বার হিসাব করে হাইট সেট করা
+            let newH = Math.round((newW * 9) / 16) + 32;
+            const maxH = window.innerHeight - initialTop - 8;
+            if (newH > maxH) {
+                newH = Math.max(140, maxH);
+                newW = Math.round(((newH - 32) * 16) / 9);
+            }
+            content.style.width = newW + 'px';
+            content.style.height = newH + 'px';
+        }
+        if (e.cancelable) e.preventDefault();
+    }
+
+    function onEnd() {
+        if (!isDragging && !isResizing) return;
+        isDragging = false;
+        isResizing = false;
+        const modal = document.getElementById('welcomeVideoModal');
+        if (modal) modal.classList.remove('is-interacting');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const headerBar = document.getElementById('popupHeaderBar');
+        const resizeHandle = document.getElementById('popupResizeHandle');
+        if (headerBar) {
+            headerBar.addEventListener('mousedown', onDragStart);
+            headerBar.addEventListener('touchstart', onDragStart, { passive: false });
+        }
+        if (resizeHandle) {
+            resizeHandle.addEventListener('mousedown', onResizeStart);
+            resizeHandle.addEventListener('touchstart', onResizeStart, { passive: false });
+        }
+        updateWelcomeModalTooltips();
+    });
+
+    window.addEventListener('mousemove', onMove, { passive: false });
+    window.addEventListener('touchmove', onMove, { passive: false });
+    window.addEventListener('mouseup', onEnd);
+    window.addEventListener('touchend', onEnd);
+})();
+
 document.addEventListener('fullscreenchange', () => {
     const content = document.getElementById('welcomeVideoModalContent');
     if (content && !document.fullscreenElement) content.classList.remove('fullscreen-mode');
@@ -4365,7 +4756,9 @@ document.addEventListener('fullscreenchange', () => {
 
 document.addEventListener('click', function(e) {
     const modal = document.getElementById('welcomeVideoModal');
-    if (modal && modal.classList.contains('active') && e.target === modal) closeWelcomeVideoModal();
+    if (modal && modal.classList.contains('active') && !isWelcomePopupMode && e.target === modal) {
+        closeWelcomeVideoModal();
+    }
 });
 
 document.addEventListener('keydown', function(e) {
@@ -4426,6 +4819,7 @@ var feTitle=document.getElementById('fullEpisodeTitle');if(feTitle)feTitle.inner
 var feBtn=document.getElementById('fullEpisodeBtnText');if(feBtn)feBtn.innerText=t.fullEpisodeBtn;
 var subTxt=document.getElementById('shortSubText');if(subTxt)subTxt.innerText=t.subBtn;
 updateOfflineText();
+updateWelcomeModalTooltips();
 document.getElementById('followTxt').innerText = t.follow;
 document.getElementById('fbGroupTxt').innerHTML = `<span>▶</span> ${t.fbGroup}`;
 document.getElementById('watchTxt').innerHTML = `<span>▶</span> ${t.watch}`;
