@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Honey Entertainment | sajeeb saha </title>
 <link rel="icon" type="image/jpg" href="https://i.pinimg.com/736x/bc/38/0b/bc380b8ba3de65f7b3804331c148ce2a.jpg">
 <link rel="apple-touch-icon" href="https://i.pinimg.com/736x/bc/38/0b/bc380b8ba3de65f7b3804331c148ce2a.jpg">
@@ -331,7 +331,7 @@ pointer-events: none;
 .btn-premium:hover::before { left: 100%; }
 .btn-premium:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 15px 30px rgba(0,0,0,0.2), 0 0 20px var(--accent); }
 @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-.collection-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; }
+.collection-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; width: 100%; box-sizing: border-box; }
 .post-caption { font-size: 16px; background: var(--card-bg); padding: 10px 14px; border-radius: 12px; border-left: 4px solid var(--accent); line-height: 1.6; color: var(--text-color); font-family: 'Hind Siliguri', cursive, serif; letter-spacing: 0.5px; transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); cursor: pointer; position: relative; z-index: 50; }
 .post-datetime { display: flex; flex-direction: column; gap: 2px; padding: 0 4px; margin-top: 4px; }
 .post-date { font-size: 11px; font-family: 'Hind Siliguri', sans-serif; color: var(--text-color); opacity: 0.6; font-weight: 500; letter-spacing: 0.3px; }
@@ -1236,8 +1236,8 @@ font-size: 22px !important;
     transform: translateZ(0);
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    content-visibility: auto;
-    contain-intrinsic-size: 220px;
+    min-width: 0;
+    width: 100%;
 }
 .gallery-item-wrapper.filter-hiding {
     opacity: 0 !important;
@@ -2228,7 +2228,7 @@ bottom: -9px;
 }
 
 /* ===== DESKTOP - 3 COLUMN ===== */
-@media (min-width: 992px) {
+@media (min-width: 990px) {
     .welcome-video-grid {
         grid-template-columns: repeat(3, 1fr);
         gap: 25px;
@@ -2353,7 +2353,7 @@ aspect-ratio: 16/9;
     height: 45px;
     flex-shrink: 0;
 }
-@media (min-width: 992px) {
+@media (min-width: 990px) {
 /* ===== WELCOME PAGE - DESKTOP OPTIMIZATION ===== */
 
 /* Welcome Page Container */
@@ -2560,7 +2560,7 @@ aspect-ratio: 16/9;
     flex-shrink: 0;
 }
 /* ===== DESKTOP / LAPTOP VIEW OPTIMIZATION ===== */
-@media (min-width: 992px) {
+@media (min-width: 990px) {
   /* Main container ke wide kora - STRONG OVERRIDE */
 .app-container {
 max-width: 1200px !important;
