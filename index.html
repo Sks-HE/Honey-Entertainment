@@ -2843,6 +2843,19 @@ height: 22px !important;
 }
 
 </style>
+<style id="perf-boost">
+.collection-card:not(.in-view)::before,
+.social-box:not(.in-view)::before { animation-play-state: paused; }
+
+html.is-scrolling .collection-card::before,
+html.is-scrolling .social-box::before,
+html.is-scrolling .bubble,
+html.is-scrolling .parallax-waves > use { animation-play-state: paused; }
+
+html.tab-hidden *, html.tab-hidden *::before, html.tab-hidden *::after { animation-play-state: paused !important; }
+
+.collection-card { contain: layout paint; }
+</style>
 </head>
 <body class="honey-mode" onclick="resetAllCaptions(event)">
     <!-- ===== OFFLINE OVERLAY ===== -->
@@ -3148,7 +3161,12 @@ function updateFeedScales() {
 }
 
 // স্ক্রল হওয়ার সাথে সাথে স্কেল আপডেট করা
-feedContainer.addEventListener('scroll', updateFeedScales);
+let feedScaleTick = false;
+feedContainer.addEventListener('scroll', () => {
+    if (feedScaleTick) return;
+    feedScaleTick = true;
+    requestAnimationFrame(() => { updateFeedScales(); feedScaleTick = false; });
+}, { passive: true });
 
 // ২. অটোমেটিক স্মুথ স্ক্রল এবং ৩ সেকেন্ড পজের লজিক
 function scrollToNextFeedItem() {
@@ -6291,6 +6309,50 @@ document.addEventListener('keydown', function(e) {
         return false;
     }
 });
+</script>
+<script id="perf-boost-js">
+(function () {
+  var root = document.documentElement;
+
+  var io = 'IntersectionObserver' in window
+    ? new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { e.target.classList.toggle('in-view', e.isIntersecting); });
+      }, { rootMargin: '150px 0px' })
+    : null;
+  document.querySelectorAll('.collection-card, .social-box').forEach(function (el) {
+    if (io) io.observe(el); else el.classList.add('in-view');
+  });
+
+  var st;
+  window.addEventListener('scroll', function () {
+    if (!root.classList.contains('is-scrolling')) root.classList.add('is-scrolling');
+    clearTimeout(st);
+    st = setTimeout(function () { root.classList.remove('is-scrolling'); }, 120);
+  }, { passive: true });
+
+  document.addEventListener('visibilitychange', function () {
+    root.classList.toggle('tab-hidden', document.hidden);
+  });
+
+  window.updateFeedScales = function () {
+    var c = document.getElementById('videoFeedContainer');
+    if (!c) return;
+    var items = c.querySelectorAll('.feed-item');
+    var cr = c.getBoundingClientRect();
+    var center = cr.left + cr.width / 2, half = cr.width / 2, d = [], i;
+    for (i = 0; i < items.length; i++) {
+      var r = items[i].getBoundingClientRect();
+      d.push(Math.abs(center - (r.left + r.width / 2)));
+    }
+    for (i = 0; i < items.length; i++) {
+      var s = Math.max(0.7, Math.min(1.15, 1.15 - (d[i] / half) * 0.45));
+      items[i].style.transform = 'scale(' + s + ')';
+      items[i].style.opacity = 0.5 + (s - 0.7) * 1.2;
+    }
+  };
+
+  document.querySelectorAll('img').forEach(function (img) { img.decoding = 'async'; });
+})();
 </script>
 <div id="videoOverlay">
     <div class="short-player-wrapper">
