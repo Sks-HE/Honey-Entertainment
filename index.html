@@ -2217,7 +2217,8 @@ bottom: -9px;
     fill: white;
 }
 
-.welcome-video-modal-popup {
+.welcome-video-modal-popup,
+.welcome-video-modal-device-popup {
     position: absolute;
     bottom: 15px; right: 67px;
     width: 42px; height: 42px;
@@ -2234,12 +2235,19 @@ bottom: -9px;
     -webkit-backdrop-filter: blur(10px);
     transition: all 0.3s ease;
 }
-.welcome-video-modal-popup:hover {
+/* ব্রাউজার পপআপ বাটনের ঠিক উপরে ডিভাইস পপআপ বাটন */
+.welcome-video-modal-device-popup {
+    bottom: 67px;
+    right: 67px;
+}
+.welcome-video-modal-popup:hover,
+.welcome-video-modal-device-popup:hover {
     transform: scale(1.1);
     background: var(--accent);
     border-color: var(--accent);
 }
-.welcome-video-modal-popup svg {
+.welcome-video-modal-popup svg,
+.welcome-video-modal-device-popup svg {
     width: 20px; height: 20px;
     fill: white;
 }
@@ -2256,7 +2264,8 @@ bottom: -9px;
 }
 .welcome-video-modal.popup-mode > .welcome-video-modal-close,
 .welcome-video-modal.popup-mode > .welcome-video-modal-fullscreen,
-.welcome-video-modal.popup-mode > .welcome-video-modal-popup {
+.welcome-video-modal.popup-mode > .welcome-video-modal-popup,
+.welcome-video-modal.popup-mode > .welcome-video-modal-device-popup {
     display: none !important;
 }
 .welcome-video-modal.popup-mode .welcome-video-modal-content {
@@ -2955,7 +2964,10 @@ html.tab-hidden *, html.tab-hidden *::before, html.tab-hidden *::after { animati
         </div>
         <div class="popup-resize-handle" id="popupResizeHandle" title="Drag corner to resize"></div>
     </div>
-    <button class="welcome-video-modal-popup" id="welcomeModalPopupBtn" onclick="toggleWelcomeVideoPopup()" title="Popup Player">
+   <button class="welcome-video-modal-device-popup" id="welcomeModalDevicePopupBtn" onclick="openWelcomeDevicePopup()" title="Device Popup Player">
+        <svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+    </button>
+    <button class="welcome-video-modal-popup" id="welcomeModalPopupBtn" onclick="toggleWelcomeVideoPopup()" title="Browser Popup Player">
         <svg viewBox="0 0 24 24"><path d="M19 11h-8v6h8v-6zm4 8V4.98C23 3.88 22.1 3 21 3H3c-1.1 0-2 .88-2 1.98V19c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2zm-2 .02H3V4.97h18v14.05z"/></svg>
     </button>
     <button class="welcome-video-modal-fullscreen" id="welcomeModalFullscreenBtn" onclick="toggleWelcomeVideoFullscreen()" title="Fullscreen">
@@ -6269,6 +6281,516 @@ backToTopBtn.addEventListener('mouseenter', () => SOUNDS.hover());
 });
 </script>
 <script>
+// ===== 1. DEVICE POPUP, 2. BILINGUAL TOOLTIPS & 3. BACK / ESC NAVIGATION =====
+let currentWelcomeVideoIndex = 0;
+let activeDevicePipWindow = null;
+let activeStandalonePopup = null;
+let heWakeLock = null;
+
+// ওয়েক-লক (ফোনের স্ক্রিন যেন পপআপ চলাকালীন বন্ধ না হয়)
+async function requestHeWakeLock() {
+    try {
+        if ('wakeLock' in navigator && !heWakeLock) {
+            heWakeLock = await navigator.wakeLock.request('screen');
+            heWakeLock.addEventListener('release', () => { heWakeLock = null; });
+        }
+    } catch (e) {}
+}
+function releaseHeWakeLock() {
+    if (heWakeLock) {
+        try { heWakeLock.release(); } catch (e) {}
+        heWakeLock = null;
+    }
+}
+
+// ডিভাইস পপআপ চালু করার মূল ফাংশন
+async function openWelcomeDevicePopup() {
+    const video = welcomeVideoData[currentWelcomeVideoIndex];
+    if (!video) return;
+    const embedUrl = buildWelcomeEmbedUrl(video);
+    const modal = document.getElementById('welcomeVideoModal');
+    const content = document.getElementById('welcomeVideoModalContent');
+    const holder = document.getElementById('welcomeIframeHolder');
+    if (!modal || !content || !holder) return;
+
+    if (typeof SOUNDS !== 'undefined' && SOUNDS.click) SOUNDS.click();
+    requestHeWakeLock();
+
+    // ১. ল্যাপটপ/ডেস্কটপ ও সাপোর্টেড ব্রাউজারে OS-Level Document Picture-in-Picture (সব অ্যাপ ও ট্যাবের উপরে ভাসবে)
+    if ('documentPictureInPicture' in window) {
+        try {
+            if (activeDevicePipWindow && !activeDevicePipWindow.closed) {
+                activeDevicePipWindow.focus();
+                return;
+            }
+            const pipWin = await window.documentPictureInPicture.requestWindow({
+                width: 380,
+                height: 245
+            });
+            activeDevicePipWindow = pipWin;
+
+            const style = pipWin.document.createElement('style');
+            style.textContent = `
+                * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+                html, body { width: 100vw; height: 100vh; background: #000; overflow: hidden; display: flex; flex-direction: column; font-family: 'Hind Siliguri', 'Inter', sans-serif; }
+                .pip-top-bar {
+                    height: 30px; background: linear-gradient(90deg, #111, #222);
+                    border-bottom: 1px solid rgba(244,114,182,0.35);
+                    display: flex; align-items: center; justify-content: space-between;
+                    padding: 0 10px; color: #fff; font-size: 11px; font-weight: 700; flex-shrink: 0;
+                }
+                .pip-brand { color: #f472b6; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px; }
+                .pip-actions { display: flex; align-items: center; gap: 6px; }
+                .pip-btn {
+                    background: rgba(255,255,255,0.14); color: #fff; border: none;
+                    border-radius: 12px; padding: 3px 9px; font-size: 11px; font-weight: 700;
+                    cursor: pointer; transition: background 0.2s;
+                }
+                .pip-btn:hover { background: #f472b6; }
+                .pip-btn.close:hover { background: #ef4444; }
+                .welcome-iframe-holder { flex: 1; width: 100%; height: calc(100vh - 30px); background: #000; }
+                .welcome-iframe-holder iframe { width: 100%; height: 100%; border: none; display: block; }
+            `;
+            pipWin.document.head.appendChild(style);
+
+            const topBar = pipWin.document.createElement('div');
+            topBar.className = 'pip-top-bar';
+            const isBN = currentLang === 'BN';
+            topBar.innerHTML = `
+                <span class="pip-brand">🎬 HONEY ENTERTAINMENT</span>
+                <div class="pip-actions">
+                    <button class="pip-btn" id="pipReturnBtn" title="${isBN ? 'মেইন স্ক্রিনে ফিরুন' : 'Return to Main Player'}">${isBN ? '⤢ বড় করুন' : '⤢ Expand'}</button>
+                    <button class="pip-btn close" id="pipCloseBtn" title="${isBN ? 'বন্ধ করুন' : 'Close'}">✕</button>
+                </div>
+            `;
+            pipWin.document.body.appendChild(topBar);
+            pipWin.document.body.appendChild(holder);
+
+            let returningToModal = false;
+
+            topBar.querySelector('#pipReturnBtn').addEventListener('click', () => {
+                returningToModal = true;
+                const resizeHandle = document.getElementById('popupResizeHandle');
+                content.insertBefore(holder, resizeHandle);
+                modal.classList.remove('popup-mode');
+                modal.classList.add('active');
+                isWelcomePopupMode = false;
+                resetWelcomePopupInlineStyles(content);
+                document.body.style.overflow = 'hidden';
+                pipWin.close();
+            });
+
+            topBar.querySelector('#pipCloseBtn').addEventListener('click', () => {
+                returningToModal = false;
+                pipWin.close();
+            });
+
+            // মেইন পেজের মডাল ব্যাকগ্রাউন্ড লুকিয়ে স্ক্রলিং চালু করে দেওয়া
+            modal.classList.remove('active', 'popup-mode');
+            isWelcomePopupMode = false;
+            document.body.style.overflow = '';
+
+            pipWin.addEventListener('pagehide', () => {
+                activeDevicePipWindow = null;
+                releaseHeWakeLock();
+                const resizeHandle = document.getElementById('popupResizeHandle');
+                if (holder.parentElement !== content) {
+                    content.insertBefore(holder, resizeHandle);
+                }
+                if (!returningToModal) {
+                    holder.innerHTML = '';
+                    modal.classList.remove('active', 'popup-mode');
+                    document.body.style.overflow = '';
+                }
+            });
+            return;
+        } catch (err) {
+            console.warn('Document PiP fallback:', err);
+        }
+    }
+
+    // ২. ডেস্কটপের অন্যান্য ব্রাউজার (যেমন Firefox) যেখানে Document PiP নেই সেখানে আলাদা OS পপআপ উইন্ডো
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768 && 'ontouchstart' in window);
+    if (!isMobile) {
+        const w = 380, h = 240;
+        const left = Math.max(20, window.screen.availWidth - w - 30);
+        const top = Math.max(20, window.screen.availHeight - h - 60);
+        const popWin = window.open('', 'HEDevicePopup', `popup=yes,width=${w},height=${h},left=${left},top=${top},menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=no`);
+        if (popWin) {
+            activeStandalonePopup = popWin;
+            popWin.document.open();
+            popWin.document.write(`<!DOCTYPE html><html><head><title>Honey Entertainment - Device Popup</title><style>*{margin:0;padding:0;box-sizing:border-box}html,body{width:100%;height:100%;background:#000;overflow:hidden}iframe{width:100%;height:100vh;border:none;display:block}</style></head><body><iframe src="${embedUrl}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe></body></html>`);
+            popWin.document.close();
+            closeWelcomeVideoModal();
+            return;
+        }
+    }
+
+    // ৩. মোবাইলের ক্ষেত্রে: ফ্লোটিং ডিভাইস পপআপ + টু-ফিঙ্গার পিঞ্চ রিসাইজ + অটো PiP সাপোর্ট
+    if (!isWelcomePopupMode) {
+        toggleWelcomeVideoPopup();
+    }
+    const headerText = document.getElementById('popupHeaderText');
+    if (headerText) {
+        headerText.textContent = currentLang === 'BN' ? 'ডিভাইস পপআপ (টেনে সরান বা ছোট-বড় করুন)' : 'Device Popup (Drag or Resize)';
+    }
+}
+
+// মোবাইলে দুই আঙুল দিয়ে (Pinch) পপআপ ছোট-বড় করার সুবিধা
+(function initMobilePinchResizeForPopup() {
+    let initialPinchDist = 0;
+    let startW = 0, startH = 0;
+
+    function getTouchDist(touches) {
+        const dx = touches[0].clientX - touches[1].clientX;
+        const dy = touches[0].clientY - touches[1].clientY;
+        return Math.hypot(dx, dy);
+    }
+
+    document.addEventListener('touchstart', function(e) {
+        if (!isWelcomePopupMode) return;
+        const content = document.getElementById('welcomeVideoModalContent');
+        if (!content || !content.contains(e.target)) return;
+        if (e.touches.length === 2) {
+            initialPinchDist = getTouchDist(e.touches);
+            const rect = content.getBoundingClientRect();
+            startW = rect.width;
+            startH = rect.height;
+            e.preventDefault();
+        }
+    }, { passive: false });
+
+    document.addEventListener('touchmove', function(e) {
+        if (!isWelcomePopupMode || e.touches.length !== 2 || initialPinchDist <= 0) return;
+        const content = document.getElementById('welcomeVideoModalContent');
+        if (!content) return;
+        const dist = getTouchDist(e.touches);
+        const scale = dist / initialPinchDist;
+        const rect = content.getBoundingClientRect();
+        const minW = 190;
+        const maxW = Math.min(window.innerWidth - rect.left - 6, window.innerWidth * 0.95);
+        let newW = Math.max(minW, Math.min(maxW, Math.round(startW * scale)));
+        let newH = Math.round((newW * 9) / 16) + 32;
+        content.style.width = newW + 'px';
+        content.style.height = newH + 'px';
+        e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('touchend', function(e) {
+        if (e.touches.length < 2) initialPinchDist = 0;
+    });
+})();
+
+// ===== ২. সব বাটনের জন্য বাংলা ও ইংরেজি টুলটিপ (BILINGUAL TOOLTIPS) =====
+function updateAllButtonTooltips() {
+    const isBN = currentLang === 'BN';
+    const setTip = (selectorOrEl, enText, bnText) => {
+        const els = typeof selectorOrEl === 'string' ? document.querySelectorAll(selectorOrEl) : (selectorOrEl ? [selectorOrEl] : []);
+        els.forEach(el => {
+            if (el) el.setAttribute('title', isBN ? bnText : enText);
+        });
+    };
+
+    // মেনু ও উপরের বাটনসমূহ
+    setTip('#menuBtn', 'Menu', 'মেনু');
+    setTip('.menu-h-btn.honey', 'Honey Mode', 'হানি মোড');
+    setTip('.menu-h-btn.dark', 'Dark Mode', 'ডার্ক মোড');
+    setTip('.menu-h-btn.light', 'Light Mode', 'লাইট মোড');
+    setTip('#soundToggleItem', soundEnabled ? 'Mute Sound' : 'Turn On Sound', soundEnabled ? 'সাউন্ড বন্ধ করুন' : 'সাউন্ড চালু করুন');
+    setTip('#langBtn', 'Switch Language (Bangla / English)', 'ভাষা পরিবর্তন করুন (বাংলা / ইংরেজি)');
+    setTip('.menu-h-btn.share-btn', 'Share Website Link', 'ওয়েবসাইটের লিঙ্ক শেয়ার করুন');
+
+    // মেনুর সোশ্যাল ও ওয়েবসাইট বাটনসমূহ
+    setTip('.menu-h-social[href*="groups/honeysajeeb"]', 'Facebook Group', 'ফেসবুক গ্রুপ');
+    setTip('.menu-h-social[href*="tiktok.com"]', 'TikTok Profile', 'টিকটক প্রোফাইল');
+    setTip('.menu-h-social[href*="SAJEEBSAHA.S"]', 'Owner Profile (Sajeeb Saha)', 'ওনার প্রোফাইল (সজীব সাহা)');
+    setTip('.menu-h-social[href*="youtube.com"]', 'YouTube Channel', 'ইউটিউব চ্যানেল');
+    setTip('.menu-h-social[href*="facebook.com/share"]', 'Facebook Page', 'ফেসবুক পেজ');
+    setTip('.menu-h-social[href*="instagram.com"]', 'Instagram Profile', 'ইনস্টাগ্রাম প্রোফাইল');
+    setTip('.menu-h-social[href*="sks-he.github.io/sajeeb"]', 'Sajeeb Portfolio Website', 'সজীব সাহার ওয়েবসাইট');
+    setTip('.menu-h-social[href*="sks-he.github.io/voice-typing"]', 'Voice Typing Website', 'ভয়েস টাইপিং ওয়েবসাইট');
+    setTip('.menu-h-social[href*="sks-he.github.io/Number-System"]', 'Number System Calculator', 'নাম্বার সিস্টেম ক্যালকুলেটর');
+
+    // লোগো ও মেইন পেজ বাটনসমূহ
+    setTip('.custom-logo-placeholder', 'Honey Entertainment Logo', 'হানি এন্টারটেইনমেন্ট লোগো');
+    setTip('.full-episode-btn', 'Watch Full Episode Videos', 'সম্পূর্ণ পর্বের ভিডিও দেখুন');
+    setTip('#backButton', 'Back to Main Page', 'মেইন পেজে ফিরে যান');
+    setTip('#backToTopBtn', 'Scroll Back to Top', 'উপরে ফিরে যান');
+    setTip('.offline-retry-btn', 'Retry Internet Connection', 'পুনরায় ইন্টারনেট সংযোগ চেষ্টা করুন');
+    setTip('.thank-you-bar', 'Click for Magic Celebration!', 'ম্যাজিক ইফেক্ট দেখতে ক্লিক করুন!');
+
+    // সার্চ বার ও ফিল্টার বাটনসমূহ
+    setTip('#searchInput', 'Search photos by emoji or text', 'ইমোজি বা লেখা দিয়ে ছবি খুঁজুন');
+    setTip('#searchBtn', 'Search', 'সার্চ করুন');
+    setTip('#searchClearBtn', 'Clear Search', 'সার্চ মুছে ফেলুন');
+    setTip('#filterAll', 'Show All Photos', 'সব ছবি দেখুন');
+    setTip('#filterHoneySticker', 'Honey Sticker Collection', 'হানি স্টিকার কালেকশন');
+    setTip('#filter2026', 'Photos from 2026', '২০২৬ সালের ছবি');
+    setTip('#filter2025', 'Photos from 2025', '২০২৫ সালের ছবি');
+    setTip('#filterEmoji', 'Emoji Only Captions', 'শুধু ইমোজি ক্যাপশনের ছবি');
+    setTip('#filterFifa', 'FIFA 2026 Collection', 'ফিফা ২০২৬ কালেকশন');
+
+    // মেইন পেজের প্রিমিয়াম বাটন ও নিচের সোশ্যাল বক্স
+    const joinBtn = document.getElementById('joinBtnText');
+    if (joinBtn) setTip(joinBtn.closest('button'), 'Join Our Facebook Group', 'আমাদের ফেসবুক গ্রুপে জয়েন করুন');
+    const watchBtn = document.getElementById('watchBtnText');
+    if (watchBtn) setTip(watchBtn.closest('button'), 'Watch Full Cartoon Videos on TikTok', 'টিকটকে সম্পূর্ণ কার্টুন ভিডিও দেখুন');
+    const ownerBtn = document.getElementById('ownerBtnText');
+    if (ownerBtn) setTip(ownerBtn.closest('button'), 'Owner Profile - Sajeeb Saha', 'ওনার প্রোফাইল - সজীব সাহা');
+    const ytSectionBtn = document.querySelector('#newTxt + .btn-premium');
+    if (ytSectionBtn) setTip(ytSectionBtn, 'Subscribe to HE YouTube Channel', 'HE ইউটিউব চ্যানেল ভিজিট করুন');
+
+    setTip('.social-container .social-box[href*="facebook.com"]', 'Follow on Facebook Page', 'ফেসবুক পেজে ফলো করুন');
+    setTip('.social-container .social-box[href*="tiktok.com"]', 'Follow on TikTok', 'টিকটকে ফলো করুন');
+    setTip('.social-container .social-box[href*="instagram.com"]', 'Follow on Instagram', 'ইনস্টাগ্রামে ফলো করুন');
+
+    // শর্টস ভিডিও কার্ড ও শর্টস প্লেয়ার বাটনসমূহ
+    document.querySelectorAll('.feed-item').forEach(item => {
+        const vidTitle = item.getAttribute('data-title') || '';
+        item.setAttribute('title', isBN ? `শর্টস ভিডিও চালান: ${vidTitle}` : `Play Shorts Video: ${vidTitle}`);
+    });
+    setTip('.close-video-btn', 'Close Video (Esc)', 'ভিডিও বন্ধ করুন (Esc)');
+    setTip('#shortYtBtn', 'Watch this Video on YouTube', 'এই ভিডিওটি ইউটিউবে দেখুন');
+    setTip('#videoFeedTapLayer', 'Click to Play / Pause Video', 'ভিডিও প্লে বা পজ করতে ক্লিক করুন');
+    setTip('#shortSubscribeBtn', 'Subscribe to YouTube Channel', 'ইউটিউব চ্যানেলে সাবস্ক্রাইব করুন');
+
+    // ফুল এপিসোড ভিডিও কার্ড ও প্লেয়ার বাটনসমূহ
+    setTip('.welcome-video-card', 'Click to Play Full Episode', 'সম্পূর্ণ পর্বটি প্লে করতে ক্লিক করুন');
+    setTip('#welcomeModalCloseBtn', 'Close Player (Esc)', 'প্লেয়ার বন্ধ করুন (Esc)');
+    setTip('#welcomeModalPopupBtn', 'Browser Popup Player', 'ব্রাউজার পপআপ প্লেয়ার');
+    setTip('#welcomeModalDevicePopupBtn', 'Device Popup Player (Floats Outside Browser)', 'ডিভাইস পপআপ প্লেয়ার (ব্রাউজারের বাইরেও স্ক্রিনে ভাসবে)');
+    setTip('#welcomeModalFullscreenBtn', 'Fullscreen Mode', 'ফুলস্ক্রিন মোড');
+    setTip('#popupHeaderBar', 'Drag to Move Player', 'প্লেয়ারটি সরাতে টেনে নিন');
+    setTip('#popupExpandBtn', 'Expand to Normal Player', 'বড় স্ক্রিনে ফিরে যান');
+    setTip('#popupMiniCloseBtn', 'Close Popup Player', 'পপআপ প্লেয়ার বন্ধ করুন');
+    setTip('#popupResizeHandle', 'Drag Corner to Resize', 'কোণা ধরে ছোট বা বড় করুন');
+
+    // গ্যালারি ছবি, ক্যাপশন এবং ফুলস্ক্রিন ফটো ভিউয়ার বাটনসমূহ
+    setTip('.post-caption', 'Click to Highlight Caption', 'ক্যাপশন হাইলাইট করতে ক্লিক করুন');
+    setTip('.collection-card', 'Click to View Full Image', 'ছবিটি বড় করে দেখতে ক্লিক করুন');
+    setTip('#fullscreenOverlay .close-btn', 'Close Image (Esc)', 'ছবি বন্ধ করুন (Esc)');
+    setTip('#fullscreenOverlay .nav-btn.prev', 'Previous Image (Left Arrow)', 'আগের ছবি দেখুন');
+    setTip('#fullscreenOverlay .nav-btn.next', 'Next Image (Right Arrow)', 'পরের ছবি দেখুন');
+    setTip('#fullscreenOverlay .three-dot-btn', 'Photo Details, Audio & Download', 'ছবির বিস্তারিত, অডিও ও ডাউনলোড');
+    setTip('.play-pause-item', 'Play or Pause Background Audio', 'অডিও প্লে অথবা বিরতি দিন');
+    setTip('.download-item', 'Download Image to Device', 'ছবিটি গ্যালারিতে ডাউনলোড করুন');
+}
+
+// ===== ৩. ফোনের ব্যাক বাটন (HISTORY POPSTATE) ও ল্যাপটপের ESC নেভিগেশন =====
+let heHistoryDepth = 0;
+let isClosingFromPopstate = false;
+let ignoreNextPopstate = false;
+
+function pushHeHistoryLayer(layerName) {
+    if (isClosingFromPopstate) return;
+    heHistoryDepth++;
+    try {
+        history.pushState({ heLayer: layerName, depth: heHistoryDepth }, '');
+    } catch (e) {}
+}
+
+function popHeHistoryIfManual() {
+    if (!isClosingFromPopstate && heHistoryDepth > 0) {
+        heHistoryDepth--;
+        ignoreNextPopstate = true;
+        try { history.back(); } catch (e) { ignoreNextPopstate = false; }
+    }
+}
+
+// বিদ্যমান ফাংশনগুলোর সাথে হুক (Wrap) করা যেন কোনো কিছু না ভেঙে ১০০% কাজ করে
+(function hookExistingFunctions() {
+    // ১. openWelcomeVideoModal হুক
+    const _origOpenWelcomeModal = window.openWelcomeVideoModal;
+    if (typeof _origOpenWelcomeModal === 'function') {
+        window.openWelcomeVideoModal = function(index) {
+            currentWelcomeVideoIndex = index;
+            if (activeDevicePipWindow && !activeDevicePipWindow.closed) {
+                try { activeDevicePipWindow.close(); } catch (e) {}
+            }
+            const modal = document.getElementById('welcomeVideoModal');
+            const wasActive = modal && modal.classList.contains('active');
+            _origOpenWelcomeModal(index);
+            if (!wasActive) pushHeHistoryLayer('welcomeVideoModal');
+            updateAllButtonTooltips();
+        };
+    }
+
+    // ২. closeWelcomeVideoModal হুক
+    const _origCloseWelcomeModal = window.closeWelcomeVideoModal;
+    if (typeof _origCloseWelcomeModal === 'function') {
+        window.closeWelcomeVideoModal = function() {
+            const modal = document.getElementById('welcomeVideoModal');
+            const wasActive = modal && modal.classList.contains('active');
+            releaseHeWakeLock();
+            _origCloseWelcomeModal();
+            if (wasActive) popHeHistoryIfManual();
+        };
+    }
+
+    // ৩. showWelcomePage (Full Episode পেজে ঢোকা) হুক
+    const _origShowWelcomePage = window.showWelcomePage;
+    if (typeof _origShowWelcomePage === 'function') {
+        window.showWelcomePage = function() {
+            const wp = document.getElementById('welcomePage');
+            const wasActive = wp && wp.classList.contains('active');
+            _origShowWelcomePage();
+            if (!wasActive) pushHeHistoryLayer('welcomePage');
+            updateAllButtonTooltips();
+        };
+    }
+
+    // ৪. showMainPage (Full Episode পেজ থেকে মেইন পেজে ফেরা) হুক
+    const _origShowMainPage = window.showMainPage;
+    if (typeof _origShowMainPage === 'function') {
+        window.showMainPage = function() {
+            const wp = document.getElementById('welcomePage');
+            const wasActive = wp && wp.classList.contains('active');
+            _origShowMainPage();
+            if (wasActive) popHeHistoryIfManual();
+        };
+    }
+
+    // ৫. openVideoFeed (Shorts ভিডিও চালু) হুক
+    const _origOpenVideoFeed = window.openVideoFeed;
+    if (typeof _origOpenVideoFeed === 'function') {
+        window.openVideoFeed = function(ytId, title) {
+            const vo = document.getElementById('videoOverlay');
+            const wasActive = vo && vo.classList.contains('active');
+            _origOpenVideoFeed(ytId, title);
+            if (!wasActive) pushHeHistoryLayer('videoOverlay');
+            updateAllButtonTooltips();
+        };
+    }
+
+    // ৬. closeVideoFeed (Shorts ভিডিও বন্ধ) হুক
+    const _origCloseVideoFeed = window.closeVideoFeed;
+    if (typeof _origCloseVideoFeed === 'function') {
+        window.closeVideoFeed = function() {
+            const vo = document.getElementById('videoOverlay');
+            const wasActive = vo && vo.classList.contains('active');
+            _origCloseVideoFeed();
+            if (wasActive) popHeHistoryIfManual();
+        };
+    }
+
+    // ৭. openFull (গ্যালারির ছবি ওপেন) হুক
+    const _origOpenFull = window.openFull;
+    if (typeof _origOpenFull === 'function') {
+        window.openFull = function(index) {
+            const fo = document.getElementById('fullscreenOverlay');
+            const wasOpen = fo && fo.style.display === 'flex';
+            _origOpenFull(index);
+            if (!wasOpen) pushHeHistoryLayer('fullscreenOverlay');
+            updateAllButtonTooltips();
+        };
+    }
+
+    // ৮. closeFull (গ্যালারির ছবি বন্ধ) হুক
+    const _origCloseFull = window.closeFull;
+    if (typeof _origCloseFull === 'function') {
+        window.closeFull = function() {
+            const fo = document.getElementById('fullscreenOverlay');
+            const wasOpen = fo && fo.style.display === 'flex';
+            _origCloseFull();
+            if (wasOpen) popHeHistoryIfManual();
+        };
+    }
+
+    // ৯. toggleLang ও toggleSound হুক (ভাষা বা সাউন্ড বদলালে টুলটিপ আপডেট হবে)
+    const _origToggleLang = window.toggleLang;
+    if (typeof _origToggleLang === 'function') {
+        window.toggleLang = function() {
+            _origToggleLang();
+            updateAllButtonTooltips();
+        };
+    }
+    const _origToggleSound = window.toggleSound;
+    if (typeof _origToggleSound === 'function') {
+        window.toggleSound = function() {
+            _origToggleSound();
+            updateAllButtonTooltips();
+        };
+    }
+})();
+
+// সবচেয়ে উপরের চালু থাকা মডাল বা পেজটি এক ধাপ ব্যাকে নেওয়ার ফাংশন
+function handleUniversalBackAction() {
+    const dropdown = document.getElementById('dropdown');
+    const photoMenu = document.getElementById('photoDetailsMenu');
+    const fullOverlay = document.getElementById('fullscreenOverlay');
+    const shortsOverlay = document.getElementById('videoOverlay');
+    const welcomeModal = document.getElementById('welcomeVideoModal');
+    const welcomePage = document.getElementById('welcomePage');
+
+    // ১. ৩-বার মেনু খোলা থাকলে আগে সেটি বন্ধ হবে
+    if (dropdown && dropdown.classList.contains('active')) {
+        toggleMenu();
+        return true;
+    }
+    // ২. ছবির ভেতরের ৩-ডট (More) মেনু খোলা থাকলে সেটি বন্ধ হবে
+    if (photoMenu && photoMenu.classList.contains('active') && !photoMenu.classList.contains('closing')) {
+        closePhotoMenu();
+        return true;
+    }
+    // ৩. ফুলস্ক্রিন ছবি খোলা থাকলে ছবি বন্ধ হয়ে গ্যালারিতে ফিরবে
+    if (fullOverlay && fullOverlay.style.display === 'flex') {
+        closeFull();
+        return true;
+    }
+    // ৪. শর্টস ভিডিও প্লেয়ার খোলা থাকলে সেটি বন্ধ হবে
+    if (shortsOverlay && shortsOverlay.classList.contains('active')) {
+        closeVideoFeed();
+        return true;
+    }
+    // ৫. ফুল এপিসোডের ভিডিও প্লেয়ার খোলা থাকলে (পপআপ মোডে না থাকলে) সেটি বন্ধ হবে
+    if (welcomeModal && welcomeModal.classList.contains('active') && !isWelcomePopupMode) {
+        closeWelcomeVideoModal();
+        return true;
+    }
+    // ৬. ফুল এপিসোড পেজে (welcomePage) থাকলে সেখান থেকে মেইন পেজে ফিরে আসবে
+    if (welcomePage && welcomePage.classList.contains('active')) {
+        showMainPage();
+        return true;
+    }
+    // ৭. যদি মেইন পেজে পপআপ মোডে ভিডিও চলে এবং Esc চাপা হয় তবে পপআপ বন্ধ হবে
+    if (welcomeModal && welcomeModal.classList.contains('active') && isWelcomePopupMode) {
+        closeWelcomeVideoModal();
+        return true;
+    }
+    return false;
+}
+
+// ফোনের ব্যাক বাটন (Browser Back / Gesture Back) লিসেনার
+window.addEventListener('popstate', function(e) {
+    if (ignoreNextPopstate) {
+        ignoreNextPopstate = false;
+        return;
+    }
+    if (heHistoryDepth > 0) {
+        heHistoryDepth--;
+    }
+    isClosingFromPopstate = true;
+    handleUniversalBackAction();
+    isClosingFromPopstate = false;
+});
+
+// ল্যাপটপ / ডেস্কটপের Esc (Escape) বাটন লিসেনার (Capture Phase-এ, যাতে এক চাপে শুধু এক ধাপ ব্যাকে যায়)
+window.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const handled = handleUniversalBackAction();
+        if (handled) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+        }
+    }
+}, true);
+
+// পেজ লোড হওয়ার পর সব বাটনের টুলটিপ সক্রিয় করা
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(updateAllButtonTooltips, 200);
+});
+window.addEventListener('load', updateAllButtonTooltips);
+
 // ===== SOURCE CODE PROTECTION SYSTEM (ENHANCED) =====
 // ১. রাইট ক্লিক মেনু বন্ধ করা (আপনার আগের কোড)
 document.addEventListener('contextmenu', function(e) {
