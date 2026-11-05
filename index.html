@@ -2217,8 +2217,8 @@ bottom: -9px;
     fill: white;
 }
 
-.welcome-video-modal-popup,
-.welcome-video-modal-device-popup {
+
+.welcome-video-modal-popup {
     position: absolute;
     bottom: 15px; right: 67px;
     width: 42px; height: 42px;
@@ -2235,19 +2235,12 @@ bottom: -9px;
     -webkit-backdrop-filter: blur(10px);
     transition: all 0.3s ease;
 }
-/* ব্রাউজার পপআপ বাটনের ঠিক পাশে (বাম পাশে) ডিভাইস পপআপ বাটন */
-.welcome-video-modal-device-popup {
-    bottom: 15px;
-    right: 119px;
-}
-.welcome-video-modal-popup:hover,
-.welcome-video-modal-device-popup:hover {
+.welcome-video-modal-popup:hover {
     transform: scale(1.1);
     background: var(--accent);
     border-color: var(--accent);
 }
-.welcome-video-modal-popup svg,
-.welcome-video-modal-device-popup svg {
+.welcome-video-modal-popup svg {
     width: 20px; height: 20px;
     fill: white;
 }
@@ -2264,8 +2257,7 @@ bottom: -9px;
 }
 .welcome-video-modal.popup-mode > .welcome-video-modal-close,
 .welcome-video-modal.popup-mode > .welcome-video-modal-fullscreen,
-.welcome-video-modal.popup-mode > .welcome-video-modal-popup,
-.welcome-video-modal.popup-mode > .welcome-video-modal-device-popup {
+.welcome-video-modal.popup-mode > .welcome-video-modal-popup {
     display: none !important;
 }
 .welcome-video-modal.popup-mode .welcome-video-modal-content {
@@ -2964,9 +2956,7 @@ html.tab-hidden *, html.tab-hidden *::before, html.tab-hidden *::after { animati
         </div>
         <div class="popup-resize-handle" id="popupResizeHandle" title="Drag corner to resize"></div>
     </div>
-   <button class="welcome-video-modal-device-popup" id="welcomeModalDevicePopupBtn" onclick="openWelcomeDevicePopup()" title="Device Popup Player">
-        <svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-    </button>
+  
     <button class="welcome-video-modal-popup" id="welcomeModalPopupBtn" onclick="toggleWelcomeVideoPopup()" title="Browser Popup Player">
         <svg viewBox="0 0 24 24"><path d="M19 11h-8v6h8v-6zm4 8V4.98C23 3.88 22.1 3 21 3H3c-1.1 0-2 .88-2 1.98V19c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2zm-2 .02H3V4.97h18v14.05z"/></svg>
     </button>
@@ -6281,526 +6271,10 @@ backToTopBtn.addEventListener('mouseenter', () => SOUNDS.hover());
 });
 </script>
 <script>
-// ===== 1. DEVICE POPUP (100% AUTOPLAY + NO PAUSE + MOBILE OS PIP), 2. AUTO TOOLTIPS & 3. BACK / ESC NAVIGATION =====
-let currentWelcomeVideoIndex = 0;
-let welcomeVideoCurrentTime = 0;
-let welcomeTimePollInterval = null;
-let activeDevicePipWindow = null;
-let activeStandalonePopup = null;
-let heWakeLock = null;
-let mainWelcomeYtPlayer = null;
+    // ===== 1. AUTO VIDEO/BUTTON BILINGUAL TOOLTIPS & 2. UNIVERSAL BACK / ESC NAVIGATION =====
 const ytAutoTitleCache = {};
-const mobileDirectStreamCache = {};
 
-// মেইন প্লেয়ারের ইউটিউব লিংক তৈরি
-buildWelcomeEmbedUrl = function(v, startSec = 0) {
-    if (!v || !v.id) return '';
-    if (v.type === 'youtube') {
-        const originParam = (window.location.origin && window.location.origin !== 'null' && window.location.protocol.startsWith('http'))
-            ? `&origin=${encodeURIComponent(window.location.origin)}`
-            : '';
-        const startParam = (startSec && startSec > 0) ? `&start=${Math.floor(startSec)}` : '';
-        return `https://www.youtube.com/embed/${v.id}?rel=0&modestbranding=1&playsinline=1&autoplay=1&enablejsapi=1${startParam}${originParam}`;
-    }
-    return '';
-};
-
-// ইউটিউব প্লেয়ার থেকে প্রতি ২৫০ মিলিসেকেন্ডে বর্তমান সময় (currentTime) ট্র্যাক করা ও পজ হলে অটো-প্লে নিশ্চিত করা
-window.addEventListener('message', function(e) {
-    if (!e.data) return;
-    let data = e.data;
-    if (typeof data === 'string') {
-        try { data = JSON.parse(data); } catch (err) { return; }
-    }
-    if (data && typeof data === 'object') {
-        if (data.event === 'infoDelivery' && data.info) {
-            if (typeof data.info.currentTime === 'number' && data.info.currentTime > 0) {
-                welcomeVideoCurrentTime = data.info.currentTime;
-                if (window.__IS_HE_PIP_BRIDGE__) {
-                    try {
-                        if (window.parent && window.parent !== window && window.parent.opener) {
-                            window.parent.opener.postMessage({ type: 'HE_PIP_TIME_SYNC', currentTime: welcomeVideoCurrentTime }, '*');
-                        } else if (window.opener) {
-                            window.opener.postMessage({ type: 'HE_PIP_TIME_SYNC', currentTime: welcomeVideoCurrentTime }, '*');
-                        } else if (window.parent && window.parent !== window) {
-                            window.parent.postMessage({ type: 'HE_PIP_TIME_SYNC', currentTime: welcomeVideoCurrentTime }, '*');
-                        }
-                    } catch (err) {}
-                }
-            }
-        }
-        if (data.type === 'HE_PIP_TIME_SYNC' && typeof data.currentTime === 'number') {
-            welcomeVideoCurrentTime = data.currentTime;
-        }
-    }
-});
-
-// পপআপ ও মেইন প্লেয়ারে ভিডিও যেন কখনোই পজ হয়ে না থাকে, তার জন্য শক্তিশালী অটো-প্লে ইঞ্জিন
-function attachContinuousAutoPlayAndTracking(iframeEl, startSec = 0, isPopupBridge = false) {
-    if (!iframeEl) return;
-    if (welcomeTimePollInterval) clearInterval(welcomeTimePollInterval);
-
-    let hasConfirmedPlaying = false;
-    let unmutedTryCount = 0;
-    let mutedFallbackApplied = false;
-
-    const sendYtCmd = (func, args = []) => {
-        if (!iframeEl || !iframeEl.contentWindow) return;
-        try {
-            iframeEl.contentWindow.postMessage(JSON.stringify({ event: 'command', func: func, args: args }), '*');
-        } catch (e) {}
-    };
-
-    // ইউটিউব প্লেয়ারের স্টেট চেক করে পজ থাকলে সাথে সাথে প্লে করে দেওয়া
-    const stateCheckHandler = (e) => {
-        if (!e.data || typeof e.data !== 'string') return;
-        let d;
-        try { d = JSON.parse(e.data); } catch (err) { return; }
-        if (!d) return;
-
-        // প্লেয়ার রেডি হওয়ার সাথে সাথে প্লে কমান্ড
-        if (d.event === 'onReady') {
-            if (startSec > 0) sendYtCmd('seekTo', [startSec, true]);
-            sendYtCmd('playVideo', []);
-        }
-
-        // স্টেট চেক: 1 = PLAYING, 2 = PAUSED, 5 = CUED, -1 = UNSTARTED
-        const st = (d.event === 'onStateChange') ? d.info : (d.event === 'infoDelivery' && d.info ? d.info.playerState : undefined);
-        if (st === 1) {
-            hasConfirmedPlaying = true;
-        } else if (!hasConfirmedPlaying && (st === 2 || st === 5 || st === -1)) {
-            unmutedTryCount++;
-            if (unmutedTryCount <= 3) {
-                // প্রথমে সাউন্ডসহ প্লে করার চেষ্টা করবে
-                sendYtCmd('unMute', []);
-                sendYtCmd('setVolume', [100]);
-                sendYtCmd('playVideo', []);
-            } else if (!mutedFallbackApplied) {
-                // ব্রাউজার যদি নতুন উইন্ডোতে ক্লিক ছাড়া সাউন্ড ব্লক করে, তবে মিউট করে সাথে সাথে প্লে চালু রাখবে যাতে ভিডিও কখনোই পজ না হয়!
-                mutedFallbackApplied = true;
-                sendYtCmd('mute', []);
-                sendYtCmd('playVideo', []);
-                if (isPopupBridge) showPopupQuickUnmuteBanner(iframeEl);
-            } else {
-                sendYtCmd('playVideo', []);
-            }
-        }
-    };
-    window.addEventListener('message', stateCheckHandler);
-
-    const pollFn = () => {
-        if (!iframeEl || !iframeEl.contentWindow) return;
-        try {
-            iframeEl.contentWindow.postMessage(JSON.stringify({ event: 'listening', id: 1, channel: 'widget' }), '*');
-            if (!hasConfirmedPlaying) {
-                sendYtCmd('playVideo', []);
-            }
-        } catch (e) {}
-    };
-
-    iframeEl.addEventListener('load', () => {
-        pollFn();
-        setTimeout(() => {
-            if (!hasConfirmedPlaying) {
-                sendYtCmd('playVideo', []);
-            }
-        }, 250);
-        setTimeout(() => {
-            if (!hasConfirmedPlaying) {
-                // ৬০০ মিলিসেকেন্ডের মধ্যেও ব্রাউজার অটো-প্লে আটকে রাখলে জোরপূর্বক প্লে চালু করা
-                sendYtCmd('mute', []);
-                sendYtCmd('playVideo', []);
-                if (isPopupBridge) showPopupQuickUnmuteBanner(iframeEl);
-            }
-        }, 650);
-    });
-
-    welcomeTimePollInterval = setInterval(pollFn, 400);
-}
-
-// পপআপ উইন্ডোতে মাউস নিলে বা ক্লিক করলেই অটোমেটিক সাউন্ড আনমিউট করার ব্যবস্থা
-function showPopupQuickUnmuteBanner(iframeEl) {
-    if (document.getElementById('heQuickUnmuteBtn')) return;
-    const isBN = (window.location.hash.includes('lang=BN')) || (typeof currentLang !== 'undefined' && currentLang === 'BN');
-    const btn = document.createElement('button');
-    btn.id = 'heQuickUnmuteBtn';
-    btn.innerHTML = isBN ? '🔊 সাউন্ড চালু করতে এখানে ট্যাপ করুন' : '🔊 Tap here to Unmute Sound';
-    btn.style.cssText = 'position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:99999999;background:linear-gradient(90deg,#f472b6,#fb923c);color:#fff;border:none;border-radius:30px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,0.6);font-family:"Hind Siliguri","Inter",sans-serif;white-space:nowrap;';
-    const doUnmute = () => {
-        if (iframeEl && iframeEl.contentWindow) {
-            try {
-                iframeEl.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'unMute', args: [] }), '*');
-                iframeEl.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'setVolume', args: [100] }), '*');
-                iframeEl.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo', args: [] }), '*');
-            } catch (e) {}
-        }
-        if (btn && btn.parentNode) btn.parentNode.removeChild(btn);
-    };
-    btn.addEventListener('click', doUnmute);
-    btn.addEventListener('touchstart', doUnmute, { passive: true });
-    document.body.appendChild(btn);
-}
-
-// ডিভাইস পপআপ ব্রিজ মোড (ল্যাপটপ/ডেস্কটপ পপআপ উইন্ডোর ভেতরে সরাসরি অটো-প্লে)
-(function checkHePipBridgeMode() {
-    if (window.location.hash && window.location.hash.indexOf('#he_pip_bridge=') === 0) {
-        const hashStr = window.location.hash.substring(1);
-        const params = new URLSearchParams(hashStr);
-        const vidId = params.get('he_pip_bridge');
-        const vidIdx = parseInt(params.get('idx') || '0', 10);
-        const startSec = parseFloat(params.get('start') || '0');
-        const lang = params.get('lang') || 'EN';
-        const isStandalone = params.get('standalone') === '1';
-
-        if (vidId) {
-            window.__IS_HE_PIP_BRIDGE__ = true;
-            welcomeVideoCurrentTime = startSec;
-            const originParam = (window.location.origin && window.location.origin !== 'null' && window.location.protocol.startsWith('http'))
-                ? `&origin=${encodeURIComponent(window.location.origin)}`
-                : '';
-            const startParam = startSec > 0 ? `&start=${Math.floor(startSec)}` : '';
-            const embedSrc = `https://www.youtube.com/embed/${encodeURIComponent(vidId)}?rel=0&modestbranding=1&playsinline=1&autoplay=1&enablejsapi=1${startParam}${originParam}`;
-            const isBN = lang === 'BN';
-
-            const renderBridgePlayer = () => {
-                document.title = 'Honey Entertainment - Popup Player';
-                const topBarHtml = isStandalone ? `
-                    <div style="height:30px;background:linear-gradient(90deg,#111,#222);border-bottom:1px solid rgba(244,114,182,0.35);display:flex;align-items:center;justify-content:space-between;padding:0 10px;color:#fff;font-size:11px;font-weight:700;flex-shrink:0;font-family:'Hind Siliguri','Inter',sans-serif;user-select:none;">
-                        <span style="color:#f472b6;letter-spacing:0.5px;">🎬 HONEY ENTERTAINMENT</span>
-                        <div style="display:flex;align-items:center;gap:6px;">
-                            <button id="standaloneExpandBtn" title="${isBN ? 'মেইন স্ক্রিনে ফিরুন' : 'Return to Main Player'}" style="background:rgba(255,255,255,0.14);color:#fff;border:none;border-radius:12px;padding:3px 9px;font-size:11px;font-weight:700;cursor:pointer;">${isBN ? '⤢ বড় করুন' : '⤢ Expand'}</button>
-                            <button id="standaloneCloseBtn" title="${isBN ? 'বন্ধ করুন' : 'Close'}" style="background:rgba(239,68,68,0.85);color:#fff;border:none;border-radius:12px;padding:3px 9px;font-size:11px;font-weight:700;cursor:pointer;">✕</button>
-                        </div>
-                    </div>
-                ` : '';
-
-                // pageLoader রেখে বাকিটা ওভাররাইড করা হচ্ছে যাতে মূল স্ক্রিপ্টে কোনো এরর না আসে
-                document.body.innerHTML = `
-                    <div id="pageLoader" style="display:none;"></div>
-                    <div style="position:fixed;inset:0;background:#000;z-index:9999999;display:flex;flex-direction:column;overflow:hidden;width:100vw;height:100vh;">
-                        ${topBarHtml}
-                        <iframe id="bridgeYtIframe" src="${embedSrc}"
-                            title="Honey Entertainment Video"
-                            frameborder="0"
-                            referrerpolicy="strict-origin-when-cross-origin"
-                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen; webkit-fullscreen; mozfullscreen"
-                            allowfullscreen webkitallowfullscreen mozallowfullscreen
-                            style="width:100%;flex:1;height:100%;border:none;display:block;background:#000;"></iframe>
-                    </div>
-                `;
-                document.body.style.overflow = 'hidden';
-                document.body.style.margin = '0';
-                document.body.style.padding = '0';
-                document.body.style.background = '#000';
-
-                const ytIframe = document.getElementById('bridgeYtIframe');
-                attachContinuousAutoPlayAndTracking(ytIframe, startSec, true);
-
-                if (isStandalone) {
-                    const expBtn = document.getElementById('standaloneExpandBtn');
-                    const clsBtn = document.getElementById('standaloneCloseBtn');
-                    if (expBtn) {
-                        expBtn.onclick = function() {
-                            try {
-                                if (window.opener && !window.opener.closed && typeof window.opener.openWelcomeVideoModal === 'function') {
-                                    window.opener.focus();
-                                    window.opener.openWelcomeVideoModal(vidIdx, welcomeVideoCurrentTime);
-                                }
-                            } catch (e) {}
-                            window.close();
-                        };
-                    }
-                    if (clsBtn) {
-                        clsBtn.onclick = function() { window.close(); };
-                    }
-                }
-            };
-
-            if (document.body) renderBridgePlayer();
-            else document.addEventListener('DOMContentLoaded', renderBridgePlayer);
-        }
-    }
-})();
-
-// মোবাইলের জন্য ব্যাকগ্রাউন্ডে ডিরেক্ট ভিডিও স্ট্রিম চেক করা (যাতে ফোনেও Native OS PiP অন্য অ্যাপের উপরে ভাসতে পারে)
-async function prefetchMobileDirectStream(videoId) {
-    if (!videoId || mobileDirectStreamCache[videoId]) return mobileDirectStreamCache[videoId];
-    const apis = [
-        `https://pipedapi.kavin.rocks/streams/${videoId}`,
-        `https://pipedapi.adminforge.de/streams/${videoId}`,
-        `https://api.piped.private.coffee/streams/${videoId}`
-    ];
-    for (const url of apis) {
-        try {
-            const ctrl = new AbortController();
-            const tid = setTimeout(() => ctrl.abort(), 2200);
-            const res = await fetch(url, { signal: ctrl.signal });
-            clearTimeout(tid);
-            if (res.ok) {
-                const data = await res.json();
-                if (data && Array.isArray(data.videoStreams)) {
-                    const stream = data.videoStreams.find(s => !s.videoOnly && s.format === 'MPEG_4') || data.videoStreams.find(s => !s.videoOnly);
-                    if (stream && stream.url) {
-                        mobileDirectStreamCache[videoId] = stream.url;
-                        return stream.url;
-                    }
-                }
-                if (data && data.hls) {
-                    mobileDirectStreamCache[videoId] = data.hls;
-                    return data.hls;
-                }
-            }
-        } catch (e) {}
-    }
-    return null;
-}
-
-// ওয়েক-লক (ফোনের স্ক্রিন যেন পপআপ চলাকালীন বন্ধ না হয়)
-async function requestHeWakeLock() {
-    try {
-        if ('wakeLock' in navigator && !heWakeLock) {
-            heWakeLock = await navigator.wakeLock.request('screen');
-            heWakeLock.addEventListener('release', () => { heWakeLock = null; });
-        }
-    } catch (e) {}
-}
-function releaseHeWakeLock() {
-    if (heWakeLock) {
-        try { heWakeLock.release(); } catch (e) {}
-        heWakeLock = null;
-    }
-}
-
-// ডিভাইস পপআপ চালু করার মূল ফাংশন (ল্যাপটপ ও ফোন উভয়ের জন্য)
-async function openWelcomeDevicePopup() {
-    const video = welcomeVideoData[currentWelcomeVideoIndex];
-    if (!video || !video.id) return;
-    const modal = document.getElementById('welcomeVideoModal');
-    const content = document.getElementById('welcomeVideoModalContent');
-    const holder = document.getElementById('welcomeIframeHolder');
-    if (!modal || !content || !holder) return;
-
-    if (typeof SOUNDS !== 'undefined' && SOUNDS.click) SOUNDS.click();
-    requestHeWakeLock();
-
-    const resumeSec = Math.floor(welcomeVideoCurrentTime || 0);
-    const baseUrl = window.location.href.split('#')[0];
-    const isHttp = window.location.protocol === 'http:' || window.location.protocol === 'https:';
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768 && 'ontouchstart' in window);
-
-    // ১. ব্রাউজারে Document Picture-in-Picture থাকলে (ল্যাপটপ/ডেস্কটপ ও সাপোর্টেড ব্রাউজার): সব অ্যাপ ও ট্যাবের উপরে ভাসবে এবং অটো-প্লে হবে
-    if ('documentPictureInPicture' in window && isHttp) {
-        try {
-            if (activeDevicePipWindow && !activeDevicePipWindow.closed) {
-                activeDevicePipWindow.focus();
-                return;
-            }
-            const pipWin = await window.documentPictureInPicture.requestWindow({
-                width: 380,
-                height: 245
-            });
-            activeDevicePipWindow = pipWin;
-
-            const style = pipWin.document.createElement('style');
-            style.textContent = `
-                * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-                html, body { width: 100vw; height: 100vh; background: #000; overflow: hidden; display: flex; flex-direction: column; font-family: 'Hind Siliguri', 'Inter', sans-serif; }
-                .pip-top-bar {
-                    height: 30px; background: linear-gradient(90deg, #111, #222);
-                    border-bottom: 1px solid rgba(244,114,182,0.35);
-                    display: flex; align-items: center; justify-content: space-between;
-                    padding: 0 10px; color: #fff; font-size: 11px; font-weight: 700; flex-shrink: 0;
-                }
-                .pip-brand { color: #f472b6; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px; }
-                .pip-actions { display: flex; align-items: center; gap: 6px; }
-                .pip-btn {
-                    background: rgba(255,255,255,0.14); color: #fff; border: none;
-                    border-radius: 12px; padding: 3px 9px; font-size: 11px; font-weight: 700;
-                    cursor: pointer; transition: background 0.2s;
-                }
-                .pip-btn:hover { background: #f472b6; }
-                .pip-btn.close:hover { background: #ef4444; }
-                .pip-bridge-frame { flex: 1; width: 100%; height: calc(100vh - 30px); border: none; display: block; background: #000; }
-            `;
-            pipWin.document.head.appendChild(style);
-
-            const isBN = currentLang === 'BN';
-            const topBar = pipWin.document.createElement('div');
-            topBar.className = 'pip-top-bar';
-            topBar.innerHTML = `
-                <span class="pip-brand">🎬 HONEY ENTERTAINMENT</span>
-                <div class="pip-actions">
-                    <button class="pip-btn" id="pipReturnBtn" title="${isBN ? 'মেইন স্ক্রিনে ফিরুন' : 'Return to Main Player'}">${isBN ? '⤢ বড় করুন' : '⤢ Expand'}</button>
-                    <button class="pip-btn close" id="pipCloseBtn" title="${isBN ? 'বন্ধ করুন' : 'Close'}">✕</button>
-                </div>
-            `;
-            pipWin.document.body.appendChild(topBar);
-
-            const bridgeFrame = pipWin.document.createElement('iframe');
-            bridgeFrame.className = 'pip-bridge-frame';
-            bridgeFrame.setAttribute('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen');
-            bridgeFrame.setAttribute('allowfullscreen', 'true');
-            bridgeFrame.src = `${baseUrl}#he_pip_bridge=${encodeURIComponent(video.id)}&idx=${currentWelcomeVideoIndex}&start=${resumeSec}&lang=${currentLang}`;
-            pipWin.document.body.appendChild(bridgeFrame);
-
-            // পপআপ উইন্ডোর ভেতর থেকে সময় সিঙ্ক রিসিভ করা
-            pipWin.addEventListener('message', (ev) => {
-                if (ev.data && ev.data.type === 'HE_PIP_TIME_SYNC' && typeof ev.data.currentTime === 'number') {
-                    welcomeVideoCurrentTime = ev.data.currentTime;
-                }
-            });
-
-            if (welcomeTimePollInterval) clearInterval(welcomeTimePollInterval);
-            holder.innerHTML = '';
-            modal.classList.remove('active', 'popup-mode');
-            isWelcomePopupMode = false;
-            document.body.style.overflow = '';
-
-            let returningToModal = false;
-
-            topBar.querySelector('#pipReturnBtn').addEventListener('click', () => {
-                returningToModal = true;
-                const resumeAt = welcomeVideoCurrentTime || resumeSec;
-                pipWin.close();
-                openWelcomeVideoModal(currentWelcomeVideoIndex, resumeAt);
-            });
-
-            topBar.querySelector('#pipCloseBtn').addEventListener('click', () => {
-                returningToModal = false;
-                pipWin.close();
-            });
-
-            pipWin.addEventListener('pagehide', () => {
-                activeDevicePipWindow = null;
-                releaseHeWakeLock();
-                if (!returningToModal) {
-                    closeWelcomeVideoModal();
-                }
-            });
-            return;
-        } catch (err) {
-            console.warn('Document PiP fallback:', err);
-        }
-    }
-
-    // ২. ডেস্কটপের লোকাল ফাইল (file://) বা অন্য ব্রাউজারে: আলাদা OS পপআপ উইন্ডো
-    if (!isMobile) {
-        const w = 380, h = 245;
-        const left = Math.max(20, window.screen.availWidth - w - 30);
-        const top = Math.max(20, window.screen.availHeight - h - 60);
-        const bridgePopupUrl = `${baseUrl}#he_pip_bridge=${encodeURIComponent(video.id)}&idx=${currentWelcomeVideoIndex}&start=${resumeSec}&lang=${currentLang}&standalone=1`;
-
-        if (activeStandalonePopup && !activeStandalonePopup.closed) {
-            try { activeStandalonePopup.close(); } catch (e) {}
-        }
-        const popWin = window.open(bridgePopupUrl, 'HEDevicePopup', `popup=yes,width=${w},height=${h},left=${left},top=${top},menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=no`);
-        if (popWin) {
-            activeStandalonePopup = popWin;
-            closeWelcomeVideoModal();
-            return;
-        }
-    }
-
-    // ৩. মোবাইলের ক্ষেত্রে: কখনোই ফুলস্ক্রিনে যাবে না! সরাসরি পপআপ ওপেন হবে এবং ডিরেক্ট স্ট্রিম থাকলে ফোনের Native OS PiP চালু করবে
-    if (!isWelcomePopupMode) {
-        toggleWelcomeVideoPopup();
-    }
-    const headerText = document.getElementById('popupHeaderText');
-    if (headerText) {
-        headerText.textContent = currentLang === 'BN' ? 'ডিভাইস পপআপ' : 'Device Popup';
-    }
-
-    // ফোনে যদি ব্রাউজার থেকে বের হলেও ভাসমান রাখার জন্য ডিরেক্ট ভিডিও স্ট্রিম পাওয়া যায়, তবে ফোনের নিজস্ব OS Picture-in-Picture চালু করা
-    const directStreamUrl = mobileDirectStreamCache[video.id] || await prefetchMobileDirectStream(video.id);
-    if (directStreamUrl && (document.pictureInPictureEnabled || 'webkitSetPresentationMode' in HTMLVideoElement.prototype)) {
-        try {
-            let pipVid = document.getElementById('heMobileOsPipVideo');
-            if (!pipVid) {
-                pipVid = document.createElement('video');
-                pipVid.id = 'heMobileOsPipVideo';
-                pipVid.setAttribute('playsinline', '');
-                pipVid.setAttribute('webkit-playsinline', '');
-                pipVid.setAttribute('autoPictureInPicture', 'true');
-                pipVid.style.cssText = 'position:fixed;bottom:0;right:0;width:1px;height:1px;opacity:0.01;pointer-events:none;z-index:-1;';
-                document.body.appendChild(pipVid);
-
-                pipVid.addEventListener('leavepictureinpicture', () => {
-                    const resumeAt = pipVid.currentTime || welcomeVideoCurrentTime;
-                    pipVid.pause();
-                    pipVid.removeAttribute('src');
-                    openWelcomeVideoModal(currentWelcomeVideoIndex, resumeAt);
-                    if (!isWelcomePopupMode) toggleWelcomeVideoPopup();
-                });
-            }
-            pipVid.src = directStreamUrl;
-            pipVid.currentTime = resumeSec;
-            await pipVid.play();
-            if (pipVid.requestPictureInPicture) {
-                await pipVid.requestPictureInPicture();
-                // ফোনের Native OS পপআপ চালু হলে ব্রাউজারের ভেতরের ডাবল সাউন্ড বন্ধ রাখা
-                holder.innerHTML = '';
-                modal.classList.remove('active', 'popup-mode');
-                isWelcomePopupMode = false;
-                document.body.style.overflow = '';
-            } else if (pipVid.webkitSetPresentationMode) {
-                pipVid.webkitSetPresentationMode('picture-in-picture');
-                holder.innerHTML = '';
-                modal.classList.remove('active', 'popup-mode');
-                isWelcomePopupMode = false;
-                document.body.style.overflow = '';
-            }
-        } catch (e) {
-            // ডিরেক্ট OS PiP না হলে ইন-স্ক্রিন ফ্লোটিং পপআপ চালু থাকবে (কখনোই ফুলস্ক্রিন হবে না)
-        }
-    }
-}
-
-// মোবাইলে দুই আঙুল দিয়ে (Pinch) পপআপ ছোট-বড় করার সুবিধা
-(function initMobilePinchResizeForPopup() {
-    let initialPinchDist = 0;
-    let startW = 0, startH = 0;
-
-    function getTouchDist(touches) {
-        const dx = touches[0].clientX - touches[1].clientX;
-        const dy = touches[0].clientY - touches[1].clientY;
-        return Math.hypot(dx, dy);
-    }
-
-    document.addEventListener('touchstart', function(e) {
-        if (!isWelcomePopupMode) return;
-        const content = document.getElementById('welcomeVideoModalContent');
-        if (!content || !content.contains(e.target)) return;
-        if (e.touches.length === 2) {
-            initialPinchDist = getTouchDist(e.touches);
-            const rect = content.getBoundingClientRect();
-            startW = rect.width;
-            startH = rect.height;
-            e.preventDefault();
-        }
-    }, { passive: false });
-
-    document.addEventListener('touchmove', function(e) {
-        if (!isWelcomePopupMode || e.touches.length !== 2 || initialPinchDist <= 0) return;
-        const content = document.getElementById('welcomeVideoModalContent');
-        if (!content) return;
-        const dist = getTouchDist(e.touches);
-        const scale = dist / initialPinchDist;
-        const rect = content.getBoundingClientRect();
-        const minW = 190;
-        const maxW = Math.min(window.innerWidth - rect.left - 6, window.innerWidth * 0.95);
-        let newW = Math.max(minW, Math.min(maxW, Math.round(startW * scale)));
-        let newH = Math.round((newW * 9) / 16) + 32;
-        content.style.width = newW + 'px';
-        content.style.height = newH + 'px';
-        e.preventDefault();
-    }, { passive: false });
-
-    document.addEventListener('touchend', function(e) {
-        if (e.touches.length < 2) initialPinchDist = 0;
-    });
-})();
-
-// ===== ২. সব বাটন এবং বর্তমান ও ভবিষ্যতের সব ভিডিও/ছবির জন্য অটোমেটিক ক্যাপশন ও টুলটিপ =====
+// ফুল এপিসোড ভিডিওতে ক্যাপশন না দেওয়া থাকলে ইউটিউব থেকে অটোমেটিক ভিডিওর নাম নিয়ে আসা
 function fetchAutoYoutubeTitlesForWelcomeGrid() {
     if (typeof welcomeVideoData === 'undefined' || !Array.isArray(welcomeVideoData)) return;
     const cards = document.querySelectorAll('.welcome-video-card');
@@ -6831,8 +6305,8 @@ function fetchAutoYoutubeTitlesForWelcomeGrid() {
     });
 }
 
+// ওয়েবসাইটের সব বাটন এবং বর্তমান ও ভবিষ্যতের সব ভিডিও/ছবির জন্য অটোমেটিক বাংলা ও ইংরেজি টুলটিপ
 function updateAllButtonTooltips() {
-    if (window.__IS_HE_PIP_BRIDGE__) return;
     const isBN = currentLang === 'BN';
     const setTip = (selectorOrEl, enText, bnText) => {
         const els = typeof selectorOrEl === 'string' ? document.querySelectorAll(selectorOrEl) : (selectorOrEl ? [selectorOrEl] : []);
@@ -6841,6 +6315,7 @@ function updateAllButtonTooltips() {
         });
     };
 
+    // মেনু ও উপরের বাটনসমূহ
     setTip('#menuBtn', 'Menu', 'মেনু');
     setTip('.menu-h-btn.honey', 'Honey Mode', 'হানি মোড');
     setTip('.menu-h-btn.dark', 'Dark Mode', 'ডার্ক মোড');
@@ -6849,6 +6324,7 @@ function updateAllButtonTooltips() {
     setTip('#langBtn', 'Switch Language (Bangla / English)', 'ভাষা পরিবর্তন করুন (বাংলা / ইংরেজি)');
     setTip('.menu-h-btn.share-btn', 'Share Website Link', 'ওয়েবসাইটের লিঙ্ক শেয়ার করুন');
 
+    // মেনুর সোশ্যাল ও ওয়েবসাইট বাটনসমূহ
     setTip('.menu-h-social[href*="groups/honeysajeeb"]', 'Facebook Group', 'ফেসবুক গ্রুপ');
     setTip('.menu-h-social[href*="tiktok.com"]', 'TikTok Profile', 'টিকটক প্রোফাইল');
     setTip('.menu-h-social[href*="SAJEEBSAHA.S"]', 'Owner Profile (Sajeeb Saha)', 'ওনার প্রোফাইল (সজীব সাহা)');
@@ -6859,6 +6335,7 @@ function updateAllButtonTooltips() {
     setTip('.menu-h-social[href*="sks-he.github.io/voice-typing"]', 'Voice Typing Website', 'ভয়েস টাইপিং ওয়েবসাইট');
     setTip('.menu-h-social[href*="sks-he.github.io/Number-System"]', 'Number System Calculator', 'নাম্বার সিস্টেম ক্যালকুলেটর');
 
+    // লোগো ও মেইন পেজ বাটনসমূহ
     setTip('.custom-logo-placeholder', 'Honey Entertainment Logo', 'হানি এন্টারটেইনমেন্ট লোগো');
     setTip('.full-episode-btn', 'Watch Full Episode Videos', 'সম্পূর্ণ পর্বের ভিডিও দেখুন');
     setTip('#backButton', 'Back to Main Page', 'মেইন পেজে ফিরে যান');
@@ -6866,6 +6343,7 @@ function updateAllButtonTooltips() {
     setTip('.offline-retry-btn', 'Retry Internet Connection', 'পুনরায় ইন্টারনেট সংযোগ চেষ্টা করুন');
     setTip('.thank-you-bar', 'Click for Magic Celebration!', 'ম্যাজিক ইফেক্ট দেখতে ক্লিক করুন!');
 
+    // সার্চ বার ও ফিল্টার বাটনসমূহ
     setTip('#searchInput', 'Search photos by emoji or text', 'ইমোজি বা লেখা দিয়ে ছবি খুঁজুন');
     setTip('#searchBtn', 'Search', 'সার্চ করুন');
     setTip('#searchClearBtn', 'Clear Search', 'সার্চ মুছে ফেলুন');
@@ -6876,6 +6354,7 @@ function updateAllButtonTooltips() {
     setTip('#filterEmoji', 'Emoji Only Captions', 'শুধু ইমোজি ক্যাপশনের ছবি');
     setTip('#filterFifa', 'FIFA 2026 Collection', 'ফিফা ২০২৬ কালেকশন');
 
+    // মেইন পেজের প্রিমিয়াম বাটন ও নিচের সোশ্যাল বক্স
     const joinBtn = document.getElementById('joinBtnText');
     if (joinBtn) setTip(joinBtn.closest('button'), 'Join Our Facebook Group', 'আমাদের ফেসবুক গ্রুপে জয়েন করুন');
     const watchBtn = document.getElementById('watchBtnText');
@@ -6889,6 +6368,7 @@ function updateAllButtonTooltips() {
     setTip('.social-container .social-box[href*="tiktok.com"]', 'Follow on TikTok', 'টিকটকে ফলো করুন');
     setTip('.social-container .social-box[href*="instagram.com"]', 'Follow on Instagram', 'ইনস্টাগ্রামে ফলো করুন');
 
+    // শর্টস ভিডিও কার্ড ও প্লেয়ার বাটনসমূহ
     document.querySelectorAll('.feed-item').forEach(item => {
         const titleEl = item.querySelector('.feed-item-title');
         const vidTitle = (item.getAttribute('data-title') || (titleEl ? titleEl.textContent : '') || '').trim();
@@ -6903,6 +6383,7 @@ function updateAllButtonTooltips() {
     setTip('#videoFeedTapLayer', 'Click to Play / Pause Video', 'ভিডিও প্লে বা পজ করতে ক্লিক করুন');
     setTip('#shortSubscribeBtn', 'Subscribe to YouTube Channel', 'ইউটিউব চ্যানেলে সাবস্ক্রাইব করুন');
 
+    // ফুল এপিসোড ভিডিও কার্ড ও প্লেয়ার বাটনসমূহ
     document.querySelectorAll('.welcome-video-card').forEach((card, idx) => {
         const v = (typeof welcomeVideoData !== 'undefined' && welcomeVideoData[idx]) ? welcomeVideoData[idx] : null;
         const customCap = v ? (v.title || v.cap || '').trim() : '';
@@ -6918,14 +6399,14 @@ function updateAllButtonTooltips() {
     fetchAutoYoutubeTitlesForWelcomeGrid();
 
     setTip('#welcomeModalCloseBtn', 'Close Player (Esc)', 'প্লেয়ার বন্ধ করুন (Esc)');
-    setTip('#welcomeModalPopupBtn', 'Browser Popup Player', 'ব্রাউজার পপআপ প্লেয়ার');
-    setTip('#welcomeModalDevicePopupBtn', 'Device Popup Player (Floats Outside Browser)', 'ডিভাইস পপআপ প্লেয়ার (ব্রাউজারের বাইরেও স্ক্রিনে ভাসবে)');
+    setTip('#welcomeModalPopupBtn', 'Popup Player', 'পপআপ প্লেয়ার');
     setTip('#welcomeModalFullscreenBtn', 'Fullscreen Mode', 'ফুলস্ক্রিন মোড');
     setTip('#popupHeaderBar', 'Drag to Move Player', 'প্লেয়ারটি সরাতে টেনে নিন');
     setTip('#popupExpandBtn', 'Expand to Normal Player', 'বড় স্ক্রিনে ফিরে যান');
     setTip('#popupMiniCloseBtn', 'Close Popup Player', 'পপআপ প্লেয়ার বন্ধ করুন');
     setTip('#popupResizeHandle', 'Drag Corner to Resize', 'কোণা ধরে ছোট বা বড় করুন');
 
+    // গ্যালারি ছবি ও ক্যাপশন
     document.querySelectorAll('.gallery-item-wrapper').forEach(wrapper => {
         const capEl = wrapper.querySelector('.post-caption');
         const cardEl = wrapper.querySelector('.collection-card');
@@ -6942,13 +6423,13 @@ function updateAllButtonTooltips() {
     setTip('.download-item', 'Download Image to Device', 'ছবিটি গ্যালারিতে ডাউনলোড করুন');
 }
 
-// ===== ৩. ফোনের ব্যাক বাটন (HISTORY POPSTATE) ও ল্যাপটপের ESC নেভিগেশন =====
+// ===== ফোনের ব্যাক বাটন (HISTORY POPSTATE) ও ল্যাপটপের ESC নেভিগেশন =====
 let heHistoryDepth = 0;
 let isClosingFromPopstate = false;
 let ignoreNextPopstate = false;
 
 function pushHeHistoryLayer(layerName) {
-    if (isClosingFromPopstate || window.__IS_HE_PIP_BRIDGE__) return;
+    if (isClosingFromPopstate) return;
     heHistoryDepth++;
     try {
         history.pushState({ heLayer: layerName, depth: heHistoryDepth }, '');
@@ -6956,7 +6437,7 @@ function pushHeHistoryLayer(layerName) {
 }
 
 function popHeHistoryIfManual() {
-    if (!isClosingFromPopstate && heHistoryDepth > 0 && !window.__IS_HE_PIP_BRIDGE__) {
+    if (!isClosingFromPopstate && heHistoryDepth > 0) {
         heHistoryDepth--;
         ignoreNextPopstate = true;
         try { history.back(); } catch (e) { ignoreNextPopstate = false; }
@@ -6966,33 +6447,10 @@ function popHeHistoryIfManual() {
 (function hookExistingFunctions() {
     const _origOpenWelcomeModal = window.openWelcomeVideoModal;
     if (typeof _origOpenWelcomeModal === 'function') {
-        window.openWelcomeVideoModal = function(index, resumeSeconds = 0) {
-            currentWelcomeVideoIndex = index;
-            welcomeVideoCurrentTime = resumeSeconds || 0;
-            if (activeDevicePipWindow && !activeDevicePipWindow.closed) {
-                try { activeDevicePipWindow.close(); } catch (e) {}
-            }
-            if (activeStandalonePopup && !activeStandalonePopup.closed) {
-                try { activeStandalonePopup.close(); } catch (e) {}
-            }
+        window.openWelcomeVideoModal = function(index) {
             const modal = document.getElementById('welcomeVideoModal');
             const wasActive = modal && modal.classList.contains('active');
             _origOpenWelcomeModal(index);
-
-            const holder = document.getElementById('welcomeIframeHolder');
-            const video = welcomeVideoData[index];
-            if (holder && video) {
-                const embedUrl = buildWelcomeEmbedUrl(video, welcomeVideoCurrentTime);
-                holder.innerHTML = `<iframe id="mainWelcomeYtIframe" src="${embedUrl}" title="Full Episode Video" frameborder="0"
-                    referrerpolicy="strict-origin-when-cross-origin"
-                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen; webkit-fullscreen; mozfullscreen"
-                    allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>`;
-                const iframe = document.getElementById('mainWelcomeYtIframe');
-                attachContinuousAutoPlayAndTracking(iframe, welcomeVideoCurrentTime, false);
-                // মোবাইলের জন্য ব্যাকগ্রাউন্ডে ডিরেক্ট স্ট্রিম প্রি-ফেচ করে রাখা
-                prefetchMobileDirectStream(video.id);
-            }
-
             if (!wasActive) pushHeHistoryLayer('welcomeVideoModal');
             updateAllButtonTooltips();
         };
@@ -7003,11 +6461,6 @@ function popHeHistoryIfManual() {
         window.closeWelcomeVideoModal = function() {
             const modal = document.getElementById('welcomeVideoModal');
             const wasActive = modal && modal.classList.contains('active');
-            if (welcomeTimePollInterval) {
-                clearInterval(welcomeTimePollInterval);
-                welcomeTimePollInterval = null;
-            }
-            releaseHeWakeLock();
             _origCloseWelcomeModal();
             if (wasActive) popHeHistoryIfManual();
         };
@@ -7132,7 +6585,6 @@ function handleUniversalBackAction() {
 }
 
 window.addEventListener('popstate', function(e) {
-    if (window.__IS_HE_PIP_BRIDGE__) return;
     if (ignoreNextPopstate) {
         ignoreNextPopstate = false;
         return;
@@ -7146,7 +6598,6 @@ window.addEventListener('popstate', function(e) {
 });
 
 window.addEventListener('keydown', function(e) {
-    if (window.__IS_HE_PIP_BRIDGE__) return;
     if (e.key === 'Escape') {
         const handled = handleUniversalBackAction();
         if (handled) {
@@ -7157,7 +6608,6 @@ window.addEventListener('keydown', function(e) {
 }, true);
 
 document.addEventListener('DOMContentLoaded', function() {
-    if (window.__IS_HE_PIP_BRIDGE__) return;
     setTimeout(updateAllButtonTooltips, 200);
     if ('MutationObserver' in window) {
         const obs = new MutationObserver(() => { updateAllButtonTooltips(); });
