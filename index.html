@@ -6281,16 +6281,18 @@ backToTopBtn.addEventListener('mouseenter', () => SOUNDS.hover());
 });
 </script>
 <script>
-// ===== 1. DEVICE POPUP (EXACT TIME RESUME & AUTOPLAY), 2. AUTO VIDEO/BUTTON TOOLTIPS & 3. BACK / ESC NAVIGATION =====
+// ===== 1. DEVICE POPUP (100% AUTOPLAY + NO PAUSE + MOBILE OS PIP), 2. AUTO TOOLTIPS & 3. BACK / ESC NAVIGATION =====
 let currentWelcomeVideoIndex = 0;
 let welcomeVideoCurrentTime = 0;
 let welcomeTimePollInterval = null;
 let activeDevicePipWindow = null;
 let activeStandalonePopup = null;
 let heWakeLock = null;
+let mainWelcomeYtPlayer = null;
 const ytAutoTitleCache = {};
+const mobileDirectStreamCache = {};
 
-// মেইন প্লেয়ারের ইউটিউব লিংককে enablejsapi=1 ও www.youtube.com-এ আপডেট করা (যাতে অটো-প্লে কখনো পজ না হয় এবং সময় ট্র্যাক হয়)
+// মেইন প্লেয়ারের ইউটিউব লিংক তৈরি
 buildWelcomeEmbedUrl = function(v, startSec = 0) {
     if (!v || !v.id) return '';
     if (v.type === 'youtube') {
@@ -6303,7 +6305,7 @@ buildWelcomeEmbedUrl = function(v, startSec = 0) {
     return '';
 };
 
-// ইউটিউব ভিডিও কত সেকেন্ড পর্যন্ত চলেছে তা রিয়েল-টাইমে (প্রতি ২৫০ মিলিসেকেন্ডে) ট্র্যাক করা
+// ইউটিউব প্লেয়ার থেকে প্রতি ২৫০ মিলিসেকেন্ডে বর্তমান সময় (currentTime) ট্র্যাক করা ও পজ হলে অটো-প্লে নিশ্চিত করা
 window.addEventListener('message', function(e) {
     if (!e.data) return;
     let data = e.data;
@@ -6311,66 +6313,135 @@ window.addEventListener('message', function(e) {
         try { data = JSON.parse(data); } catch (err) { return; }
     }
     if (data && typeof data === 'object') {
-        // ইউটিউব প্লেয়ার থেকে বর্তমান সময় (currentTime) গ্রহণ
-        if (data.event === 'infoDelivery' && data.info && typeof data.info.currentTime === 'number') {
-            if (data.info.currentTime > 0) {
+        if (data.event === 'infoDelivery' && data.info) {
+            if (typeof data.info.currentTime === 'number' && data.info.currentTime > 0) {
                 welcomeVideoCurrentTime = data.info.currentTime;
-                // যদি এটি পপআপ ব্রিজ উইন্ডো হয়, তবে মেইন উইন্ডোকেও বর্তমান সময় জানিয়ে রাখবে
                 if (window.__IS_HE_PIP_BRIDGE__) {
                     try {
                         if (window.parent && window.parent !== window && window.parent.opener) {
                             window.parent.opener.postMessage({ type: 'HE_PIP_TIME_SYNC', currentTime: welcomeVideoCurrentTime }, '*');
                         } else if (window.opener) {
                             window.opener.postMessage({ type: 'HE_PIP_TIME_SYNC', currentTime: welcomeVideoCurrentTime }, '*');
+                        } else if (window.parent && window.parent !== window) {
+                            window.parent.postMessage({ type: 'HE_PIP_TIME_SYNC', currentTime: welcomeVideoCurrentTime }, '*');
                         }
                     } catch (err) {}
                 }
             }
         }
-        // পপআপ উইন্ডো থেকে মেইন উইন্ডোতে সময় সিঙ্ক
         if (data.type === 'HE_PIP_TIME_SYNC' && typeof data.currentTime === 'number') {
             welcomeVideoCurrentTime = data.currentTime;
         }
     }
 });
 
-function startYoutubeIframeTimeTracking(iframeEl, resumeSeconds = 0, forceAutoPlay = false) {
+// পপআপ ও মেইন প্লেয়ারে ভিডিও যেন কখনোই পজ হয়ে না থাকে, তার জন্য শক্তিশালী অটো-প্লে ইঞ্জিন
+function attachContinuousAutoPlayAndTracking(iframeEl, startSec = 0, isPopupBridge = false) {
     if (!iframeEl) return;
     if (welcomeTimePollInterval) clearInterval(welcomeTimePollInterval);
 
-    let playEnforcedCount = 0;
-    const sendCmd = (func, args = []) => {
+    let hasConfirmedPlaying = false;
+    let unmutedTryCount = 0;
+    let mutedFallbackApplied = false;
+
+    const sendYtCmd = (func, args = []) => {
         if (!iframeEl || !iframeEl.contentWindow) return;
         try {
             iframeEl.contentWindow.postMessage(JSON.stringify({ event: 'command', func: func, args: args }), '*');
         } catch (e) {}
     };
 
-    const connectListener = () => {
+    // ইউটিউব প্লেয়ারের স্টেট চেক করে পজ থাকলে সাথে সাথে প্লে করে দেওয়া
+    const stateCheckHandler = (e) => {
+        if (!e.data || typeof e.data !== 'string') return;
+        let d;
+        try { d = JSON.parse(e.data); } catch (err) { return; }
+        if (!d) return;
+
+        // প্লেয়ার রেডি হওয়ার সাথে সাথে প্লে কমান্ড
+        if (d.event === 'onReady') {
+            if (startSec > 0) sendYtCmd('seekTo', [startSec, true]);
+            sendYtCmd('playVideo', []);
+        }
+
+        // স্টেট চেক: 1 = PLAYING, 2 = PAUSED, 5 = CUED, -1 = UNSTARTED
+        const st = (d.event === 'onStateChange') ? d.info : (d.event === 'infoDelivery' && d.info ? d.info.playerState : undefined);
+        if (st === 1) {
+            hasConfirmedPlaying = true;
+        } else if (!hasConfirmedPlaying && (st === 2 || st === 5 || st === -1)) {
+            unmutedTryCount++;
+            if (unmutedTryCount <= 3) {
+                // প্রথমে সাউন্ডসহ প্লে করার চেষ্টা করবে
+                sendYtCmd('unMute', []);
+                sendYtCmd('setVolume', [100]);
+                sendYtCmd('playVideo', []);
+            } else if (!mutedFallbackApplied) {
+                // ব্রাউজার যদি নতুন উইন্ডোতে ক্লিক ছাড়া সাউন্ড ব্লক করে, তবে মিউট করে সাথে সাথে প্লে চালু রাখবে যাতে ভিডিও কখনোই পজ না হয়!
+                mutedFallbackApplied = true;
+                sendYtCmd('mute', []);
+                sendYtCmd('playVideo', []);
+                if (isPopupBridge) showPopupQuickUnmuteBanner(iframeEl);
+            } else {
+                sendYtCmd('playVideo', []);
+            }
+        }
+    };
+    window.addEventListener('message', stateCheckHandler);
+
+    const pollFn = () => {
         if (!iframeEl || !iframeEl.contentWindow) return;
         try {
             iframeEl.contentWindow.postMessage(JSON.stringify({ event: 'listening', id: 1, channel: 'widget' }), '*');
-            if (forceAutoPlay && playEnforcedCount < 4) {
-                playEnforcedCount++;
-                if (resumeSeconds > 0 && playEnforcedCount === 1) {
-                    sendCmd('seekTo', [resumeSeconds, true]);
-                }
-                sendCmd('unMute', []);
-                sendCmd('setVolume', [100]);
-                sendCmd('playVideo', []);
+            if (!hasConfirmedPlaying) {
+                sendYtCmd('playVideo', []);
             }
         } catch (e) {}
     };
 
     iframeEl.addEventListener('load', () => {
-        connectListener();
-        setTimeout(connectListener, 200);
-        setTimeout(connectListener, 600);
+        pollFn();
+        setTimeout(() => {
+            if (!hasConfirmedPlaying) {
+                sendYtCmd('playVideo', []);
+            }
+        }, 250);
+        setTimeout(() => {
+            if (!hasConfirmedPlaying) {
+                // ৬০০ মিলিসেকেন্ডের মধ্যেও ব্রাউজার অটো-প্লে আটকে রাখলে জোরপূর্বক প্লে চালু করা
+                sendYtCmd('mute', []);
+                sendYtCmd('playVideo', []);
+                if (isPopupBridge) showPopupQuickUnmuteBanner(iframeEl);
+            }
+        }, 650);
     });
-    welcomeTimePollInterval = setInterval(connectListener, 800);
+
+    welcomeTimePollInterval = setInterval(pollFn, 400);
 }
 
-// ডিভাইস পপআপ ব্রিজ মোড (যাতে ঠিক যে সেকেন্ড পর্যন্ত দেখেছে সেখান থেকেই অটো-প্লে হয়)
+// পপআপ উইন্ডোতে মাউস নিলে বা ক্লিক করলেই অটোমেটিক সাউন্ড আনমিউট করার ব্যবস্থা
+function showPopupQuickUnmuteBanner(iframeEl) {
+    if (document.getElementById('heQuickUnmuteBtn')) return;
+    const isBN = (window.location.hash.includes('lang=BN')) || (typeof currentLang !== 'undefined' && currentLang === 'BN');
+    const btn = document.createElement('button');
+    btn.id = 'heQuickUnmuteBtn';
+    btn.innerHTML = isBN ? '🔊 সাউন্ড চালু করতে এখানে ট্যাপ করুন' : '🔊 Tap here to Unmute Sound';
+    btn.style.cssText = 'position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:99999999;background:linear-gradient(90deg,#f472b6,#fb923c);color:#fff;border:none;border-radius:30px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,0.6);font-family:"Hind Siliguri","Inter",sans-serif;white-space:nowrap;';
+    const doUnmute = () => {
+        if (iframeEl && iframeEl.contentWindow) {
+            try {
+                iframeEl.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'unMute', args: [] }), '*');
+                iframeEl.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'setVolume', args: [100] }), '*');
+                iframeEl.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo', args: [] }), '*');
+            } catch (e) {}
+        }
+        if (btn && btn.parentNode) btn.parentNode.removeChild(btn);
+    };
+    btn.addEventListener('click', doUnmute);
+    btn.addEventListener('touchstart', doUnmute, { passive: true });
+    document.body.appendChild(btn);
+}
+
+// ডিভাইস পপআপ ব্রিজ মোড (ল্যাপটপ/ডেস্কটপ পপআপ উইন্ডোর ভেতরে সরাসরি অটো-প্লে)
 (function checkHePipBridgeMode() {
     if (window.location.hash && window.location.hash.indexOf('#he_pip_bridge=') === 0) {
         const hashStr = window.location.hash.substring(1);
@@ -6403,7 +6474,9 @@ function startYoutubeIframeTimeTracking(iframeEl, resumeSeconds = 0, forceAutoPl
                     </div>
                 ` : '';
 
+                // pageLoader রেখে বাকিটা ওভাররাইড করা হচ্ছে যাতে মূল স্ক্রিপ্টে কোনো এরর না আসে
                 document.body.innerHTML = `
+                    <div id="pageLoader" style="display:none;"></div>
                     <div style="position:fixed;inset:0;background:#000;z-index:9999999;display:flex;flex-direction:column;overflow:hidden;width:100vw;height:100vh;">
                         ${topBarHtml}
                         <iframe id="bridgeYtIframe" src="${embedSrc}"
@@ -6421,7 +6494,7 @@ function startYoutubeIframeTimeTracking(iframeEl, resumeSeconds = 0, forceAutoPl
                 document.body.style.background = '#000';
 
                 const ytIframe = document.getElementById('bridgeYtIframe');
-                startYoutubeIframeTimeTracking(ytIframe, startSec, true);
+                attachContinuousAutoPlayAndTracking(ytIframe, startSec, true);
 
                 if (isStandalone) {
                     const expBtn = document.getElementById('standaloneExpandBtn');
@@ -6449,6 +6522,39 @@ function startYoutubeIframeTimeTracking(iframeEl, resumeSeconds = 0, forceAutoPl
     }
 })();
 
+// মোবাইলের জন্য ব্যাকগ্রাউন্ডে ডিরেক্ট ভিডিও স্ট্রিম চেক করা (যাতে ফোনেও Native OS PiP অন্য অ্যাপের উপরে ভাসতে পারে)
+async function prefetchMobileDirectStream(videoId) {
+    if (!videoId || mobileDirectStreamCache[videoId]) return mobileDirectStreamCache[videoId];
+    const apis = [
+        `https://pipedapi.kavin.rocks/streams/${videoId}`,
+        `https://pipedapi.adminforge.de/streams/${videoId}`,
+        `https://api.piped.private.coffee/streams/${videoId}`
+    ];
+    for (const url of apis) {
+        try {
+            const ctrl = new AbortController();
+            const tid = setTimeout(() => ctrl.abort(), 2200);
+            const res = await fetch(url, { signal: ctrl.signal });
+            clearTimeout(tid);
+            if (res.ok) {
+                const data = await res.json();
+                if (data && Array.isArray(data.videoStreams)) {
+                    const stream = data.videoStreams.find(s => !s.videoOnly && s.format === 'MPEG_4') || data.videoStreams.find(s => !s.videoOnly);
+                    if (stream && stream.url) {
+                        mobileDirectStreamCache[videoId] = stream.url;
+                        return stream.url;
+                    }
+                }
+                if (data && data.hls) {
+                    mobileDirectStreamCache[videoId] = data.hls;
+                    return data.hls;
+                }
+            }
+        } catch (e) {}
+    }
+    return null;
+}
+
 // ওয়েক-লক (ফোনের স্ক্রিন যেন পপআপ চলাকালীন বন্ধ না হয়)
 async function requestHeWakeLock() {
     try {
@@ -6465,7 +6571,7 @@ function releaseHeWakeLock() {
     }
 }
 
-// ডিভাইস পপআপ চালু করার মূল ফাংশন
+// ডিভাইস পপআপ চালু করার মূল ফাংশন (ল্যাপটপ ও ফোন উভয়ের জন্য)
 async function openWelcomeDevicePopup() {
     const video = welcomeVideoData[currentWelcomeVideoIndex];
     if (!video || !video.id) return;
@@ -6482,7 +6588,7 @@ async function openWelcomeDevicePopup() {
     const isHttp = window.location.protocol === 'http:' || window.location.protocol === 'https:';
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768 && 'ontouchstart' in window);
 
-    // ১. যদি ব্রাউজারে Document Picture-in-Picture সাপোর্ট থাকে (ল্যাপটপ/ডেস্কটপ ও সাপোর্টেড ব্রাউজার)
+    // ১. ব্রাউজারে Document Picture-in-Picture থাকলে (ল্যাপটপ/ডেস্কটপ ও সাপোর্টেড ব্রাউজার): সব অ্যাপ ও ট্যাবের উপরে ভাসবে এবং অটো-প্লে হবে
     if ('documentPictureInPicture' in window && isHttp) {
         try {
             if (activeDevicePipWindow && !activeDevicePipWindow.closed) {
@@ -6537,7 +6643,13 @@ async function openWelcomeDevicePopup() {
             bridgeFrame.src = `${baseUrl}#he_pip_bridge=${encodeURIComponent(video.id)}&idx=${currentWelcomeVideoIndex}&start=${resumeSec}&lang=${currentLang}`;
             pipWin.document.body.appendChild(bridgeFrame);
 
-            // মেইন পেজের প্লেয়ারটি বন্ধ করে স্ক্রলিং চালু করে দেওয়া
+            // পপআপ উইন্ডোর ভেতর থেকে সময় সিঙ্ক রিসিভ করা
+            pipWin.addEventListener('message', (ev) => {
+                if (ev.data && ev.data.type === 'HE_PIP_TIME_SYNC' && typeof ev.data.currentTime === 'number') {
+                    welcomeVideoCurrentTime = ev.data.currentTime;
+                }
+            });
+
             if (welcomeTimePollInterval) clearInterval(welcomeTimePollInterval);
             holder.innerHTML = '';
             modal.classList.remove('active', 'popup-mode');
@@ -6571,7 +6683,7 @@ async function openWelcomeDevicePopup() {
         }
     }
 
-    // ২. লোকাল ফাইল (file://) বা ডেস্কটপের অন্য ব্রাউজারে: আলাদা OS পপআপ উইন্ডো (ঠিক যে সেকেন্ড পর্যন্ত দেখেছে সেখান থেকেই চলবে)
+    // ২. ডেস্কটপের লোকাল ফাইল (file://) বা অন্য ব্রাউজারে: আলাদা OS পপআপ উইন্ডো
     if (!isMobile) {
         const w = 380, h = 245;
         const left = Math.max(20, window.screen.availWidth - w - 30);
@@ -6589,30 +6701,57 @@ async function openWelcomeDevicePopup() {
         }
     }
 
-    // ৩. মোবাইলের ক্ষেত্রে (Android / iOS): ইউটিউব iframe-কে সরাসরি Native Media Fullscreen-এ নেওয়া যাতে ফোনের Home বাটনে চাপ দিলেই ফোনের নিজস্ব OS Picture-in-Picture পপআপ স্ক্রিনে ভেসে থাকে
-    const ytIframe = holder.querySelector('iframe');
-    if (ytIframe) {
-        try {
-            ytIframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo', args: [] }), '*');
-        } catch (e) {}
-
-        const reqFs = ytIframe.requestFullscreen || ytIframe.webkitRequestFullscreen || ytIframe.mozRequestFullScreen || ytIframe.msRequestFullscreen;
-        if (reqFs) {
-            if (typeof showToast === 'function') {
-                const msg = currentLang === 'BN'
-                    ? '📱 এবার ফোনের Home বাটনে চাপ দিয়ে বের হলেই ভিডিওটি ফোনের স্ক্রিনে পপআপ হয়ে ভাসবে!'
-                    : '📱 Press your phone\'s Home button now to float the video on your screen!';
-                showToast(msg, 4000);
-            }
-            reqFs.call(ytIframe).catch(() => {
-                if (!isWelcomePopupMode) toggleWelcomeVideoPopup();
-            });
-            return;
-        }
-    }
-
+    // ৩. মোবাইলের ক্ষেত্রে: কখনোই ফুলস্ক্রিনে যাবে না! সরাসরি পপআপ ওপেন হবে এবং ডিরেক্ট স্ট্রিম থাকলে ফোনের Native OS PiP চালু করবে
     if (!isWelcomePopupMode) {
         toggleWelcomeVideoPopup();
+    }
+    const headerText = document.getElementById('popupHeaderText');
+    if (headerText) {
+        headerText.textContent = currentLang === 'BN' ? 'ডিভাইস পপআপ' : 'Device Popup';
+    }
+
+    // ফোনে যদি ব্রাউজার থেকে বের হলেও ভাসমান রাখার জন্য ডিরেক্ট ভিডিও স্ট্রিম পাওয়া যায়, তবে ফোনের নিজস্ব OS Picture-in-Picture চালু করা
+    const directStreamUrl = mobileDirectStreamCache[video.id] || await prefetchMobileDirectStream(video.id);
+    if (directStreamUrl && (document.pictureInPictureEnabled || 'webkitSetPresentationMode' in HTMLVideoElement.prototype)) {
+        try {
+            let pipVid = document.getElementById('heMobileOsPipVideo');
+            if (!pipVid) {
+                pipVid = document.createElement('video');
+                pipVid.id = 'heMobileOsPipVideo';
+                pipVid.setAttribute('playsinline', '');
+                pipVid.setAttribute('webkit-playsinline', '');
+                pipVid.setAttribute('autoPictureInPicture', 'true');
+                pipVid.style.cssText = 'position:fixed;bottom:0;right:0;width:1px;height:1px;opacity:0.01;pointer-events:none;z-index:-1;';
+                document.body.appendChild(pipVid);
+
+                pipVid.addEventListener('leavepictureinpicture', () => {
+                    const resumeAt = pipVid.currentTime || welcomeVideoCurrentTime;
+                    pipVid.pause();
+                    pipVid.removeAttribute('src');
+                    openWelcomeVideoModal(currentWelcomeVideoIndex, resumeAt);
+                    if (!isWelcomePopupMode) toggleWelcomeVideoPopup();
+                });
+            }
+            pipVid.src = directStreamUrl;
+            pipVid.currentTime = resumeSec;
+            await pipVid.play();
+            if (pipVid.requestPictureInPicture) {
+                await pipVid.requestPictureInPicture();
+                // ফোনের Native OS পপআপ চালু হলে ব্রাউজারের ভেতরের ডাবল সাউন্ড বন্ধ রাখা
+                holder.innerHTML = '';
+                modal.classList.remove('active', 'popup-mode');
+                isWelcomePopupMode = false;
+                document.body.style.overflow = '';
+            } else if (pipVid.webkitSetPresentationMode) {
+                pipVid.webkitSetPresentationMode('picture-in-picture');
+                holder.innerHTML = '';
+                modal.classList.remove('active', 'popup-mode');
+                isWelcomePopupMode = false;
+                document.body.style.overflow = '';
+            }
+        } catch (e) {
+            // ডিরেক্ট OS PiP না হলে ইন-স্ক্রিন ফ্লোটিং পপআপ চালু থাকবে (কখনোই ফুলস্ক্রিন হবে না)
+        }
     }
 }
 
@@ -6849,7 +6988,9 @@ function popHeHistoryIfManual() {
                     allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen; webkit-fullscreen; mozfullscreen"
                     allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>`;
                 const iframe = document.getElementById('mainWelcomeYtIframe');
-                startYoutubeIframeTimeTracking(iframe, welcomeVideoCurrentTime, true);
+                attachContinuousAutoPlayAndTracking(iframe, welcomeVideoCurrentTime, false);
+                // মোবাইলের জন্য ব্যাকগ্রাউন্ডে ডিরেক্ট স্ট্রিম প্রি-ফেচ করে রাখা
+                prefetchMobileDirectStream(video.id);
             }
 
             if (!wasActive) pushHeHistoryLayer('welcomeVideoModal');
