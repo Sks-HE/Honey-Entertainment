@@ -4426,11 +4426,12 @@ toggleMenu();
 // thumbnail: '' দিলে: মূল HONEY লোগো দেখাবে
 
 const welcomeVideoData = [
+    { type:'youtube', id:'24EwrdKVAMw', thumb:'https://i.pinimg.com/736x/71/89/f6/7189f6b34d8443a039f469da75eea221.jpg', isNew: true },
     { type:'youtube', id:'4KYoSSr4WMA', thumb:'https://i.pinimg.com/736x/a6/3a/ee/a63aee5792b7801fba5d57f9ab19dccb.jpg', isNew: true },
     { type:'youtube', id:'5mipEZ_CWSw', thumb:'https://i.pinimg.com/736x/b8/51/30/b85130b7308da4a6cdc358466d126e44.jpg', isNew: true },
     { type:'youtube', id:'n_cy1c0APLA', thumb:'https://i.pinimg.com/736x/22/73/53/227353e730452d8a32489319c21acd2c.jpg', isNew: true },
     { type:'youtube', id:'No5cXfo6emM', thumb:'https://i.pinimg.com/736x/dd/23/df/dd23df69341fa4215f8e577c61e8aace.jpg', isNew: true },
-    { type:'youtube', id:'wgISugIBMpo', thumb:'https://i.pinimg.com/736x/a0/82/30/a08230ccf1628365ae3adb49a163ad24.jpg', isNew: true },
+    { type:'youtube', id:'wgISugIBMpo', thumb:'https://i.pinimg.com/736x/a0/82/30/a08230ccf1628365ae3adb49a163ad24.jpg' },
     { type:'youtube', id:'rjgDaQ0m4HU', thumb:'https://i.pinimg.com/736x/e3/e1/f2/e3e1f27495aa2f9be1a946bfa8c014b5.jpg' },
     { type:'youtube', id:'xieqo1tLVCU', thumb:'https://i.pinimg.com/736x/5a/84/a3/5a84a355eb5114ae1f077b2b010706ca.jpg' },
     { type:'youtube', id:'6cle5wAU5hw', thumb:'https://i.pinimg.com/736x/5f/ff/57/5fff571f0b0bf36b23eab36718b75c6f.jpg' },
@@ -6360,7 +6361,7 @@ function updateAllButtonTooltips() {
     const watchBtn = document.getElementById('watchBtnText');
     if (watchBtn) setTip(watchBtn.closest('button'), 'Watch Full Cartoon Videos on TikTok', 'টিকটকে সম্পূর্ণ কার্টুন ভিডিও দেখুন');
     const ownerBtn = document.getElementById('ownerBtnText');
-    if (ownerBtn) setTip(ownerBtn.closest('button'), 'Owner Profile - Sajeeb Saha', 'ওনার প্রোফাইল - সজীব সাহা');
+    if (ownerBtn) setTip(ownerBtn.closest('button'), 'Owner Profile - Sajeeb Saha', 'ওনার প্রোফাইল - Sajeeb Saha');
     const ytSectionBtn = document.querySelector('#newTxt + .btn-premium');
     if (ytSectionBtn) setTip(ytSectionBtn, 'Subscribe to HE YouTube Channel', 'HE ইউটিউব চ্যানেল ভিজিট করুন');
 
