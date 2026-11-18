@@ -10814,9 +10814,34 @@ function applyHeLiveConfigToSite(cfg) {
     applyHeFontsToSite();
     refreshOpenHePreviews();
 }
+function normalizeHeConfig(raw) {
+    const r = (raw && typeof raw === "object") ? raw : {};
+    return {
+        pin: r.pin || HONEY_DEFAULT_PIN,
+        logoUrl: r.logoUrl || "",
+        siteNameLine1: r.siteNameLine1 || "",
+        siteNameLine2: r.siteNameLine2 || "",
+        coverUrl: r.coverUrl || "",
+        addedShorts: Array.isArray(r.addedShorts) ? r.addedShorts : [],
+        deletedShorts: Array.isArray(r.deletedShorts) ? r.deletedShorts : [],
+        addedFullEpisodes: Array.isArray(r.addedFullEpisodes) ? r.addedFullEpisodes : [],
+        deletedFullEpisodes: Array.isArray(r.deletedFullEpisodes) ? r.deletedFullEpisodes : [],
+        fullEpNewOverrides: (r.fullEpNewOverrides && typeof r.fullEpNewOverrides === "object") ? r.fullEpNewOverrides : {},
+        addedBaahubaliShorts: Array.isArray(r.addedBaahubaliShorts) ? r.addedBaahubaliShorts : [],
+        deletedBaahubaliShorts: Array.isArray(r.deletedBaahubaliShorts) ? r.deletedBaahubaliShorts : [],
+        baahubaliFullEmbed: typeof r.baahubaliFullEmbed === "string" ? r.baahubaliFullEmbed : "",
+        addedPhotos: Array.isArray(r.addedPhotos) ? r.addedPhotos : [],
+        deletedPhotos: Array.isArray(r.deletedPhotos) ? r.deletedPhotos : [],
+        fonts: {
+            EN: (r.fonts && r.fonts.EN && typeof r.fonts.EN === "object") ? r.fonts.EN : {},
+            BN: (r.fonts && r.fonts.BN && typeof r.fonts.BN === "object") ? r.fonts.BN : {}
+        }
+    };
+}
 
 async function saveHeLiveConfig() {
     const t = getHeAdminLang();
+    heLiveConfig = normalizeHeConfig(heLiveConfig);
     try { localStorage.setItem(HONEY_ADMIN_STORAGE_KEY, JSON.stringify(heLiveConfig)); } catch (e) {}
     const pill = document.getElementById("heSyncStatusPill");
     if (HONEY_FIREBASE_DB_URL && HONEY_FIREBASE_DB_URL.startsWith("http")) {
@@ -10831,7 +10856,7 @@ async function saveHeLiveConfig() {
                 if (pill) pill.textContent = t.syncCloud;
                 return true;
             }
-            if (pill) pill.textContent = t.syncFail;
+            if (pill) pill.textContent = `${t.syncFail} (${res.status})`;
             return false;
         } catch (e) {
             if (pill) pill.textContent = t.syncFail;
@@ -10845,30 +10870,33 @@ async function saveHeLiveConfig() {
 
 async function loadHeLiveConfigOnBoot() {
     const t = getHeAdminLang();
+    const pill = document.getElementById("heSyncStatusPill");
     try {
         const local = localStorage.getItem(HONEY_ADMIN_STORAGE_KEY);
-        if (local) heLiveConfig = Object.assign({}, heLiveConfig, JSON.parse(local));
+        if (local) heLiveConfig = normalizeHeConfig(JSON.parse(local));
     } catch (e) {}
 
     if (HONEY_FIREBASE_DB_URL && HONEY_FIREBASE_DB_URL.startsWith("http")) {
         try {
-            const url = HONEY_FIREBASE_DB_URL.replace(/\/$/, "") + "/honey_entertainment_config.json";
-            const res = await fetch(url);
+            const url = HONEY_FIREBASE_DB_URL.replace(/\/$/, "") + "/honey_entertainment_config.json?t=" + Date.now();
+            const res = await fetch(url, { cache: "no-store" });
             if (res.ok) {
                 const remote = await res.json();
                 if (remote && typeof remote === "object") {
-                    heLiveConfig = Object.assign({}, heLiveConfig, remote);
+                    heLiveConfig = normalizeHeConfig(remote);
                     try { localStorage.setItem(HONEY_ADMIN_STORAGE_KEY, JSON.stringify(heLiveConfig)); } catch (e) {}
-                    const pill = document.getElementById("heSyncStatusPill");
                     if (pill) pill.textContent = t.syncCloud;
                 }
+            } else {
+                if (pill) pill.textContent = `${t.syncFail} (${res.status})`;
             }
-        } catch (e) {}
+        } catch (e) {
+            if (pill) pill.textContent = t.syncFail;
+        }
     }
     applyHeLiveConfigToSite(heLiveConfig);
     applyHeAdminLanguageUI();
 }
-
 // ===== ADMIN ACTION HANDLERS =====
 async function admSaveLogo() {
     const t = getHeAdminLang();
