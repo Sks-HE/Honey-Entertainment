@@ -4312,7 +4312,7 @@ body.honey-mode #customToast {
     }
 }
 
-/* ===== SEARCHABLE FONT DROPDOWN UI ===== */
+/* ===== SEARCHABLE FONT DROPDOWN UI (SINGLE BOX + DOUBLE-TAP TO TYPE) ===== */
 .he-font-lang-bar {
     display: flex;
     align-items: center;
@@ -4353,76 +4353,79 @@ body.honey-mode .he-font-lang-pills {
     position: relative;
     width: 100%;
 }
-.he-font-trigger {
+.he-font-combo-wrap {
+    position: relative;
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 8px;
+}
+.he-font-combo-input {
+    width: 100%;
     background: rgba(0, 0, 0, 0.32);
     border: 1.5px solid rgba(128, 128, 128, 0.28);
     border-radius: 12px;
-    padding: 10px 12px;
+    padding: 10px 32px 10px 12px;
     color: var(--text-color);
     font-size: 13.5px;
-    text-align: left;
+    outline: none;
     cursor: pointer;
-    transition: border-color 0.25s, box-shadow 0.25s;
+    transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+    user-select: text !important;
+    -webkit-user-select: text !important;
 }
-body.light-mode .he-font-trigger,
-body.honey-mode .he-font-trigger {
+.he-font-combo-input:not([readonly]) {
+    cursor: text;
+}
+body.light-mode .he-font-combo-input,
+body.honey-mode .he-font-combo-input {
     background: rgba(255, 255, 255, 0.65);
     border-color: rgba(0, 0, 0, 0.16);
 }
-.he-font-trigger:hover,
-.he-font-dropdown.open .he-font-trigger {
+.he-font-combo-input:focus,
+.he-font-dropdown.open .he-font-combo-input {
     border-color: var(--accent);
     box-shadow: 0 0 0 3px var(--glow-color);
+}
+.he-font-arrow {
+    position: absolute;
+    right: 12px;
+    pointer-events: none;
+    color: var(--text-color);
+    opacity: 0.75;
+    font-size: 13px;
+    transition: transform 0.2s ease;
+}
+.he-font-dropdown.open .he-font-arrow {
+    transform: rotate(180deg);
 }
 .he-font-menu {
     display: none;
     position: absolute;
     left: 0;
     right: 0;
-    top: calc(100% + 6px);
-    z-index: 200;
-    background: rgba(18, 18, 26, 0.96);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
+    top: calc(100% + 4px);
+    z-index: 250;
+    background: #141418;
     border: 1.5px solid var(--accent);
-    border-radius: 14px;
-    padding: 8px;
-    box-shadow: 0 16px 36px rgba(0,0,0,0.55);
+    border-radius: 12px;
+    padding: 5px;
+    box-shadow: 0 14px 32px rgba(0,0,0,0.55);
 }
 body.light-mode .he-font-menu,
 body.honey-mode .he-font-menu {
-    background: rgba(255, 255, 255, 0.97);
-    box-shadow: 0 14px 32px rgba(0,0,0,0.16);
+    background: #ffffff;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.16);
 }
 .he-font-dropdown.open .he-font-menu {
     display: block;
-    animation: heSecFadeIn 0.2s ease;
-}
-.he-font-search {
-    width: 100%;
-    background: rgba(128, 128, 128, 0.14);
-    border: 1px solid rgba(128, 128, 128, 0.3);
-    border-radius: 9px;
-    padding: 8px 10px;
-    color: var(--text-color);
-    font-size: 13px;
-    outline: none;
-    margin-bottom: 6px;
-}
-.he-font-search:focus {
-    border-color: var(--accent);
+    animation: heSecFadeIn 0.18s ease;
 }
 .he-font-list {
     max-height: 210px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 2px;
 }
 .he-font-option {
     width: 100%;
@@ -4434,10 +4437,7 @@ body.honey-mode .he-font-menu {
     color: var(--text-color);
     font-size: 13.5px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    transition: background 0.2s;
+    transition: background 0.15s;
 }
 .he-font-option:hover,
 .he-font-option.selected {
@@ -9393,14 +9393,14 @@ const HE_ENGLISH_FONTS = [
     "Patua One", "Concert One", "Titan One", "Luckiest Guy", "Boogaloo", "Chewy"
 ];
 const HE_FONT_CATEGORIES = [
-    { key: "brand", en: "Website Title (HONEY ENTERTAINMENT)", bn: "মূল টাইটেল (HONEY ENTERTAINMENT)" },
+    { key: "brand", en: "Website Title (HONEY ENTERTAINMENT)", bn: "মূল টাইটেল (HONEY ENTERTAINMENT)", enOnly: true },
     { key: "heading", en: "Section Headings (Shorts Video, Collections, etc.)", bn: "সেকশন হেডিং (Shorts ভিডিও, কালেকশন ইত্যাদি)" },
     { key: "topLabel", en: "Top Labels (Full episode / Baahubali 2D)", bn: "বাটনের উপরের লেখা (সম্পূর্ণ পর্ব / বাহুবলী 2D)" },
     { key: "button", en: "All Buttons (Watch, Filters, Menu, Subscribe)", bn: "সব বাটনের লেখা (Watch, ফিল্টার, মেনু, Subscribe)" },
     { key: "search", en: "Search Bar & Results", bn: "সার্চ বার ও ফলাফল" },
     { key: "subtext", en: "YouTube Subscribe Status Text", bn: "YouTube সাবস্ক্রাইব স্ট্যাটাস লেখা" },
     { key: "footer", en: "Follow Us, Thank You, Footer, Full Ep Title & Coming Soon", bn: "Follow Us, ধন্যবাদ, ফুটার, ফুল এপিসোড টাইটেল ও Coming Soon" },
-    { key: "baahubali", en: "Baahubali Epic Heading (BAAHUBALI)", bn: "বাহুবলী মূল টাইটেল (BAAHUBALI)" },
+    { key: "baahubali", en: "Baahubali Epic Heading (BAAHUBALI)", bn: "বাহুবলী মূল টাইটেল (BAAHUBALI)", enOnly: true },
     { key: "toast", en: "Notification & Toast Messages", bn: "নোটিফিকেশন ও মেসেজ (Toast)" },
     { key: "admin", en: "Admin Panel & PIN Box", bn: "অ্যাডমিন প্যানেল ও পিন বক্স" }
 ];
@@ -9419,11 +9419,13 @@ function loadHeGoogleFont(fontName) {
 
 function applyHeFontsToSite() {
     const activeLang = (typeof currentLang !== "undefined" && currentLang === "BN") ? "BN" : "EN";
-    const map = (heLiveConfig.fonts && heLiveConfig.fonts[activeLang]) ? heLiveConfig.fonts[activeLang] : {};
+    const enMap = (heLiveConfig.fonts && heLiveConfig.fonts.EN) ? heLiveConfig.fonts.EN : {};
+    const bnMap = (heLiveConfig.fonts && heLiveConfig.fonts.BN) ? heLiveConfig.fonts.BN : {};
     const root = document.documentElement;
 
     HE_FONT_CATEGORIES.forEach(cat => {
-        const fontName = (map[cat.key] || "").trim();
+        const sourceMap = (cat.enOnly || activeLang === "EN") ? enMap : bnMap;
+        const fontName = (sourceMap[cat.key] || "").trim();
         const attr = "data-he-f-" + cat.key.toLowerCase();
         const cssVar = "--he-f-" + cat.key.toLowerCase();
         if (fontName) {
@@ -9445,7 +9447,6 @@ function switchHeFontEditLang(langCode) {
     if (bnBtn) bnBtn.classList.toggle("active", heFontEditLang === "BN");
     renderHeFontControls();
 }
-
 function renderHeFontControls() {
     const grid = document.getElementById("heFontControlsGrid");
     if (!grid) return;
@@ -9455,9 +9456,9 @@ function renderHeFontControls() {
     if (!heLiveConfig.fonts[heFontEditLang]) heLiveConfig.fonts[heFontEditLang] = {};
 
     const selectedMap = heLiveConfig.fonts[heFontEditLang];
-    const fontList = (heFontEditLang === "BN") ? HE_BANGLA_FONTS : HE_ENGLISH_FONTS;
+    const visibleCategories = HE_FONT_CATEGORIES.filter(cat => !(heFontEditLang === "BN" && cat.enOnly));
 
-    grid.innerHTML = HE_FONT_CATEGORIES.map(cat => {
+    grid.innerHTML = visibleCategories.map(cat => {
         const curVal = selectedMap[cat.key] || "";
         const labelTxt = isSiteBN ? cat.bn : cat.en;
         const displayVal = curVal || t.fontDefault;
@@ -9466,12 +9467,21 @@ function renderHeFontControls() {
             <div>
                 <label class="he-label">${labelTxt}</label>
                 <div class="he-font-dropdown" id="heFontDrop_${cat.key}">
-                    <button type="button" class="he-font-trigger" onclick="toggleHeFontDropdown('${cat.key}', event)" style="${curVal ? `font-family:'${curVal}',sans-serif;` : ''}">
-                        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${displayVal}</span>
-                        <span>▾</span>
-                    </button>
+                    <div class="he-font-combo-wrap">
+                        <input type="text"
+                               readonly
+                               class="he-font-combo-input"
+                               id="heFontInput_${cat.key}"
+                               value="${displayVal.replace(/"/g, '&quot;')}"
+                               data-saved="${displayVal.replace(/"/g, '&quot;')}"
+                               placeholder="${t.fontSearchPh}"
+                               autocomplete="off"
+                               style="${curVal ? `font-family:'${curVal}',sans-serif;` : ''}"
+                               onclick="handleHeFontBoxTap('${cat.key}', this, event)"
+                               oninput="filterHeFontList('${cat.key}', this.value)">
+                        <span class="he-font-arrow">▾</span>
+                    </div>
                     <div class="he-font-menu" onclick="event.stopPropagation()">
-                        <input type="text" class="he-font-search" id="heFontSearch_${cat.key}" placeholder="${t.fontSearchPh}" oninput="filterHeFontList('${cat.key}', this.value)">
                         <div class="he-font-list" id="heFontList_${cat.key}"></div>
                     </div>
                 </div>
@@ -9479,11 +9489,10 @@ function renderHeFontControls() {
         `;
     }).join("");
 
-    HE_FONT_CATEGORIES.forEach(cat => {
+    visibleCategories.forEach(cat => {
         populateHeFontOptions(cat.key, "");
     });
 }
-
 function populateHeFontOptions(catKey, query) {
     const listEl = document.getElementById("heFontList_" + catKey);
     if (!listEl) return;
@@ -9503,33 +9512,62 @@ function populateHeFontOptions(catKey, query) {
 
     let html = '';
     if (!q) {
-        html += `<button type="button" class="he-font-option ${curVal === '' ? 'selected' : ''}" onclick="admSelectFont('${catKey}', '')"><span>${t.fontDefault}</span></button>`;
+        html += `<button type="button" class="he-font-option ${curVal === '' ? 'selected' : ''}" onclick="admSelectFont('${catKey}', '')">${t.fontDefault}</button>`;
     }
     matches.slice(0, 60).forEach(f => {
         loadHeGoogleFont(f);
-        html += `<button type="button" class="he-font-option ${curVal === f ? 'selected' : ''}" style="font-family:'${f}',sans-serif;" onclick="admSelectFont('${catKey}', '${f.replace(/'/g, "\\'")}')"><span>${f}</span></button>`;
+        html += `<button type="button" class="he-font-option ${curVal === f ? 'selected' : ''}" style="font-family:'${f}',sans-serif;" onclick="admSelectFont('${catKey}', '${f.replace(/'/g, "\\'")}')">${f}</button>`;
     });
 
     const trimmedRaw = (query || "").trim();
     if (trimmedRaw && !fontList.some(f => f.toLowerCase() === q)) {
-        html += `<button type="button" class="he-font-option" onclick="admSelectFont('${catKey}', '${trimmedRaw.replace(/'/g, "\\'")}')"><span>✨ Use Google Font: "${trimmedRaw}"</span></button>`;
+        html += `<button type="button" class="he-font-option" onclick="admSelectFont('${catKey}', '${trimmedRaw.replace(/'/g, "\\'")}')">✨ "${trimmedRaw}"</button>`;
     }
     listEl.innerHTML = html;
 }
 
-function toggleHeFontDropdown(catKey, ev) {
+function closeAllHeFontDropdowns() {
+    document.querySelectorAll(".he-font-dropdown.open").forEach(el => {
+        el.classList.remove("open");
+        const inp = el.querySelector(".he-font-combo-input");
+        if (inp) {
+            inp.readOnly = true;
+            inp.value = inp.dataset.saved || "";
+            inp.blur();
+        }
+    });
+}
+
+function handleHeFontBoxTap(catKey, inp, ev) {
     if (ev) ev.stopPropagation();
     const target = document.getElementById("heFontDrop_" + catKey);
-    const wasOpen = target && target.classList.contains("open");
-    document.querySelectorAll(".he-font-dropdown.open").forEach(el => el.classList.remove("open"));
-    if (target && !wasOpen) {
+    if (!target || !inp) return;
+
+    const now = Date.now();
+    const lastTap = Number(inp.dataset.lastTap || 0);
+    inp.dataset.lastTap = String(now);
+
+    // ২য় ট্যাপ (Double Tap): কিবোর্ড উঠবে ও লিখে সার্চ করা যাবে
+    if (now - lastTap < 420) {
+        document.querySelectorAll(".he-font-dropdown.open").forEach(el => {
+            if (el !== target) el.classList.remove("open");
+        });
         target.classList.add("open");
-        const inp = document.getElementById("heFontSearch_" + catKey);
-        if (inp) {
-            inp.value = "";
-            populateHeFontOptions(catKey, "");
-            setTimeout(() => inp.focus(), 40);
-        }
+        inp.readOnly = false;
+        inp.value = "";
+        populateHeFontOptions(catKey, "");
+        inp.focus();
+        return;
+    }
+
+    // ১ম ট্যাপ (Single Tap): কিবোর্ড উঠবে না, শুধু ড্রপডাউন মেনু নামবে/বন্ধ হবে
+    if (!inp.readOnly) return;
+    inp.blur();
+    const wasOpen = target.classList.contains("open");
+    closeAllHeFontDropdowns();
+    if (!wasOpen) {
+        target.classList.add("open");
+        populateHeFontOptions(catKey, "");
     }
 }
 
@@ -9543,7 +9581,7 @@ async function admSelectFont(catKey, fontName) {
     if (!heLiveConfig.fonts[heFontEditLang]) heLiveConfig.fonts[heFontEditLang] = {};
     heLiveConfig.fonts[heFontEditLang][catKey] = fontName;
 
-    document.querySelectorAll(".he-font-dropdown.open").forEach(el => el.classList.remove("open"));
+    closeAllHeFontDropdowns();
     applyHeFontsToSite();
     renderHeFontControls();
     const ok = await saveHeLiveConfig();
@@ -9562,10 +9600,9 @@ async function admResetFontsForLang() {
 
 document.addEventListener("click", (e) => {
     if (!e.target.closest(".he-font-dropdown")) {
-        document.querySelectorAll(".he-font-dropdown.open").forEach(el => el.classList.remove("open"));
+        closeAllHeFontDropdowns();
     }
 });
-
 const HE_ADMIN_I18N = {
     EN: {
         lockTip: "Admin Access",
