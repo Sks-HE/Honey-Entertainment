@@ -3527,41 +3527,36 @@ html.tab-hidden *, html.tab-hidden *::before, html.tab-hidden *::after { animati
     position: fixed;
     inset: 0;
     z-index: 99990;
-    background: rgba(5, 5, 10, 0.8);
-    backdrop-filter: blur(20px) saturate(165%);
-    -webkit-backdrop-filter: blur(20px) saturate(165%);
+    background: rgba(5, 5, 10, 0.42);
+    backdrop-filter: blur(8px) saturate(140%);
+    -webkit-backdrop-filter: blur(8px) saturate(140%);
     display: none;
     align-items: center;
     justify-content: center;
-    padding: 16px;
+    padding: 14px;
+    transition: background 0.4s ease;
+}
+body.light-mode .he-sec-backdrop {
+    background: rgba(255, 255, 255, 0.34);
+}
+body.honey-mode .he-sec-backdrop {
+    background: rgba(254, 243, 199, 0.32);
 }
 .he-sec-backdrop.active {
     display: flex;
-    animation: heSecFadeIn 0.28s ease forwards;
+    animation: heSecFadeIn 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 @keyframes heSecFadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
-.he-pin-card {
-    width: 100%;
-    max-width: 390px;
-    background: linear-gradient(155deg, rgba(24, 24, 32, 0.96), rgba(10, 10, 15, 0.99));
-    border: 1.5px solid rgba(245, 158, 11, 0.55);
-    border-radius: 28px;
-    padding: 30px 24px 26px;
-    box-shadow: 0 25px 65px rgba(0, 0, 0, 0.88), 0 0 38px rgba(245, 158, 11, 0.22);
-    color: #fff;
-    position: relative;
-    text-align: center;
-    animation: heCardPop 0.36s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
 @keyframes heCardPop {
-    0% { opacity: 0; transform: scale(0.84) translateY(20px); }
+    0% { opacity: 0; transform: scale(0.92) translateY(20px); }
     100% { opacity: 1; transform: scale(1) translateY(0); }
 }
-.he-pin-card.shake {
-    animation: hePinShake 0.4s ease;
+@keyframes heBoxSlideIn {
+    0% { opacity: 0; transform: translateY(14px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 @keyframes hePinShake {
     0%, 100% { transform: translateX(0); }
@@ -3570,38 +3565,68 @@ html.tab-hidden *, html.tab-hidden *::before, html.tab-hidden *::after { animati
     60% { transform: translateX(-7px); }
     80% { transform: translateX(7px); }
 }
+@keyframes heShieldPulse {
+    0%, 100% { box-shadow: 0 0 18px var(--glow-color); transform: scale(1); }
+    50% { box-shadow: 0 0 32px var(--glow-color); transform: scale(1.05); }
+}
+
+/* ===== PIN MODAL ===== */
+.he-pin-card {
+    width: 100%;
+    max-width: 390px;
+    background: rgba(16, 16, 24, 0.68);
+    backdrop-filter: blur(22px) saturate(170%);
+    -webkit-backdrop-filter: blur(22px) saturate(170%);
+    border: 1.5px solid var(--accent);
+    border-radius: 28px;
+    padding: 32px 24px 26px;
+    box-shadow: 0 22px 55px rgba(0, 0, 0, 0.45), 0 0 30px var(--glow-color);
+    color: var(--text-color);
+    position: relative;
+    text-align: center;
+    animation: heCardPop 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Inter', sans-serif;
+    will-change: transform, opacity;
+}
+body.light-mode .he-pin-card {
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.16), 0 0 24px var(--glow-color);
+}
+body.honey-mode .he-pin-card {
+    background: rgba(255, 251, 235, 0.72);
+    box-shadow: 0 20px 50px rgba(120, 53, 15, 0.18), 0 0 24px var(--glow-color);
+}
+.he-pin-card.shake {
+    animation: hePinShake 0.4s ease;
+}
 .he-shield-ring {
-    width: 68px;
-    height: 68px;
+    width: 66px;
+    height: 66px;
     margin: 0 auto 14px;
     border-radius: 50%;
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(244, 114, 182, 0.22));
-    border: 2px solid #f59e0b;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(244, 114, 182, 0.18));
+    border: 2px solid var(--accent);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fbbf24;
-    box-shadow: 0 0 25px rgba(245, 158, 11, 0.35);
+    color: var(--accent);
     animation: heShieldPulse 2.2s infinite ease-in-out;
 }
-@keyframes heShieldPulse {
-    0%, 100% { box-shadow: 0 0 18px rgba(245, 158, 11, 0.3); transform: scale(1); }
-    50% { box-shadow: 0 0 34px rgba(245, 158, 11, 0.65); transform: scale(1.05); }
-}
 .he-pin-title {
-    font-family: 'Orbitron', 'Hind Siliguri', sans-serif;
-    font-size: 19px;
+    font-family: 'Orbitron', 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+    font-size: 20px;
     font-weight: 800;
-    letter-spacing: 1px;
+    letter-spacing: 0.8px;
     margin: 0 0 6px;
-    background: linear-gradient(90deg, #fff, #fbbf24, #f472b6);
+    background: linear-gradient(90deg, var(--text-color), var(--accent), #fb923c);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 .he-pin-sub {
-    font-family: 'Hind Siliguri', 'Inter', sans-serif;
-    font-size: 12.5px;
-    color: rgba(255,255,255,0.7);
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--text-color);
+    opacity: 0.78;
     margin: 0 0 18px;
 }
 .he-input-eye-wrap {
@@ -3612,21 +3637,26 @@ html.tab-hidden *, html.tab-hidden *::before, html.tab-hidden *::after { animati
 }
 .he-sec-input {
     width: 100%;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1.5px solid rgba(255, 255, 255, 0.16);
+    background: rgba(0, 0, 0, 0.35);
+    border: 1.5px solid rgba(128, 128, 128, 0.35);
     border-radius: 14px;
     padding: 12px 44px 12px 14px;
-    color: #fff;
+    color: var(--text-color);
     font-size: 14px;
-    font-family: 'Inter', 'Hind Siliguri', sans-serif;
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Inter', sans-serif;
     outline: none;
-    transition: border-color 0.25s, box-shadow 0.25s;
+    transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
     user-select: text !important;
     -webkit-user-select: text !important;
 }
+body.light-mode .he-sec-input,
+body.honey-mode .he-sec-input {
+    background: rgba(255, 255, 255, 0.65);
+    border-color: rgba(0, 0, 0, 0.18);
+}
 .he-sec-input:focus {
-    border-color: #f59e0b;
-    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--glow-color);
 }
 .he-sec-input:disabled {
     opacity: 0.45;
@@ -3637,65 +3667,70 @@ html.tab-hidden *, html.tab-hidden *::before, html.tab-hidden *::after { animati
     right: 10px;
     background: transparent;
     border: none;
-    color: rgba(255,255,255,0.65);
+    color: var(--text-color);
+    opacity: 0.7;
     cursor: pointer;
     padding: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.2s, transform 0.2s;
+    transition: color 0.2s, transform 0.2s, opacity 0.2s;
 }
-.he-eye-btn:hover { color: #fbbf24; transform: scale(1.1); }
+.he-eye-btn:hover { color: var(--accent); opacity: 1; transform: scale(1.12); }
 .he-pin-error {
     min-height: 20px;
     margin-top: 10px;
-    font-family: 'Hind Siliguri', 'Inter', sans-serif;
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Inter', sans-serif;
     font-size: 12.5px;
-    color: #f87171;
+    color: #ef4444;
     font-weight: 700;
-    line-height: 1.4;
+    line-height: 1.45;
 }
+
+/* ===== BUTTONS & SHINE HOVER OVERLAY ===== */
 .he-btn-primary {
     width: 100%;
     margin-top: 12px;
     padding: 12px 18px;
     border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    background: linear-gradient(135deg, var(--accent, #f59e0b), #fb923c);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: linear-gradient(135deg, var(--accent), #fb923c);
     color: #fff;
-    font-family: 'Hind Siliguri', 'Inter', sans-serif;
-    font-size: 13.5px;
-    font-weight: 800;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
     cursor: pointer;
-    box-shadow: 0 6px 22px rgba(245, 158, 11, 0.35);
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+    box-shadow: 0 6px 20px var(--glow-color);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease, border-color 0.3s ease;
     position: relative;
     overflow: hidden;
+    will-change: transform;
 }
 .he-btn-primary::before,
 .he-logo-toggle-btn::before,
-.he-tab-btn::before {
+.he-tab-btn::before,
+.he-quick-btn::before {
     content: '';
     position: absolute;
     top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.32), transparent);
     transition: left 0.55s ease;
     pointer-events: none;
 }
 .he-btn-primary:hover::before,
 .he-logo-toggle-btn:hover::before,
-.he-tab-btn:hover::before {
+.he-tab-btn:hover::before,
+.he-quick-btn:hover::before {
     left: 100%;
 }
 .he-btn-primary:hover {
-    transform: translateY(-3px) scale(1.015);
-    box-shadow: 0 12px 30px rgba(245, 158, 11, 0.55), 0 0 18px var(--glow-color, rgba(244, 114, 182, 0.5));
-    border-color: rgba(255, 255, 255, 0.45);
+    transform: translateY(-2.5px) scale(1.012);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28), 0 0 22px var(--glow-color);
+    border-color: rgba(255, 255, 255, 0.55);
 }
 .he-btn-primary:active { transform: scale(0.97); }
 .he-btn-primary:disabled {
@@ -3704,104 +3739,240 @@ html.tab-hidden *, html.tab-hidden *::before, html.tab-hidden *::after { animati
     transform: none !important;
     box-shadow: none !important;
 }
-.he-modal-close-x {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    width: 34px;
-    height: 34px;
+
+.he-back-arrow-btn,
+.he-settings-gear-btn {
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.18);
-    color: #fff;
-    font-size: 20px;
+    background: var(--card-bg);
+    border: 1.5px solid var(--accent);
+    color: var(--accent);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    flex-shrink: 0;
+    transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
 }
-.he-modal-close-x:hover {
-    background: #ef4444;
-    border-color: #ef4444;
-    transform: scale(1.12) rotate(90deg);
-    box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+.he-back-arrow-btn:hover {
+    background: var(--accent);
+    color: #fff;
+    transform: scale(1.1) translateX(-3px);
+    box-shadow: 0 6px 20px var(--glow-color);
+}
+.he-settings-gear-btn:hover {
+    background: var(--accent);
+    color: #fff;
+    transform: scale(1.1) rotate(60deg);
+    box-shadow: 0 6px 20px var(--glow-color);
+}
+.he-settings-gear-btn svg {
+    width: 19px;
+    height: 19px;
+    stroke: currentColor;
+    stroke-width: 2.2;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.he-settings-gear-btn.open {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 6px 22px var(--glow-color);
+}
+.he-settings-gear-btn.open svg {
+    transform: rotate(180deg);
+}
+.he-back-arrow-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    stroke-width: 2.5;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
-/* ===== ADMIN DASHBOARD PANEL (MODERN TABBED UI) ===== */
+/* ===== ADMIN DASHBOARD PANEL (TRANSLUCENT THEME-AWARE GLASS UI) ===== */
 .he-admin-panel {
     width: 100%;
-    max-width: 820px;
+    max-width: 840px;
     max-height: 92vh;
-    background: linear-gradient(160deg, rgba(18, 18, 26, 0.98), rgba(9, 9, 14, 0.99));
-    border: 1.5px solid rgba(245, 158, 11, 0.48);
-    border-radius: 26px;
-    box-shadow: 0 28px 75px rgba(0,0,0,0.92), 0 0 42px rgba(245, 158, 11, 0.18);
-    color: #fff;
+    background: rgba(14, 14, 22, 0.62);
+    backdrop-filter: blur(22px) saturate(165%);
+    -webkit-backdrop-filter: blur(22px) saturate(165%);
+    border: 1.5px solid rgba(255, 255, 255, 0.16);
+    border-radius: 28px;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.55), 0 0 36px var(--glow-color);
+    color: var(--text-color);
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    animation: heCardPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: heCardPop 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Inter', sans-serif;
+    transition: background 0.45s ease, color 0.45s ease, border-color 0.45s ease;
+    will-change: transform, opacity;
 }
+body.light-mode .he-admin-panel {
+    background: rgba(255, 255, 255, 0.68);
+    border-color: rgba(219, 39, 119, 0.3);
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.14), 0 0 28px var(--glow-color);
+}
+body.honey-mode .he-admin-panel {
+    background: rgba(255, 251, 235, 0.68);
+    border-color: rgba(217, 119, 6, 0.35);
+    box-shadow: 0 22px 60px rgba(120, 53, 15, 0.16), 0 0 28px var(--glow-color);
+}
+
 .he-admin-header {
-    padding: 16px 22px;
-    border-bottom: 1px solid rgba(255,255,255,0.09);
+    flex-shrink: 0;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(128,128,128,0.18);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: linear-gradient(90deg, rgba(245, 158, 11, 0.08), rgba(244, 114, 182, 0.06));
+    gap: 12px;
+    background: rgba(255,255,255,0.04);
+}
+.he-admin-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 .he-admin-header h2 {
     margin: 0;
-    font-family: 'Orbitron', 'Hind Siliguri', sans-serif;
+    font-family: 'Orbitron', 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
     font-size: 16px;
     font-weight: 800;
-    letter-spacing: 0.8px;
-    color: #fbbf24;
+    letter-spacing: 0.7px;
+    background: linear-gradient(90deg, var(--text-color), var(--accent), #fb923c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
-.he-admin-tabs {
+
+/* ===== SETTINGS DRAWER (COLLAPSIBLE 6-BUTTON QUICKBAR) ===== */
+.he-admin-quickbar {
+    flex-shrink: 0;
     display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 20px;
+    max-height: 0;
+    opacity: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-bottom: 0 solid transparent;
+    background: rgba(0, 0, 0, 0.08);
+    scrollbar-width: none;
+    transform: translateY(-8px);
+    pointer-events: none;
+    transition: max-height 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+                padding 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 0.32s ease,
+                transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.3s ease;
+    will-change: max-height, opacity, transform;
+}
+.he-admin-quickbar.open {
+    max-height: 76px;
+    padding: 11px 20px;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    border-bottom: 1px solid rgba(128,128,128,0.15);
+}
+body.light-mode .he-admin-quickbar,
+body.honey-mode .he-admin-quickbar {
+    background: rgba(255, 255, 255, 0.25);
+}
+.he-admin-quickbar::-webkit-scrollbar { display: none; }
+.he-quick-btn {
+    flex-shrink: 0;
+    padding: 7px 14px;
+    border-radius: 10px;
+    font-family: 'Hind Siliguri', 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid rgba(128,128,128,0.28);
+    background: var(--card-bg);
+    color: var(--text-color);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.he-quick-btn:hover {
+    transform: translateY(-2px) scale(1.04);
+    border-color: var(--accent);
+    box-shadow: 0 5px 15px var(--glow-color);
+}
+.he-quick-btn.honey { background: linear-gradient(135deg, #d97706, #f59e0b); color: #fff; border-color: transparent; }
+.he-quick-btn.dark { background: linear-gradient(135deg, #18181b, #3f3f46); color: #fff; border-color: transparent; }
+.he-quick-btn.light { background: linear-gradient(135deg, #ffffff, #f3f4f6); color: #18181b; border-color: rgba(0,0,0,0.15); }
+.he-quick-btn.share { background: linear-gradient(135deg, var(--accent), #fb923c); color: #fff; border-color: transparent; }
+
+/* অ্যাডমিন প্যানেল খোলা থাকলে থ্রি-বার মেনুতে শুধু ৬টি বাটন দেখাবে */
+body.admin-panel-open .dropdown-menu .menu-divider,
+body.admin-panel-open .dropdown-menu .menu-h-social,
+body.admin-panel-open .dropdown-menu #heAdminLockBtn {
+    display: none !important;
+}
+
+/* ===== TABS (NEVER SHRINK WHEN CONTENT SCROLLS) ===== */
+.he-admin-tabs {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
     gap: 8px;
     padding: 12px 20px;
     overflow-x: auto;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid rgba(128,128,128,0.15);
     scrollbar-width: none;
 }
 .he-admin-tabs::-webkit-scrollbar { display: none; }
 .he-tab-btn {
     flex-shrink: 0;
-    padding: 8px 15px;
+    white-space: nowrap;
+    padding: 9px 16px;
     border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.12);
-    background: rgba(255,255,255,0.04);
-    color: rgba(255,255,255,0.78);
-    font-family: 'Hind Siliguri', 'Inter', sans-serif;
-    font-size: 12.5px;
+    border: 1px solid rgba(128,128,128,0.25);
+    background: var(--card-bg);
+    color: var(--text-color);
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Inter', sans-serif;
+    font-size: 13px;
     font-weight: 700;
+    line-height: 1.2;
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .he-tab-btn:hover {
     transform: translateY(-2px);
-    border-color: #f59e0b;
-    color: #fff;
-    box-shadow: 0 6px 18px rgba(245, 158, 11, 0.25);
+    border-color: var(--accent);
+    box-shadow: 0 6px 18px var(--glow-color);
 }
 .he-tab-btn.active {
-    background: linear-gradient(135deg, #f59e0b, #ec4899);
+    background: linear-gradient(135deg, var(--accent), #fb923c);
     border-color: transparent;
     color: #fff;
-    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.42);
+    box-shadow: 0 6px 20px var(--glow-color);
 }
+
 .he-admin-feedback {
+    flex-shrink: 0;
     display: none;
     margin: 12px 20px 0;
     padding: 10px 14px;
     border-radius: 12px;
-    font-family: 'Hind Siliguri', 'Inter', sans-serif;
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Inter', sans-serif;
     font-size: 13px;
     font-weight: 700;
     text-align: center;
@@ -3809,19 +3980,25 @@ html.tab-hidden *, html.tab-hidden *::before, html.tab-hidden *::after { animati
 }
 .he-admin-feedback.success {
     display: block;
-    background: rgba(34, 197, 94, 0.16);
-    border: 1px solid rgba(34, 197, 94, 0.5);
-    color: #4ade80;
+    background: rgba(34, 197, 94, 0.2);
+    border: 1px solid rgba(34, 197, 94, 0.55);
+    color: #16a34a;
 }
+body.dark-mode .he-admin-feedback.success { color: #4ade80; }
 .he-admin-feedback.error {
     display: block;
-    background: rgba(239, 68, 68, 0.16);
-    border: 1px solid rgba(239, 68, 68, 0.5);
-    color: #f87171;
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.55);
+    color: #dc2626;
 }
+body.dark-mode .he-admin-feedback.error { color: #f87171; }
+
 .he-admin-body {
+    flex: 1 1 auto;
+    min-height: 0;
     padding: 16px 20px 26px;
     overflow-y: auto;
+    scroll-behavior: smooth;
     display: flex;
     flex-direction: column;
     gap: 14px;
@@ -3833,58 +4010,76 @@ html.tab-hidden *, html.tab-hidden *::before, html.tab-hidden *::after { animati
 }
 .he-tab-pane.active {
     display: flex;
-    animation: heSecFadeIn 0.25s ease;
 }
+.he-tab-pane.active .he-admin-card {
+    animation: heBoxSlideIn 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.he-tab-pane.active .he-admin-card:nth-child(1) { animation-delay: 0.03s; }
+.he-tab-pane.active .he-admin-card:nth-child(2) { animation-delay: 0.09s; }
+.he-tab-pane.active .he-admin-card:nth-child(3) { animation-delay: 0.15s; }
+
+/* ===== STYLISH BOXED CARDS ===== */
 .he-admin-card {
-    background: linear-gradient(145deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02));
-    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1.5px solid rgba(128, 128, 128, 0.22);
+    border-left: 4px solid var(--accent);
     border-radius: 18px;
     padding: 18px;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+    will-change: transform;
+}
+body.light-mode .he-admin-card,
+body.honey-mode .he-admin-card {
+    background: rgba(255, 255, 255, 0.45);
+    border-color: rgba(0, 0, 0, 0.1);
+    border-left: 4px solid var(--accent);
 }
 .he-admin-card:hover {
-    border-color: rgba(245, 158, 11, 0.35);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+    border-color: var(--accent);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14), 0 0 18px var(--glow-color);
 }
 .he-admin-card-title {
-    font-family: 'Hind Siliguri', 'Inter', sans-serif;
-    font-size: 14.5px;
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Inter', sans-serif;
+    font-size: 15px;
     font-weight: 800;
-    color: #fde047;
+    color: var(--accent);
     margin: 0 0 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
 }
 .he-logo-toggle-btn {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 9px 16px;
+    padding: 8px 15px;
     border-radius: 12px;
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.24), rgba(244, 114, 182, 0.24));
-    border: 1px solid rgba(245, 158, 11, 0.55);
+    background: linear-gradient(135deg, var(--accent), #fb923c);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     color: #fff;
-    font-family: 'Hind Siliguri', 'Inter', sans-serif;
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Inter', sans-serif;
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 4px 14px var(--glow-color);
 }
 .he-logo-toggle-btn:hover {
     transform: translateY(-2px) scale(1.04);
-    box-shadow: 0 8px 22px rgba(245, 158, 11, 0.38);
-    border-color: #fbbf24;
+    box-shadow: 0 8px 22px var(--glow-color);
 }
 .he-logo-drawer {
     display: none;
     margin-top: 12px;
     padding-top: 12px;
-    border-top: 1px dashed rgba(255,255,255,0.15);
+    border-top: 1px dashed rgba(128,128,128,0.3);
     animation: heSecFadeIn 0.25s ease;
 }
 .he-logo-drawer.open { display: block; }
@@ -3898,47 +4093,62 @@ html.tab-hidden *, html.tab-hidden *::before, html.tab-hidden *::after { animati
 }
 .he-label {
     display: block;
-    font-family: 'Hind Siliguri', 'Inter', sans-serif;
-    font-size: 11.5px;
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Inter', sans-serif;
+    font-size: 12px;
     font-weight: 700;
-    color: rgba(255,255,255,0.78);
+    color: var(--text-color);
+    opacity: 0.85;
     margin-bottom: 5px;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
 }
 .he-input, .he-textarea, .he-select {
     width: 100%;
-    background: rgba(0, 0, 0, 0.38);
-    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(0, 0, 0, 0.32);
+    border: 1.5px solid rgba(128, 128, 128, 0.28);
     border-radius: 12px;
     padding: 10px 12px;
-    color: #fff;
-    font-size: 13px;
-    font-family: 'Hind Siliguri', 'Inter', sans-serif;
+    color: var(--text-color);
+    font-size: 13.5px;
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Inter', sans-serif;
     outline: none;
-    transition: border-color 0.25s, box-shadow 0.25s;
+    transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
     user-select: text !important;
     -webkit-user-select: text !important;
 }
+body.light-mode .he-input,
+body.light-mode .he-textarea,
+body.light-mode .he-select,
+body.honey-mode .he-input,
+body.honey-mode .he-textarea,
+body.honey-mode .he-select {
+    background: rgba(255, 255, 255, 0.65);
+    border-color: rgba(0, 0, 0, 0.16);
+}
 .he-input:focus, .he-textarea:focus, .he-select:focus {
-    border-color: #f59e0b;
-    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.16);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--glow-color);
 }
 .he-select option {
     background: #141418;
     color: #fff;
 }
+body.light-mode .he-select option,
+body.honey-mode .he-select option {
+    background: #fff;
+    color: #1a1a1a;
+}
 .he-check-row {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-family: 'Hind Siliguri', 'Inter', sans-serif;
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Inter', sans-serif;
     font-size: 13px;
     font-weight: 600;
-    color: #fff;
+    color: var(--text-color);
     margin-top: 6px;
     cursor: pointer;
 }
-.he-check-row input { width: 16px; height: 16px; accent-color: #f59e0b; }
+.he-check-row input { width: 16px; height: 16px; accent-color: var(--accent); }
 .he-ep-new-list {
     max-height: 220px;
     overflow-y: auto;
@@ -3953,11 +4163,12 @@ html.tab-hidden *, html.tab-hidden *::before, html.tab-hidden *::after { animati
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: var(--card-bg);
+    border: 1px solid rgba(128,128,128,0.2);
     padding: 8px 10px;
     border-radius: 10px;
     font-size: 12px;
+    color: var(--text-color);
 }
 .he-ep-new-row img {
     width: 44px;
@@ -3967,14 +4178,286 @@ html.tab-hidden *, html.tab-hidden *::before, html.tab-hidden *::after { animati
     flex-shrink: 0;
 }
 .he-sync-pill {
-    font-family: 'Hind Siliguri', 'Inter', sans-serif;
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Inter', sans-serif;
     font-size: 11px;
     padding: 4px 10px;
     border-radius: 20px;
     background: rgba(34, 197, 94, 0.16);
     border: 1px solid rgba(34, 197, 94, 0.45);
-    color: #4ade80;
+    color: #16a34a;
     font-weight: 700;
+}
+
+body.dark-mode .he-sync-pill { color: #4ade80; }
+/* ===== DYNAMIC WEBSITE FONT OVERRIDES (CAPTIONS UNTOUCHED) ===== */
+html[data-he-f-brand="1"] .header-wrapper h1 { font-family: var(--he-f-brand) !important; }
+html[data-he-f-heading="1"] .animated-title,
+html[data-he-f-heading="1"] .animated-title #feedTitleText { font-family: var(--he-f-heading) !important; }
+html[data-he-f-toplabel="1"] .home-dual-action-row .full-episode-title,
+html[data-he-f-toplabel="1"] .home-dual-action-row .baahubali-home-title { font-family: var(--he-f-toplabel) !important; }
+html[data-he-f-button="1"] .btn-premium,
+html[data-he-f-button="1"] .full-episode-btn,
+html[data-he-f-button="1"] .baahubali-home-btn-text,
+html[data-he-f-button="1"] .filter-btn,
+html[data-he-f-button="1"] .menu-h-btn,
+html[data-he-f-button="1"] .short-subscribe-btn,
+html[data-he-f-button="1"] .baahubali-2d-btn,
+html[data-he-f-button="1"] .offline-retry-btn { font-family: var(--he-f-button) !important; }
+html[data-he-f-search="1"] .search-input,
+html[data-he-f-search="1"] .search-result-info,
+html[data-he-f-search="1"] .search-no-result,
+html[data-he-f-search="1"] .no-result-title,
+html[data-he-f-search="1"] .no-result-subtitle { font-family: var(--he-f-search) !important; }
+html[data-he-f-subtext="1"] .ai-status-text,
+html[data-he-f-subtext="1"] .visit-status-text { font-family: var(--he-f-subtext) !important; }
+html[data-he-f-footer="1"] #followTxt,
+html[data-he-f-footer="1"] .thank-you-text,
+html[data-he-f-footer="1"] footer,
+html[data-he-f-footer="1"] .welcome-video-title,
+html[data-he-f-footer="1"] #baahubaliFullEpContainer,
+html[data-he-f-footer="1"] #baahubaliFullEpContainer * { font-family: var(--he-f-footer) !important; }
+html[data-he-f-baahubali="1"] .baahubali-epic-title { font-family: var(--he-f-baahubali) !important; }
+html[data-he-f-toast="1"] #customToast,
+html[data-he-f-toast="1"] .he-admin-feedback { font-family: var(--he-f-toast) !important; }
+html[data-he-f-admin="1"] #hePinModal .he-pin-card,
+html[data-he-f-admin="1"] #hePinModal .he-pin-title,
+html[data-he-f-admin="1"] #hePinModal .he-pin-sub,
+html[data-he-f-admin="1"] #hePinModal input,
+html[data-he-f-admin="1"] #hePinModal button,
+html[data-he-f-admin="1"] #heAdminDashboardModal .he-admin-panel,
+html[data-he-f-admin="1"] #heAdminDashboardModal h2,
+html[data-he-f-admin="1"] #heAdminDashboardModal h3,
+html[data-he-f-admin="1"] #heAdminDashboardModal label,
+html[data-he-f-admin="1"] #heAdminDashboardModal input,
+html[data-he-f-admin="1"] #heAdminDashboardModal textarea,
+html[data-he-f-admin="1"] #heAdminDashboardModal select,
+html[data-he-f-admin="1"] #heAdminDashboardModal button:not(.he-font-option):not(.he-font-trigger) { font-family: var(--he-f-admin) !important; }
+
+/* ===== TEXT SELECTION PROTECTION (ONLY CAPTIONS & NORMAL INPUTS ALLOWED) ===== */
+body, body * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.post-caption,
+#fullscreenCaption,
+#shortCaptionBar,
+#bhReelCaptionBar,
+.search-input,
+.he-input,
+.he-textarea,
+.he-font-search {
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
+    -webkit-touch-callout: default !important;
+}
+.he-sec-input {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none !important;
+}
+
+/* ===== ULTRA-STYLISH GLASSMORPHIC TOAST MESSAGE ===== */
+#customToast {
+    position: fixed !important;
+    bottom: 28px !important;
+    right: 22px !important;
+    left: auto !important;
+    z-index: 999999 !important;
+    background: linear-gradient(135deg, rgba(16, 16, 26, 0.92), rgba(28, 22, 38, 0.92)) !important;
+    backdrop-filter: blur(22px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(22px) saturate(180%) !important;
+    border: 1.5px solid var(--accent) !important;
+    border-left: 5px solid var(--accent) !important;
+    border-radius: 18px !important;
+    padding: 13px 20px !important;
+    color: #ffffff !important;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    line-height: 1.45 !important;
+    letter-spacing: 0.3px !important;
+    max-width: 320px !important;
+    min-width: 190px !important;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5), 0 0 24px var(--glow-color), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+    transform: translateY(24px) scale(0.94) !important;
+    transition: opacity 0.35s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.35s ease !important;
+}
+body.light-mode #customToast,
+body.honey-mode #customToast {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(255, 248, 235, 0.94)) !important;
+    color: #1f2937 !important;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.16), 0 0 20px var(--glow-color), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+#customToast::before,
+#customToast::after {
+    display: none !important;
+    content: none !important;
+}
+#customToast.active {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) scale(1) !important;
+}
+@media (max-width: 600px) {
+    #customToast {
+        right: 14px !important;
+        left: 14px !important;
+        bottom: 20px !important;
+        max-width: none !important;
+        text-align: center !important;
+    }
+}
+
+/* ===== SEARCHABLE FONT DROPDOWN UI ===== */
+.he-font-lang-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+.he-font-lang-pills {
+    display: inline-flex;
+    gap: 6px;
+    background: rgba(0,0,0,0.22);
+    padding: 4px;
+    border-radius: 12px;
+    border: 1px solid rgba(128,128,128,0.25);
+}
+body.light-mode .he-font-lang-pills,
+body.honey-mode .he-font-lang-pills {
+    background: rgba(0,0,0,0.06);
+}
+.he-font-lang-pill {
+    padding: 7px 14px;
+    border-radius: 9px;
+    border: none;
+    background: transparent;
+    color: var(--text-color);
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+.he-font-lang-pill.active {
+    background: linear-gradient(135deg, var(--accent), #fb923c);
+    color: #fff;
+    box-shadow: 0 3px 12px var(--glow-color);
+}
+.he-font-dropdown {
+    position: relative;
+    width: 100%;
+}
+.he-font-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.32);
+    border: 1.5px solid rgba(128, 128, 128, 0.28);
+    border-radius: 12px;
+    padding: 10px 12px;
+    color: var(--text-color);
+    font-size: 13.5px;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.25s, box-shadow 0.25s;
+}
+body.light-mode .he-font-trigger,
+body.honey-mode .he-font-trigger {
+    background: rgba(255, 255, 255, 0.65);
+    border-color: rgba(0, 0, 0, 0.16);
+}
+.he-font-trigger:hover,
+.he-font-dropdown.open .he-font-trigger {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--glow-color);
+}
+.he-font-menu {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 6px);
+    z-index: 200;
+    background: rgba(18, 18, 26, 0.96);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1.5px solid var(--accent);
+    border-radius: 14px;
+    padding: 8px;
+    box-shadow: 0 16px 36px rgba(0,0,0,0.55);
+}
+body.light-mode .he-font-menu,
+body.honey-mode .he-font-menu {
+    background: rgba(255, 255, 255, 0.97);
+    box-shadow: 0 14px 32px rgba(0,0,0,0.16);
+}
+.he-font-dropdown.open .he-font-menu {
+    display: block;
+    animation: heSecFadeIn 0.2s ease;
+}
+.he-font-search {
+    width: 100%;
+    background: rgba(128, 128, 128, 0.14);
+    border: 1px solid rgba(128, 128, 128, 0.3);
+    border-radius: 9px;
+    padding: 8px 10px;
+    color: var(--text-color);
+    font-size: 13px;
+    outline: none;
+    margin-bottom: 6px;
+}
+.he-font-search:focus {
+    border-color: var(--accent);
+}
+.he-font-list {
+    max-height: 210px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.he-font-option {
+    width: 100%;
+    text-align: left;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text-color);
+    font-size: 13.5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background 0.2s;
+}
+.he-font-option:hover,
+.he-font-option.selected {
+    background: linear-gradient(135deg, var(--accent), #fb923c);
+    color: #fff;
+}
+.he-font-reset-btn {
+    padding: 7px 13px;
+    border-radius: 10px;
+    border: 1px solid rgba(239, 68, 68, 0.45);
+    background: rgba(239, 68, 68, 0.14);
+    color: #ef4444;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+.he-font-reset-btn:hover {
+    background: #ef4444;
+    color: #fff;
 }
 </style>
 </head>
@@ -7835,25 +8318,25 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 window.addEventListener('load', updateAllButtonTooltips);
 // ===== SOURCE CODE PROTECTION SYSTEM (ENHANCED) =====
-// ১. রাইট ক্লিক মেনু বন্ধ করা (আপনার আগের কোড)
 document.addEventListener('contextmenu', function(e) {
-const target = e.target;
-// শুধু Toast message এর উপর হলে কিছু করবো না
-if (target.closest('#customToast')) {
-return; // Toast এর উপর রাইট ক্লিক/লং প্রেস allow
-}
-// শুধু সার্চ ইনপুট বক্সের ভেতরে হলে কিছু করবো না (পেস্ট করার জন্য)
-if (target.closest('.search-input')) {
-return; // শুধু ইনপুট বক্সে রাইট ক্লিক/লং প্রেস allow
-}
-// বাকি সব জায়গায় (সার্চ বাটন, ক্লিয়ার বাটন, No Found, সার্চ আইকন, পুরো সাইট) ডিসেবল
-e.preventDefault();
-// ডিটেক্ট করা হচ্ছে ফোন নাকি কম্পিউটার
-const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || e.pointerType === 'touch';
-const msg = isMobile ? translations[currentLang].longPressDisabled : translations[currentLang].rightClickDisabled;
-if (typeof showToast === 'function') {
-showToast(msg, 2500);
-}
+    const target = e.target;
+    // পিন ও মাস্টার কী ইনপুটে রাইট ক্লিক/লং প্রেস ও পেস্ট সম্পূর্ণ নিষিদ্ধ
+    if (target.closest('.he-sec-input')) {
+        e.preventDefault();
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || e.pointerType === 'touch';
+        const msg = isMobile ? translations[currentLang].longPressDisabled : translations[currentLang].rightClickDisabled;
+        if (typeof showToast === 'function') showToast(msg, 2500);
+        return;
+    }
+    // টোস্ট, ক্যাপশন, সার্চ ইনপুট ও অ্যাডমিনের সাধারণ লেখার বক্সে allow
+    if (target.closest('#customToast, .post-caption, #fullscreenCaption, #shortCaptionBar, #bhReelCaptionBar, .search-input, .he-input, .he-textarea, .he-font-search')) {
+        return;
+    }
+    // বাকি সব জায়গায় (অ্যাডমিন প্যানেলের লেখা/বাটন ও মেইন সাইটে) বন্ধ
+    e.preventDefault();
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || e.pointerType === 'touch';
+    const msg = isMobile ? translations[currentLang].longPressDisabled : translations[currentLang].rightClickDisabled;
+    if (typeof showToast === 'function') showToast(msg, 2500);
 });
 // ২. কিবোর্ড শর্টকাট ব্লক করা (Source Code & DevTools)
 document.addEventListener('keydown', function(e) {
@@ -8586,11 +9069,12 @@ document.addEventListener('DOMContentLoaded', function() {
 </button>
     </div>
 </div>
-
 <!-- ===== PIN ENTRY MODAL ===== -->
 <div class="he-sec-backdrop" id="hePinModal">
     <div class="he-pin-card" id="hePinCard" onclick="event.stopPropagation()">
-        <button class="he-modal-close-x" id="hePinCloseBtn" onclick="closeHePinModal()">×</button>
+        <button class="he-back-arrow-btn" id="hePinCloseBtn" style="position:absolute;top:14px;left:14px;width:36px;height:36px;" onclick="closeHePinModal()" aria-label="Back">
+            <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
         <div class="he-shield-ring">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><rect x="9" y="10" width="6" height="5" rx="1"/><path d="M10 10V8a2 2 0 1 1 4 0v2"/></svg>
         </div>
@@ -8611,19 +9095,36 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="he-sec-backdrop" id="heAdminDashboardModal">
     <div class="he-admin-panel" onclick="event.stopPropagation()">
         <div class="he-admin-header">
-            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div class="he-admin-header-left">
+                <button type="button" class="he-back-arrow-btn" id="heAdmCloseBtn" onclick="closeHeAdminDashboard()" aria-label="Back">
+                    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                </button>
                 <h2 id="heAdmMainHeading">HONEY ADMIN PANEL</h2>
                 <span class="he-sync-pill" id="heSyncStatusPill">Local Ready</span>
             </div>
-            <button class="he-modal-close-x" id="heAdmCloseBtn" style="position:static;" onclick="closeHeAdminDashboard()">×</button>
+            <!-- ঘূর্ণায়মান সেটিংস আইকন (ক্লিক করলে ৬টি বাটন আসবে ও ১০ সেকেন্ড পর অটো বন্ধ হবে) -->
+            <button type="button" class="he-settings-gear-btn" id="heAdmSettingsBtn" onclick="toggleHeAdmSettingsDrawer(); event.stopPropagation();" aria-label="Settings">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </button>
         </div>
 
-        <!-- সহজ ৫টি ক্যাটাগরি ট্যাব -->
+        <!-- সেটিংস আইকনে চাপ দিলে এই ৬টি কুইক বাটন খুলে আসবে -->
+        <div class="he-admin-quickbar" id="heAdmQuickbar" onmousemove="resetHeAdmSettingsTimer()" ontouchstart="resetHeAdmSettingsTimer()">
+            <button type="button" class="he-quick-btn honey" id="heAdmQuickHoney" onclick="heAdmSetMode('honey'); resetHeAdmSettingsTimer();">Honey</button>
+            <button type="button" class="he-quick-btn dark" id="heAdmQuickDark" onclick="heAdmSetMode('dark'); resetHeAdmSettingsTimer();">Dark</button>
+            <button type="button" class="he-quick-btn light" id="heAdmQuickLight" onclick="heAdmSetMode('light'); resetHeAdmSettingsTimer();">Light</button>
+            <button type="button" class="he-quick-btn" id="heAdmSoundBtn" onclick="toggleSound(); syncHeAdmQuickControls(); resetHeAdmSettingsTimer(); event.stopPropagation();">🔇</button>
+            <button type="button" class="he-quick-btn" id="heAdmLangBtn" onclick="heAdmToggleLang(); resetHeAdmSettingsTimer();">🌐🇬🇧</button>
+            <button type="button" class="he-quick-btn share" id="heAdmShareBtn" onclick="shareWebsite(); resetHeAdmSettingsTimer(); event.stopPropagation();">🔗 <span id="heAdmShareText">Share</span></button>
+        </div>
+
+        <!-- ৬টি ক্যাটাগরি ট্যাব -->
         <div class="he-admin-tabs" id="heAdminTabs">
             <button type="button" class="he-tab-btn active" id="heTabBrand" onclick="switchHeAdminTab('brand', this)">🎨 Branding</button>
             <button type="button" class="he-tab-btn" id="heTabVideos" onclick="switchHeAdminTab('videos', this)">🎬 Videos</button>
             <button type="button" class="he-tab-btn" id="heTabBaahubali" onclick="switchHeAdminTab('baahubali', this)">⚔️ Baahubali 2D</button>
             <button type="button" class="he-tab-btn" id="heTabGallery" onclick="switchHeAdminTab('gallery', this)">🖼️ Gallery</button>
+            <button type="button" class="he-tab-btn" id="heTabFonts" onclick="switchHeAdminTab('fonts', this)">🔤 Fonts</button>
             <button type="button" class="he-tab-btn" id="heTabSecurity" onclick="switchHeAdminTab('security', this)">🔐 Security</button>
         </div>
 
@@ -8739,7 +9240,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     <button type="button" class="he-btn-primary" id="admBtnAddBhShort" onclick="admAddBaahubaliShort()">Add Baahubali 2D Short</button>
 
-                    <div style="margin-top:16px;padding-top:14px;border-top:1px dashed rgba(255,255,255,0.15);">
+                    <div style="margin-top:16px;padding-top:14px;border-top:1px dashed rgba(128,128,128,0.28);">
                         <label class="he-label" id="admLblBhFull">Baahubali 2D Full Episode Facebook Embed Code</label>
                         <textarea id="admBhFullEmbed" class="he-textarea" rows="2" placeholder="Paste 16:9 Facebook <iframe ...></iframe> code"></textarea>
                         <button type="button" class="he-btn-primary" id="admBtnSaveBhFull" onclick="admSaveBaahubaliFullEp()">Save Baahubali Full Episode</button>
@@ -8787,30 +9288,45 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
 
-            <!-- TAB 5: SECURITY -->
+            <!-- TAB 5: FONTS -->
+            <div class="he-tab-pane" id="hePaneFonts">
+                <div class="he-admin-card">
+                    <h3 class="he-admin-card-title" id="admTitleFonts">8. Website Fonts (Captions Excluded)</h3>
+                    <div class="he-font-lang-bar">
+                        <div class="he-font-lang-pills">
+                            <button type="button" class="he-font-lang-pill active" id="heFontModeEnBtn" onclick="switchHeFontEditLang('EN')">🇬🇧 English Fonts</button>
+                            <button type="button" class="he-font-lang-pill" id="heFontModeBnBtn" onclick="switchHeFontEditLang('BN')">🇧🇩 বাংলা ফন্ট</button>
+                        </div>
+                        <button type="button" class="he-font-reset-btn" id="heFontResetBtn" onclick="admResetFontsForLang()">Reset Fonts</button>
+                    </div>
+                    <div class="he-field-grid two-col" id="heFontControlsGrid"></div>
+                </div>
+            </div>
+
+            <!-- TAB 6: SECURITY -->
             <div class="he-tab-pane" id="hePaneSecurity">
                 <div class="he-admin-card">
-                    <h3 class="he-admin-card-title" id="admTitleSecurity">8. Security — Change PIN</h3>
+                    <h3 class="he-admin-card-title" id="admTitleSecurity">9. Security — Change PIN</h3>
                     <div class="he-field-grid">
                         <div>
                             <label class="he-label" id="admLblOldPin">Current PIN</label>
                             <div class="he-input-eye-wrap">
                                 <input type="password" id="admOldPin" class="he-sec-input" maxlength="16" placeholder="Type current PIN" autocomplete="off" onpaste="return false;" ondrop="return false;">
-                                <button type="button" class="he-eye-btn" onclick="toggleHeEye('admOldPin')">👁</button>
+                                <button type="button" class="he-eye-btn" id="admEyeOldPin" onclick="toggleHeEye('admOldPin')">👁</button>
                             </div>
                         </div>
                         <div>
                             <label class="he-label" id="admLblMaster">Master Key (Max 10 chars)</label>
                             <div class="he-input-eye-wrap">
                                 <input type="password" id="admMasterKey" class="he-sec-input" maxlength="10" placeholder="Type Master Key" autocomplete="off" onpaste="return false;" ondrop="return false;">
-                                <button type="button" class="he-eye-btn" onclick="toggleHeEye('admMasterKey')">👁</button>
+                                <button type="button" class="he-eye-btn" id="admEyeMasterKey" onclick="toggleHeEye('admMasterKey')">👁</button>
                             </div>
                         </div>
                         <div>
                             <label class="he-label" id="admLblNewPin">New PIN (Max 10 chars)</label>
                             <div class="he-input-eye-wrap">
                                 <input type="password" id="admNewPin" class="he-sec-input" maxlength="10" placeholder="Type new PIN" autocomplete="off" onpaste="return false;" ondrop="return false;">
-                                <button type="button" class="he-eye-btn" onclick="toggleHeEye('admNewPin')">👁</button>
+                                <button type="button" class="he-eye-btn" id="admEyeNewPin" onclick="toggleHeEye('admNewPin')">👁</button>
                             </div>
                         </div>
                     </div>
@@ -8821,9 +9337,8 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 </div>
-
 <script>
-// ===== HONEY ENTERTAINMENT ADMIN, BILINGUAL I18N, LOCKOUT & CLOUD SYNC ENGINE =====
+    // ===== HONEY ENTERTAINMENT ADMIN, BILINGUAL I18N, LOCKOUT, FONTS & CLOUD SYNC ENGINE =====
 const HONEY_FIREBASE_DB_URL = "https://honey-65aad-default-rtdb.asia-southeast1.firebasedatabase.app";
 const HONEY_ADMIN_STORAGE_KEY = "he_admin_live_config_v1";
 const HONEY_LOCKOUT_STORAGE_KEY = "he_admin_pin_lockout_v1";
@@ -8841,8 +9356,215 @@ let heLiveConfig = {
     fullEpNewOverrides: {},
     addedBaahubaliShorts: [],
     baahubaliFullEmbed: null,
-    addedPhotos: []
+    addedPhotos: [],
+    fonts: { EN: {}, BN: {} }
 };
+
+/* ===== ALL GOOGLE FONTS LIST (ENGLISH & BANGLA) ===== */
+const HE_BANGLA_FONTS = [
+    "Hind Siliguri", "Noto Sans Bengali", "Noto Serif Bengali", "Baloo Da 2",
+    "Galada", "Mina", "Atma", "Tiro Bangla", "Anek Bengali", "Alkatra", "Shantell Sans"
+];
+
+const HE_ENGLISH_FONTS = [
+    "Inter", "Roboto", "Open Sans", "Lato", "Montserrat", "Poppins", "Source Sans 3",
+    "Oswald", "Raleway", "Nunito", "Ubuntu", "Merriweather", "Playfair Display",
+    "Rubik", "PT Sans", "Noto Sans", "Work Sans", "Fira Sans", "Quicksand", "Karla",
+    "Barlow", "Mulish", "Titillium Web", "Heebo", "IBM Plex Sans", "DM Sans",
+    "Manrope", "Plus Jakarta Sans", "Space Grotesk", "Outfit", "Syne", "Urbanist",
+    "Figtree", "Lexend", "Sora", "Archivo", "Chivo", "Jost", "Kanit", "Prompt",
+    "Bebas Neue", "Anton", "Orbitron", "Cinzel", "Cinzel Decorative", "Cormorant Garamond",
+    "EB Garamond", "Libre Baskerville", "Lora", "Bitter", "Crimson Text", "PT Serif",
+    "DM Serif Display", "Abril Fatface", "Righteous", "Alfa Slab One", "Russo One",
+    "Bungee", "Black Ops One", "Teko", "Fjalla One", "Fredoka", "Comfortaa",
+    "Varela Round", "Pacifico", "Lobster", "Dancing Script", "Caveat", "Satisfy",
+    "Great Vibes", "Sacramento", "Courgette", "Kaushan Script", "Permanent Marker",
+    "Shadows Into Light", "Indie Flower", "Amatic SC", "Patrick Hand", "Cookie",
+    "Yellowtail", "Tangerine", "Allura", "Alex Brush", "Parisienne", "Mr Dafoe",
+    "JetBrains Mono", "Fira Code", "Source Code Pro", "Roboto Mono", "Space Mono",
+    "IBM Plex Mono", "Inconsolata", "Ubuntu Mono", "Courier Prime", "Share Tech Mono",
+    "Exo 2", "Rajdhani", "Audiowide", "Chakra Petch", "Michroma", "Electrolize",
+    "Press Start 2P", "VT323", "Silkscreen", "Bangers", "Creepster", "Bungee Shade",
+    "Monoton", "Unbounded", "Syne Mono", "Instrument Serif", "Fraunces", "Bodoni Moda",
+    "Spectral", "Vollkorn", "Zilla Slab", "Arvo", "Rokkitt", "Crete Round",
+    "Josefin Sans", "Catamaran", "Cabin", "Oxygen", "Dosis", "Abel", "Asap",
+    "Signika", "Varela", "Exo", "Maven Pro", "Questrial", "Didact Gothic",
+    "Alegreya", "Alegreya Sans", "Yanone Kaffeesatz", "Passion One", "Staatliches",
+    "Patua One", "Concert One", "Titan One", "Luckiest Guy", "Boogaloo", "Chewy"
+];
+const HE_FONT_CATEGORIES = [
+    { key: "brand", en: "Website Title (HONEY ENTERTAINMENT)", bn: "মূল টাইটেল (HONEY ENTERTAINMENT)" },
+    { key: "heading", en: "Section Headings (Shorts Video, Collections, etc.)", bn: "সেকশন হেডিং (Shorts ভিডিও, কালেকশন ইত্যাদি)" },
+    { key: "topLabel", en: "Top Labels (Full episode / Baahubali 2D)", bn: "বাটনের উপরের লেখা (সম্পূর্ণ পর্ব / বাহুবলী 2D)" },
+    { key: "button", en: "All Buttons (Watch, Filters, Menu, Subscribe)", bn: "সব বাটনের লেখা (Watch, ফিল্টার, মেনু, Subscribe)" },
+    { key: "search", en: "Search Bar & Results", bn: "সার্চ বার ও ফলাফল" },
+    { key: "subtext", en: "YouTube Subscribe Status Text", bn: "YouTube সাবস্ক্রাইব স্ট্যাটাস লেখা" },
+    { key: "footer", en: "Follow Us, Thank You, Footer, Full Ep Title & Coming Soon", bn: "Follow Us, ধন্যবাদ, ফুটার, ফুল এপিসোড টাইটেল ও Coming Soon" },
+    { key: "baahubali", en: "Baahubali Epic Heading (BAAHUBALI)", bn: "বাহুবলী মূল টাইটেল (BAAHUBALI)" },
+    { key: "toast", en: "Notification & Toast Messages", bn: "নোটিফিকেশন ও মেসেজ (Toast)" },
+    { key: "admin", en: "Admin Panel & PIN Box", bn: "অ্যাডমিন প্যানেল ও পিন বক্স" }
+];
+
+let heFontEditLang = "EN";
+const heLoadedGoogleFonts = new Set();
+
+function loadHeGoogleFont(fontName) {
+    if (!fontName || fontName === "default" || heLoadedGoogleFonts.has(fontName)) return;
+    heLoadedGoogleFonts.add(fontName);
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "https://fonts.googleapis.com/css2?family=" + encodeURIComponent(fontName).replace(/%20/g, "+") + ":wght@400;600;700;800;900&display=swap";
+    document.head.appendChild(link);
+}
+
+function applyHeFontsToSite() {
+    const activeLang = (typeof currentLang !== "undefined" && currentLang === "BN") ? "BN" : "EN";
+    const map = (heLiveConfig.fonts && heLiveConfig.fonts[activeLang]) ? heLiveConfig.fonts[activeLang] : {};
+    const root = document.documentElement;
+
+    HE_FONT_CATEGORIES.forEach(cat => {
+        const fontName = (map[cat.key] || "").trim();
+        const attr = "data-he-f-" + cat.key.toLowerCase();
+        const cssVar = "--he-f-" + cat.key.toLowerCase();
+        if (fontName) {
+            loadHeGoogleFont(fontName);
+            root.setAttribute(attr, "1");
+            root.style.setProperty(cssVar, `'${fontName}', 'Hind Siliguri', 'Inter', sans-serif`);
+        } else {
+            root.removeAttribute(attr);
+            root.style.removeProperty(cssVar);
+        }
+    });
+}
+
+function switchHeFontEditLang(langCode) {
+    heFontEditLang = (langCode === "BN") ? "BN" : "EN";
+    const enBtn = document.getElementById("heFontModeEnBtn");
+    const bnBtn = document.getElementById("heFontModeBnBtn");
+    if (enBtn) enBtn.classList.toggle("active", heFontEditLang === "EN");
+    if (bnBtn) bnBtn.classList.toggle("active", heFontEditLang === "BN");
+    renderHeFontControls();
+}
+
+function renderHeFontControls() {
+    const grid = document.getElementById("heFontControlsGrid");
+    if (!grid) return;
+    const t = getHeAdminLang();
+    const isSiteBN = (typeof currentLang !== "undefined" && currentLang === "BN");
+    if (!heLiveConfig.fonts) heLiveConfig.fonts = { EN: {}, BN: {} };
+    if (!heLiveConfig.fonts[heFontEditLang]) heLiveConfig.fonts[heFontEditLang] = {};
+
+    const selectedMap = heLiveConfig.fonts[heFontEditLang];
+    const fontList = (heFontEditLang === "BN") ? HE_BANGLA_FONTS : HE_ENGLISH_FONTS;
+
+    grid.innerHTML = HE_FONT_CATEGORIES.map(cat => {
+        const curVal = selectedMap[cat.key] || "";
+        const labelTxt = isSiteBN ? cat.bn : cat.en;
+        const displayVal = curVal || t.fontDefault;
+        if (curVal) loadHeGoogleFont(curVal);
+        return `
+            <div>
+                <label class="he-label">${labelTxt}</label>
+                <div class="he-font-dropdown" id="heFontDrop_${cat.key}">
+                    <button type="button" class="he-font-trigger" onclick="toggleHeFontDropdown('${cat.key}', event)" style="${curVal ? `font-family:'${curVal}',sans-serif;` : ''}">
+                        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${displayVal}</span>
+                        <span>▾</span>
+                    </button>
+                    <div class="he-font-menu" onclick="event.stopPropagation()">
+                        <input type="text" class="he-font-search" id="heFontSearch_${cat.key}" placeholder="${t.fontSearchPh}" oninput="filterHeFontList('${cat.key}', this.value)">
+                        <div class="he-font-list" id="heFontList_${cat.key}"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join("");
+
+    HE_FONT_CATEGORIES.forEach(cat => {
+        populateHeFontOptions(cat.key, "");
+    });
+}
+
+function populateHeFontOptions(catKey, query) {
+    const listEl = document.getElementById("heFontList_" + catKey);
+    if (!listEl) return;
+    const t = getHeAdminLang();
+    const fontList = (heFontEditLang === "BN") ? HE_BANGLA_FONTS : HE_ENGLISH_FONTS;
+    const curVal = (heLiveConfig.fonts && heLiveConfig.fonts[heFontEditLang] && heLiveConfig.fonts[heFontEditLang][catKey]) || "";
+    const q = (query || "").trim().toLowerCase();
+
+    let matches = fontList.filter(f => !q || f.toLowerCase().includes(q));
+    if (q) {
+        matches.sort((a, b) => {
+            const aStarts = a.toLowerCase().startsWith(q) ? 0 : 1;
+            const bStarts = b.toLowerCase().startsWith(q) ? 0 : 1;
+            return aStarts - bStarts || a.localeCompare(b);
+        });
+    }
+
+    let html = '';
+    if (!q) {
+        html += `<button type="button" class="he-font-option ${curVal === '' ? 'selected' : ''}" onclick="admSelectFont('${catKey}', '')"><span>${t.fontDefault}</span></button>`;
+    }
+    matches.slice(0, 60).forEach(f => {
+        loadHeGoogleFont(f);
+        html += `<button type="button" class="he-font-option ${curVal === f ? 'selected' : ''}" style="font-family:'${f}',sans-serif;" onclick="admSelectFont('${catKey}', '${f.replace(/'/g, "\\'")}')"><span>${f}</span></button>`;
+    });
+
+    const trimmedRaw = (query || "").trim();
+    if (trimmedRaw && !fontList.some(f => f.toLowerCase() === q)) {
+        html += `<button type="button" class="he-font-option" onclick="admSelectFont('${catKey}', '${trimmedRaw.replace(/'/g, "\\'")}')"><span>✨ Use Google Font: "${trimmedRaw}"</span></button>`;
+    }
+    listEl.innerHTML = html;
+}
+
+function toggleHeFontDropdown(catKey, ev) {
+    if (ev) ev.stopPropagation();
+    const target = document.getElementById("heFontDrop_" + catKey);
+    const wasOpen = target && target.classList.contains("open");
+    document.querySelectorAll(".he-font-dropdown.open").forEach(el => el.classList.remove("open"));
+    if (target && !wasOpen) {
+        target.classList.add("open");
+        const inp = document.getElementById("heFontSearch_" + catKey);
+        if (inp) {
+            inp.value = "";
+            populateHeFontOptions(catKey, "");
+            setTimeout(() => inp.focus(), 40);
+        }
+    }
+}
+
+function filterHeFontList(catKey, query) {
+    populateHeFontOptions(catKey, query);
+}
+
+async function admSelectFont(catKey, fontName) {
+    const t = getHeAdminLang();
+    if (!heLiveConfig.fonts) heLiveConfig.fonts = { EN: {}, BN: {} };
+    if (!heLiveConfig.fonts[heFontEditLang]) heLiveConfig.fonts[heFontEditLang] = {};
+    heLiveConfig.fonts[heFontEditLang][catKey] = fontName;
+
+    document.querySelectorAll(".he-font-dropdown.open").forEach(el => el.classList.remove("open"));
+    applyHeFontsToSite();
+    renderHeFontControls();
+    const ok = await saveHeLiveConfig();
+    showHeAdminFeedback(ok ? t.okFontSaved : t.syncFail, ok);
+}
+
+async function admResetFontsForLang() {
+    const t = getHeAdminLang();
+    if (!heLiveConfig.fonts) heLiveConfig.fonts = { EN: {}, BN: {} };
+    heLiveConfig.fonts[heFontEditLang] = {};
+    applyHeFontsToSite();
+    renderHeFontControls();
+    const ok = await saveHeLiveConfig();
+    showHeAdminFeedback(ok ? t.okFontReset : t.syncFail, ok);
+}
+
+document.addEventListener("click", (e) => {
+    if (!e.target.closest(".he-font-dropdown")) {
+        document.querySelectorAll(".he-font-dropdown.open").forEach(el => el.classList.remove("open"));
+    }
+});
 
 const HE_ADMIN_I18N = {
     EN: {
@@ -8852,19 +9574,37 @@ const HE_ADMIN_I18N = {
         pinPlaceholder: "Enter PIN",
         unlockBtn: "Unlock Panel",
         eyeTip: "Show / Hide PIN",
-        closeTip: "Close",
+        eyeMasterTip: "Show / Hide Master Key",
+        backTip: "Go Back (Esc)",
+        settingsTip: "Theme, Sound, Language & Share Settings",
+        honeyTip: "Switch to Honey Mode",
+        darkTip: "Switch to Dark Mode",
+        lightTip: "Switch to Light Mode",
+        soundTipOn: "Turn Off Sound",
+        soundTipOff: "Turn On Sound",
+        langTip: "Switch Language (English / Bangla)",
+        shareTip: "Copy & Share Website Link",
         admHeading: "HONEY ADMIN PANEL",
         syncReady: "Local Ready",
         syncLocal: "Saved Locally",
         syncCloud: "Cloud Synced",
         syncFail: "Cloud Sync Failed",
+        shareText: "Share",
         tabBrand: "🎨 Branding",
         tabVideos: "🎬 Videos",
         tabBaahubali: "⚔️ Baahubali 2D",
         tabGallery: "🖼️ Gallery",
+        tabFonts: "🔤 Fonts",
         tabSecurity: "🔐 Security",
+        tFonts: "8. Website Fonts (Captions Excluded)",
+        fontReset: "Reset All",
+        fontDefault: "Default (Original)",
+        fontSearchPh: "Search font name...",
+        okFontSaved: "✅ Font updated & synced!",
+        okFontReset: "✅ Fonts reset to default!",
         tLogo: "1. Change Website Logo",
         logoBtn: "Logo",
+        logoDrawerTip: "Open / Close Logo Editor",
         lLogoUrl: "Logo Image URL",
         bSaveLogo: "Update Website Logo",
         tSiteName: "2. Change Website Name",
@@ -8903,7 +9643,7 @@ const HE_ADMIN_I18N = {
         lPhotoStart: "Start (Sec)",
         lPhotoEnd: "End (Sec)",
         bAddPhoto: "Add New Photo",
-        tSecurity: "8. Security — Change PIN",
+        tSecurity: "9. Security — Change PIN",
         lOldPin: "Current PIN",
         lMaster: "Master Key (Max 10 chars)",
         lNewPin: "New PIN (Max 10 chars)",
@@ -8924,7 +9664,6 @@ const HE_ADMIN_I18N = {
         pNewPin: "Type new PIN",
         posFirst: "1 (Very First)",
         posAfter: "After #",
-        errFillFields: "⚠️ Please fill in all required fields before updating.",
         errLogo: "⚠️ Please enter a valid Logo Image URL.",
         okLogo: "✅ Website Logo updated successfully!",
         errName: "⚠️ Please enter at least one line for Website Name.",
@@ -8956,25 +9695,43 @@ const HE_ADMIN_I18N = {
         pinPlaceholder: "পিন লিখুন",
         unlockBtn: "প্যানেল খুলুন",
         eyeTip: "পিন দেখুন / লুকান",
-        closeTip: "বন্ধ করুন",
+        eyeMasterTip: "মাস্টার কী দেখুন / লুকান",
+        backTip: "ফিরে যান (Esc)",
+        settingsTip: "থিম, সাউন্ড, ভাষা ও শেয়ার সেটিংস",
+        honeyTip: "হানি মোড চালু করুন",
+        darkTip: "ডার্ক মোড চালু করুন",
+        lightTip: "লাইট মোড চালু করুন",
+        soundTipOn: "সাউন্ড বন্ধ করুন",
+        soundTipOff: "সাউন্ড চালু করুন",
+        langTip: "ভাষা পরিবর্তন করুন (বাংলা / ইংরেজি)",
+        shareTip: "ওয়েবসাইটের লিংক কপি ও শেয়ার করুন",
         admHeading: "হানি অ্যাডমিন প্যানেল",
         syncReady: "লোকাল প্রস্তুত",
-        syncLocal: "লোকাল সেভ হয়েছে",
+        syncLocal: "লোকাল সেভ হয়েছে",
         syncCloud: "ক্লাউড সিঙ্ক সম্পন্ন",
         syncFail: "ক্লাউড সিঙ্ক ব্যর্থ",
+        shareText: "শেয়ার",
         tabBrand: "🎨 ব্র্যান্ডিং",
         tabVideos: "🎬 ভিডিও",
         tabBaahubali: "⚔️ বাহুবলী 2D",
         tabGallery: "🖼️ গ্যালারি",
+        tabFonts: "🔤 ফন্ট",
         tabSecurity: "🔐 সিকিউরিটি",
-        tLogo: "১. ওয়েবসাইটের লোগো পরিবর্তন",
+        tFonts: "৮. ওয়েবসাইট ফন্ট (ক্যাপশন বাদে)",
+        fontReset: "সব রিসেট",
+        fontDefault: "ডিফল্ট (আসল ফন্ট)",
+        fontSearchPh: "ফন্টের নাম লিখে সার্চ করুন...",
+        okFontSaved: "✅ ফন্ট আপডেট ও সিঙ্ক হয়েছে!",
+        okFontReset: "✅ ফন্ট ডিফল্টে ফিরে গেছে!",
+        tLogo: "১. ওয়েবসাইটের লোগো পরিবর্তন",
         logoBtn: "লোগো",
+        logoDrawerTip: "লোগো এডিটর খুলুন / বন্ধ করুন",
         lLogoUrl: "লোগো ছবির লিংক (URL)",
         bSaveLogo: "লোগো আপডেট করুন",
-        tSiteName: "২. ওয়েবসাইটের নাম পরিবর্তন",
+        tSiteName: "২. ওয়েবসাইটের নাম পরিবর্তন",
         lLine1: "প্রথম লাইন",
-        lLine2: "দ্বিতীয় লাইন",
-        bSaveName: "ওয়েবসাইটের নাম আপডেট করুন",
+        lLine2: "দ্বিতীয় লাইন",
+        bSaveName: "ওয়েবসাইটের নাম আপডেট করুন",
         tCover: "৩. নিচের কভার ফটো পরিবর্তন",
         lCoverUrl: "কভার ফটোর লিংক (URL)",
         bSaveCover: "কভার ফটো আপডেট করুন",
@@ -8982,7 +9739,7 @@ const HE_ADMIN_I18N = {
         lShortYt: "ইউটিউব ভিডিও আইডি বা লিংক",
         lShortThumb: "থাম্বনেইল ছবির লিংক",
         lShortTitle: "ভিডিওর ক্যাপশন / টাইটেল",
-        lShortPos: "কোথায় বসবে (১ = সবার আগে)",
+        lShortPos: "কোথায় বসবে (১ = সবার আগে)",
         lShortNew: '"NEW" ব্যাজ দেখান',
         bAddShort: "শর্টস ভিডিও যোগ করুন",
         tFullEp: "৫. সম্পূর্ণ পর্বের ভিডিও (সবার আগে বসবে)",
@@ -9002,12 +9759,12 @@ const HE_ADMIN_I18N = {
         lPhotoImg: "ছবির লিংক (URL)",
         lPhotoCap: "ছবির ক্যাপশন",
         lPhotoDate: "তারিখ",
-        lPhotoTime: "সময় (যেমন: 6:30 PM)",
+        lPhotoTime: "সময় (যেমন: 6:30 PM)",
         lPhotoYt: "গানের ইউটিউব আইডি বা লিংক",
         lPhotoStart: "শুরু (সেকেন্ড)",
         lPhotoEnd: "শেষ (সেকেন্ড)",
         bAddPhoto: "নতুন ছবি যোগ করুন",
-        tSecurity: "৮. সিকিউরিটি — পিন পরিবর্তন",
+        tSecurity: "৯. সিকিউরিটি — পিন পরিবর্তন",
         lOldPin: "বর্তমান পিন",
         lMaster: "মাস্টার কী (সর্বোচ্চ ১০ অক্ষর)",
         lNewPin: "নতুন পিন (সর্বোচ্চ ১০ অক্ষর)",
@@ -9028,35 +9785,112 @@ const HE_ADMIN_I18N = {
         pNewPin: "নতুন পিন লিখুন",
         posFirst: "১ (সবার প্রথমে)",
         posAfter: "এর পরে #",
-        errFillFields: "⚠️ আপডেট করার আগে অনুগ্রহ করে সব ঘর পূরণ করুন।",
         errLogo: "⚠️ অনুগ্রহ করে একটি সঠিক লোগো ছবির লিংক দিন।",
-        okLogo: "✅ ওয়েবসাইটের লোগো সফলভাবে আপডেট হয়েছে!",
-        errName: "⚠️ অনুগ্রহ করে ওয়েবসাইটের নামের অন্তত একটি লাইন লিখুন।",
-        okName: "✅ ওয়েবসাইটের নাম সফলভাবে আপডেট হয়েছে!",
+        okLogo: "✅ ওয়েবসাইটের লোগো সফলভাবে আপডেট হয়েছে!",
+        errName: "⚠️ অনুগ্রহ করে ওয়েবসাইটের নামের অন্তত একটি লাইন লিখুন।",
+        okName: "✅ ওয়েবসাইটের নাম সফলভাবে আপডেট হয়েছে!",
         errCover: "⚠️ অনুগ্রহ করে একটি সঠিক কভার ফটোর লিংক দিন।",
-        okCover: "✅ নিচের কভার ফটো সফলভাবে আপডেট হয়েছে!",
+        okCover: "✅ নিচের কভার ফটো সফলভাবে আপডেট হয়েছে!",
         errShort: "⚠️ অনুগ্রহ করে ইউটিউব আইডি/লিংক, থাম্বনেইল এবং ক্যাপশন দিন।",
-        okShort: "✅ নতুন শর্টস ভিডিও সফলভাবে যোগ হয়েছে!",
+        okShort: "✅ নতুন শর্টস ভিডিও সফলভাবে যোগ হয়েছে!",
         errFullEp: "⚠️ অনুগ্রহ করে সঠিক ইউটিউব আইডি বা লিংক দিন।",
-        okFullEp: "✅ ফুল এপিসোড সবার আগে বাম পাশে যোগ হয়েছে!",
-        okToggleNew: "✅ NEW ব্যাজ আপডেট হয়েছে!",
+        okFullEp: "✅ ফুল এপিসোড সবার আগে বাম পাশে যোগ হয়েছে!",
+        okToggleNew: "✅ NEW ব্যাজ আপডেট হয়েছে!",
         errBhShort: "⚠️ অনুগ্রহ করে থাম্বনেইল লিংক এবং ফেসবুক এম্বেড কোড দিন।",
-        okBhShort: "✅ বাহুবলী 2D শর্টস ভিডিও যোগ হয়েছে!",
+        okBhShort: "✅ বাহুবলী 2D শর্টস ভিডিও যোগ হয়েছে!",
         errBhFull: "⚠️ অনুগ্রহ করে ফুল এপিসোডের ফেসবুক এম্বেড কোড পেস্ট করুন।",
-        okBhFull: "✅ বাহুবলী ফুল এপিসোড সেভ হয়েছে!",
+        okBhFull: "✅ বাহুবলী ফুল এপিসোড সেভ হয়েছে!",
         errPhoto: "⚠️ অনুগ্রহ করে ছবির লিংক এবং ক্যাপশন দিন।",
-        okPhoto: "✅ নতুন ছবি গ্যালারিতে যোগ হয়েছে!",
-        errOldPin: "❌ বর্তমান পিনটি সঠিক নয়।",
-        errMaster: "❌ মাস্টার কী সঠিক নয়।",
+        okPhoto: "✅ নতুন ছবি গ্যালারিতে যোগ হয়েছে!",
+        errOldPin: "❌ বর্তমান পিনটি সঠিক নয়।",
+        errMaster: "❌ মাস্টার কী সঠিক নয়।",
         errNewPin: "⚠️ নতুন পিন ১ থেকে ১০ অক্ষরের মধ্যে হতে হবে।",
-        okPinChanged: "✅ পিন সফলভাবে পরিবর্তন হয়েছে!",
-        wrongPinWarn: (used, max) => `❌ ভুল পিন! (${used}/${max} বার ভুল হয়েছে)`,
-        lockedMsg: (timeStr, hrs) => `⏳ অনেকবার ভুল পিন দিয়েছেন! ${hrs} ঘণ্টার জন্য লক করা হয়েছে। বাকি সময়: ${timeStr}`
+        okPinChanged: "✅ পিন সফলভাবে পরিবর্তন হয়েছে!",
+        wrongPinWarn: (used, max) => `❌ ভুল পিন! (${used}/${max} বার ভুল হয়েছে)`,
+        lockedMsg: (timeStr, hrs) => `⏳ অনেকবার ভুল পিন দিয়েছেন! ${hrs} ঘণ্টার জন্য লক করা হয়েছে। বাকি সময়: ${timeStr}`
     }
 };
 
 function getHeAdminLang() {
     return (typeof currentLang !== "undefined" && currentLang === "BN") ? HE_ADMIN_I18N.BN : HE_ADMIN_I18N.EN;
+}
+
+/* ===== SETTINGS GEAR DRAWER (ROTATE + 10s AUTO-CLOSE) ===== */
+let heAdmSettingsAutoTimer = null;
+
+function openHeAdmSettingsDrawer() {
+    const bar = document.getElementById("heAdmQuickbar");
+    const btn = document.getElementById("heAdmSettingsBtn");
+    if (bar) bar.classList.add("open");
+    if (btn) btn.classList.add("open");
+    resetHeAdmSettingsTimer();
+}
+
+function closeHeAdmSettingsDrawer() {
+    const bar = document.getElementById("heAdmQuickbar");
+    const btn = document.getElementById("heAdmSettingsBtn");
+    if (bar) bar.classList.remove("open");
+    if (btn) btn.classList.remove("open");
+    clearTimeout(heAdmSettingsAutoTimer);
+}
+
+function resetHeAdmSettingsTimer() {
+    clearTimeout(heAdmSettingsAutoTimer);
+    const bar = document.getElementById("heAdmQuickbar");
+    if (bar && bar.classList.contains("open")) {
+        heAdmSettingsAutoTimer = setTimeout(() => {
+            closeHeAdmSettingsDrawer();
+        }, 10000);
+    }
+}
+
+function toggleHeAdmSettingsDrawer() {
+    const bar = document.getElementById("heAdmQuickbar");
+    if (!bar) return;
+    if (bar.classList.contains("open")) {
+        closeHeAdmSettingsDrawer();
+        if (typeof SOUNDS !== "undefined" && SOUNDS.menuClose) SOUNDS.menuClose();
+    } else {
+        openHeAdmSettingsDrawer();
+        if (typeof SOUNDS !== "undefined" && SOUNDS.menuOpen) SOUNDS.menuOpen();
+    }
+}
+
+function heAdmSetMode(mode) {
+    document.body.className = mode + "-mode";
+    if (document.getElementById("heAdminDashboardModal")?.classList.contains("active")) {
+        document.body.classList.add("admin-panel-open");
+    }
+    if (typeof SOUNDS !== "undefined" && SOUNDS.modeChange) SOUNDS.modeChange();
+}
+
+function heAdmToggleLang() {
+    if (typeof toggleLang === "function") {
+        const dd = document.getElementById("dropdown");
+        const wasMenuOpen = dd && dd.classList.contains("active");
+        toggleLang();
+        if (!wasMenuOpen && dd && dd.classList.contains("active")) {
+            toggleMenu();
+        }
+    }
+    syncHeAdmQuickControls();
+}
+
+function syncHeAdmQuickControls() {
+    const t = getHeAdminLang();
+    const sBtn = document.getElementById("heAdmSoundBtn");
+    const lBtn = document.getElementById("heAdmLangBtn");
+    const shTxt = document.getElementById("heAdmShareText");
+    const isSoundOn = (typeof soundEnabled !== "undefined" && soundEnabled);
+    if (sBtn) {
+        sBtn.textContent = isSoundOn ? "🔊" : "🔇";
+        sBtn.setAttribute("title", isSoundOn ? t.soundTipOn : t.soundTipOff);
+    }
+    if (lBtn && typeof translations !== "undefined" && translations[currentLang]) {
+        lBtn.textContent = translations[currentLang].lang;
+        lBtn.setAttribute("title", t.langTip);
+    }
+    if (shTxt) shTxt.textContent = t.shareText;
 }
 
 let heLockoutTimerInterval = null;
@@ -9101,7 +9935,7 @@ function refreshHeLockoutUI() {
         if (inp) inp.disabled = true;
         if (btn) btn.disabled = true;
         if (err) {
-            err.style.color = "#f87171";
+            err.style.color = "#ef4444";
             err.textContent = t.lockedMsg(formatCountdownMs(state.lockUntil - now), state.lockLevel || 1);
         }
         return true;
@@ -9128,10 +9962,12 @@ function switchHeAdminTab(tabName, btnEl) {
         videos: "hePaneVideos",
         baahubali: "hePaneBaahubali",
         gallery: "hePaneGallery",
+        fonts: "hePaneFonts",
         security: "hePaneSecurity"
     };
     const target = document.getElementById(paneMap[tabName]);
     if (target) target.classList.add("active");
+    if (tabName === "fonts") renderHeFontControls();
     const fb = document.getElementById("heAdminFeedbackBanner");
     if (fb) fb.className = "he-admin-feedback";
     if (typeof SOUNDS !== "undefined" && SOUNDS.click) SOUNDS.click();
@@ -9147,36 +9983,62 @@ function showHeAdminFeedback(message, isSuccess) {
         heFeedbackTimer = setTimeout(() => { fb.className = "he-admin-feedback"; }, 4500);
     }
     if (typeof showToast === "function") showToast(message, 3000);
-    if (typeof SOUNDS !== "undefined") {
-        if (isSuccess && SOUNDS.success) SOUNDS.success();
-    }
+    if (typeof SOUNDS !== "undefined" && isSuccess && SOUNDS.success) SOUNDS.success();
 }
 
 function applyHeAdminLanguageUI() {
     const t = getHeAdminLang();
     const setTxt = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
     const setPh = (id, txt) => { const el = document.getElementById(id); if (el) el.placeholder = txt; };
+    const setTip = (id, txt) => { const el = document.getElementById(id); if (el) el.setAttribute("title", txt); };
 
-    const lockBtn = document.getElementById("heAdminLockBtn");
-    if (lockBtn) lockBtn.setAttribute("title", t.lockTip);
+    setTip("heAdminLockBtn", t.lockTip);
+    setTip("hePinCloseBtn", t.backTip);
+    setTip("heLoginEyeBtn", t.eyeTip);
+    setTip("heUnlockBtn", t.unlockBtn);
+    setTip("heAdmCloseBtn", t.backTip);
+    setTip("heAdmSettingsBtn", t.settingsTip);
+    setTip("heAdmQuickHoney", t.honeyTip);
+    setTip("heAdmQuickDark", t.darkTip);
+    setTip("heAdmQuickLight", t.lightTip);
+    setTip("heAdmShareBtn", t.shareTip);
+
+    setTip("heTabBrand", t.tabBrand);
+    setTip("heTabVideos", t.tabVideos);
+    setTip("heTabBaahubali", t.tabBaahubali);
+    setTip("heTabGallery", t.tabGallery);
+    setTip("heTabFonts", t.tabFonts);
+    setTip("heTabSecurity", t.tabSecurity);
+
+    setTip("admLogoDrawerBtn", t.logoDrawerTip);
+    setTip("admBtnSaveLogo", t.bSaveLogo);
+    setTip("admBtnSaveName", t.bSaveName);
+    setTip("admBtnSaveCover", t.bSaveCover);
+    setTip("admBtnAddShort", t.bAddShort);
+    setTip("admBtnAddFullEp", t.bAddFullEp);
+    setTip("admBtnAddBhShort", t.bAddBhShort);
+    setTip("admBtnSaveBhFull", t.bSaveBhFull);
+    setTip("admBtnAddPhoto", t.bAddPhoto);
+    setTip("admBtnChangePin", t.bChangePin);
+    setTip("admEyeOldPin", t.eyeTip);
+    setTip("admEyeMasterKey", t.eyeMasterTip);
+    setTip("admEyeNewPin", t.eyeTip);
 
     setTxt("hePinTitle", t.pinTitle);
     setTxt("hePinSub", t.pinSub);
     setPh("heLoginPinInput", t.pinPlaceholder);
     setTxt("heUnlockBtn", t.unlockBtn);
-    const eyeBtn = document.getElementById("heLoginEyeBtn");
-    if (eyeBtn) eyeBtn.setAttribute("title", t.eyeTip);
-    const pinClose = document.getElementById("hePinCloseBtn");
-    if (pinClose) pinClose.setAttribute("title", t.closeTip);
-    const admClose = document.getElementById("heAdmCloseBtn");
-    if (admClose) admClose.setAttribute("title", t.closeTip);
 
     setTxt("heAdmMainHeading", t.admHeading);
     setTxt("heTabBrand", t.tabBrand);
     setTxt("heTabVideos", t.tabVideos);
     setTxt("heTabBaahubali", t.tabBaahubali);
     setTxt("heTabGallery", t.tabGallery);
+    setTxt("heTabFonts", t.tabFonts);
     setTxt("heTabSecurity", t.tabSecurity);
+
+    setTxt("admTitleFonts", t.tFonts);
+    setTxt("heFontResetBtn", t.fontReset);
 
     setTxt("admTitleLogo", t.tLogo);
     setTxt("admLogoBtnText", t.logoBtn);
@@ -9249,7 +10111,10 @@ function applyHeAdminLanguageUI() {
     setPh("admMasterKey", t.pMaster);
     setPh("admNewPin", t.pNewPin);
 
+    syncHeAdmQuickControls();
     refreshHeLockoutUI();
+    renderHeFontControls();
+    applyHeFontsToSite();
 }
 
 function extractYtIdSmart(input) {
@@ -9272,11 +10137,15 @@ function openHePinModal() {
     }
     applyHeAdminLanguageUI();
     const modal = document.getElementById("hePinModal");
+    const wasActive = modal && modal.classList.contains("active");
     const inp = document.getElementById("heLoginPinInput");
     const err = document.getElementById("hePinErrorMsg");
     if (inp) { inp.value = ""; inp.type = "password"; }
     if (err) err.textContent = "";
     if (modal) modal.classList.add("active");
+    if (!wasActive && typeof pushHeHistoryLayer === "function") {
+        pushHeHistoryLayer("hePinModal");
+    }
     const isLocked = refreshHeLockoutUI();
     clearInterval(heLockoutTimerInterval);
     heLockoutTimerInterval = setInterval(refreshHeLockoutUI, 1000);
@@ -9285,8 +10154,14 @@ function openHePinModal() {
 
 function closeHePinModal() {
     const modal = document.getElementById("hePinModal");
+    const wasActive = modal && modal.classList.contains("active");
+    const inp = document.getElementById("heLoginPinInput");
+    if (inp) inp.value = "";
     if (modal) modal.classList.remove("active");
     clearInterval(heLockoutTimerInterval);
+    if (wasActive && typeof popHeHistoryIfManual === "function") {
+        popHeHistoryIfManual();
+    }
 }
 
 function verifyHeAdminPin() {
@@ -9316,10 +10191,9 @@ function verifyHeAdminPin() {
             refreshHeLockoutUI();
         } else {
             saveHeLockoutState(state);
-            const limitDisplay = (state.lockLevel === 0) ? 2 : 2;
             if (err) {
-                err.style.color = "#f87171";
-                err.textContent = t.wrongPinWarn(state.wrongAttempts, limitDisplay);
+                err.style.color = "#ef4444";
+                err.textContent = t.wrongPinWarn(state.wrongAttempts, 2);
             }
         }
         if (card) {
@@ -9333,14 +10207,27 @@ function verifyHeAdminPin() {
 function openHeAdminDashboard() {
     const modal = document.getElementById("heAdminDashboardModal");
     if (!modal) return;
+    const wasActive = modal.classList.contains("active");
+    document.body.classList.add("admin-panel-open");
+    closeHeAdmSettingsDrawer();
     applyHeAdminLanguageUI();
     populateAdminControls();
     modal.classList.add("active");
+    if (!wasActive && typeof pushHeHistoryLayer === "function") {
+        pushHeHistoryLayer("heAdminDashboardModal");
+    }
 }
 
 function closeHeAdminDashboard() {
     const modal = document.getElementById("heAdminDashboardModal");
+    const wasActive = modal && modal.classList.contains("active");
+    closeHeAdmSettingsDrawer();
     if (modal) modal.classList.remove("active");
+    document.body.classList.remove("admin-panel-open");
+    if (wasActive && typeof popHeHistoryIfManual === "function") {
+        popHeHistoryIfManual();
+    }
+    if (typeof SOUNDS !== "undefined" && SOUNDS.imageClose) SOUNDS.imageClose();
 }
 
 function populateAdminControls() {
@@ -9475,6 +10362,8 @@ function applyHeLiveConfigToSite(cfg) {
         }
         if (changed) rerenderMainGalleryDom();
     }
+
+    applyHeFontsToSite();
 }
 
 async function saveHeLiveConfig() {
@@ -9531,7 +10420,7 @@ async function loadHeLiveConfigOnBoot() {
     applyHeAdminLanguageUI();
 }
 
-// ===== ADMIN ACTION HANDLERS (WITH BILINGUAL SUCCESS/ERROR FEEDBACK) =====
+// ===== ADMIN ACTION HANDLERS =====
 async function admSaveLogo() {
     const t = getHeAdminLang();
     const url = document.getElementById("admLogoUrl").value.trim();
@@ -9651,23 +10540,23 @@ async function admChangePin() {
     const activePin = heLiveConfig.pin || HONEY_DEFAULT_PIN;
 
     if (oldPin !== activePin) {
-        msg.style.color = "#f87171";
+        msg.style.color = "#ef4444";
         msg.textContent = t.errOldPin;
         return showHeAdminFeedback(t.errOldPin, false);
     }
     if (master !== HONEY_MASTER_KEY) {
-        msg.style.color = "#f87171";
+        msg.style.color = "#ef4444";
         msg.textContent = t.errMaster;
         return showHeAdminFeedback(t.errMaster, false);
     }
     if (!newPin || newPin.length > 10) {
-        msg.style.color = "#f87171";
+        msg.style.color = "#ef4444";
         msg.textContent = t.errNewPin;
         return showHeAdminFeedback(t.errNewPin, false);
     }
     heLiveConfig.pin = newPin;
     const ok = await saveHeLiveConfig();
-    msg.style.color = ok ? "#4ade80" : "#f87171";
+    msg.style.color = ok ? "#22c55e" : "#ef4444";
     msg.textContent = ok ? t.okPinChanged : t.syncFail;
     showHeAdminFeedback(ok ? t.okPinChanged : t.syncFail, ok);
     if (ok) {
@@ -9677,8 +10566,24 @@ async function admChangePin() {
     }
 }
 
-// ===== HOOK LANGUAGE SWITCH + HOVER SOUNDS =====
-(function hookHeAdminLangAndSounds() {
+/* ===== AUTO-CLOSE ADMIN PANEL & PIN MODAL ON TAB SWITCH / BROWSER CLOSE ===== */
+function forceCloseHeSecurityOnLeave() {
+    const adm = document.getElementById("heAdminDashboardModal");
+    if (adm && adm.classList.contains("active")) {
+        closeHeAdminDashboard();
+    }
+    const pin = document.getElementById("hePinModal");
+    if (pin && pin.classList.contains("active")) {
+        closeHePinModal();
+    }
+}
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) forceCloseHeSecurityOnLeave();
+});
+window.addEventListener("pagehide", forceCloseHeSecurityOnLeave);
+
+// ===== HOOK LANGUAGE SWITCH, PHONE BACK / ESC & HOVER SOUNDS =====
+(function hookHeAdminSystem() {
     const _origToggleLang = window.toggleLang;
     if (typeof _origToggleLang === "function") {
         window.toggleLang = function() {
@@ -9693,8 +10598,32 @@ async function admChangePin() {
             applyHeAdminLanguageUI();
         };
     }
+    const _origToggleSound = window.toggleSound;
+    if (typeof _origToggleSound === "function") {
+        window.toggleSound = function() {
+            _origToggleSound();
+            syncHeAdmQuickControls();
+        };
+    }
+    const _origBackAction = window.handleUniversalBackAction;
+    if (typeof _origBackAction === "function") {
+        window.handleUniversalBackAction = function() {
+            const admModal = document.getElementById("heAdminDashboardModal");
+            if (admModal && admModal.classList.contains("active")) {
+                closeHeAdminDashboard();
+                return true;
+            }
+            const pinModal = document.getElementById("hePinModal");
+            if (pinModal && pinModal.classList.contains("active")) {
+                closeHePinModal();
+                return true;
+            }
+            return _origBackAction();
+        };
+    }
     document.addEventListener("DOMContentLoaded", () => {
         loadHeLiveConfigOnBoot();
+        
         document.querySelectorAll("#hePinModal button, #heAdminDashboardModal button, #heAdminLockBtn").forEach(btn => {
             btn.addEventListener("mouseenter", () => { if (typeof SOUNDS !== "undefined" && SOUNDS.hover) SOUNDS.hover(); });
         });
