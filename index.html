@@ -4455,9 +4455,183 @@ body.honey-mode .he-font-menu {
     cursor: pointer;
     transition: all 0.25s ease;
 }
+
 .he-font-reset-btn:hover {
     background: #ef4444;
     color: #fff;
+}
+
+/* ===== PREVIEW & DELETE SYSTEM ===== */
+.he-preview-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 13px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1.5px solid var(--accent);
+    color: var(--text-color);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+}
+.he-preview-toggle-btn:hover,
+.he-preview-toggle-btn.active {
+    background: linear-gradient(135deg, var(--accent), #fb923c);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 4px 14px var(--glow-color);
+}
+.he-preview-drawer {
+    display: none;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed rgba(128, 128, 128, 0.35);
+    animation: heSecFadeIn 0.25s ease;
+}
+.he-preview-drawer.open {
+    display: block;
+}
+.he-preview-count {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px;
+}
+.he-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+    gap: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+.he-preview-item {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1.5px solid rgba(128, 128, 128, 0.28);
+    display: flex;
+    flex-direction: column;
+}
+body.light-mode .he-preview-item,
+body.honey-mode .he-preview-item {
+    background: rgba(255, 255, 255, 0.72);
+}
+.he-preview-item img {
+    width: 100%;
+    height: 78px;
+    object-fit: cover;
+    display: block;
+}
+.he-preview-cap {
+    padding: 5px 6px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.he-preview-del-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    background: rgba(220, 38, 38, 0.92);
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+    transition: transform 0.2s ease, background 0.2s ease;
+    z-index: 3;
+}
+.he-preview-del-btn:hover {
+    transform: scale(1.12);
+    background: #ef4444;
+}
+.he-btn-danger {
+    width: 100%;
+    margin-top: 8px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(239, 68, 68, 0.55);
+    background: rgba(239, 68, 68, 0.16);
+    color: #ef4444;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+.he-btn-danger:hover {
+    background: #ef4444;
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(239, 68, 68, 0.35);
+}
+
+/* ===== FONT ROW: INPUT + ALL + TICK ===== */
+.he-font-row-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+}
+.he-font-row-controls .he-font-dropdown {
+    flex: 1;
+    min-width: 0;
+}
+.he-font-all-btn,
+.he-font-tick-btn {
+    flex-shrink: 0;
+    height: 41px;
+    border-radius: 11px;
+    border: 1.5px solid rgba(128, 128, 128, 0.3);
+    background: rgba(0, 0, 0, 0.28);
+    color: var(--text-color);
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+body.light-mode .he-font-all-btn,
+body.honey-mode .he-font-all-btn,
+body.light-mode .he-font-tick-btn,
+body.honey-mode .he-font-tick-btn {
+    background: rgba(255, 255, 255, 0.72);
+    border-color: rgba(0, 0, 0, 0.18);
+}
+.he-font-all-btn {
+    padding: 0 11px;
+}
+.he-font-all-btn:hover {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, var(--accent), #fb923c);
+    color: #fff;
+}
+.he-font-tick-btn {
+    width: 38px;
+    font-size: 15px;
+    color: #22c55e;
+    border-color: rgba(34, 197, 94, 0.45);
+}
+.he-font-tick-btn:hover,
+.he-font-tick-btn.pending {
+    background: #22c55e;
+    color: #fff;
+    border-color: #22c55e;
+    box-shadow: 0 4px 14px rgba(34, 197, 94, 0.45);
 }
 </style>
 </head>
@@ -8461,7 +8635,7 @@ const baahubaliFbShortsList = [
 ];
 
 // ভবিষ্যতে ১৬:৯ ফুল এপিসোডের ফেসবুক ভিডিওর Embed Code (`<iframe ...></iframe>`) এই দুই ব্যাকটিকের ভেতরে বসাবেন:
-const BAAHUBALI_FULL_EPISODE_EMBED_CODE = ``;
+let BAAHUBALI_FULL_EPISODE_EMBED_CODE = ``;
 
 // কোথা থেকে বাহুবলী ট্যাবে আসা হয়েছে তা মনে রাখার ভেরিয়েবল ('home' অথবা 'photo')
 let baahubaliSourceContext = 'home';
@@ -9171,11 +9345,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button type="button" class="he-btn-primary" id="admBtnSaveCover" onclick="admSaveCoverPhoto()">Update Cover Photo</button>
                 </div>
             </div>
-
-            <!-- TAB 2: VIDEOS -->
+<!-- TAB 2: VIDEOS -->
             <div class="he-tab-pane" id="hePaneVideos">
                 <div class="he-admin-card">
-                    <h3 class="he-admin-card-title" id="admTitleAddShort">4. Add New Short Video</h3>
+                    <div class="he-admin-card-title">
+                        <span id="admTitleAddShort">4. Add New Short Video</span>
+                        <button type="button" class="he-preview-toggle-btn" id="admBtnPrevShorts" onclick="toggleHePreview('shorts')">👁️ <span id="admPrevShortsTxt">Preview</span></button>
+                    </div>
                     <div class="he-field-grid two-col">
                         <div>
                             <label class="he-label" id="admLblShortYt">YouTube Video ID or Link</label>
@@ -9196,10 +9372,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     <label class="he-check-row"><input type="checkbox" id="admShortIsNew" checked> <span id="admLblShortNew">Show "NEW" Badge</span></label>
                     <button type="button" class="he-btn-primary" id="admBtnAddShort" onclick="admAddShortVideo()">Add Short Video</button>
+                    <div class="he-preview-drawer" id="hePreviewShorts"></div>
                 </div>
 
                 <div class="he-admin-card">
-                    <h3 class="he-admin-card-title" id="admTitleFullEp">5. Full Episode Videos (Always Added at Top-Left)</h3>
+                    <div class="he-admin-card-title">
+                        <span id="admTitleFullEp">5. Full Episode Videos (Always Added at Top-Left)</span>
+                        <button type="button" class="he-preview-toggle-btn" id="admBtnPrevFullEp" onclick="toggleHePreview('fullEp')">👁️ <span id="admPrevFullEpTxt">Preview</span></button>
+                    </div>
                     <div class="he-field-grid two-col">
                         <div>
                             <label class="he-label" id="admLblFullEpYt">YouTube Video ID or Link</label>
@@ -9212,6 +9392,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     <label class="he-check-row"><input type="checkbox" id="admFullEpIsNew" checked> <span id="admLblFullEpNew">Show "NEW" Badge</span></label>
                     <button type="button" class="he-btn-primary" id="admBtnAddFullEp" onclick="admAddFullEpisode()">Add Full Episode</button>
+                    <div class="he-preview-drawer" id="hePreviewFullEp"></div>
 
                     <div style="margin-top:14px;">
                         <label class="he-label" id="admLblManageNew">Manage "NEW" Badge on Existing Full Episodes</label>
@@ -9223,7 +9404,10 @@ document.addEventListener('DOMContentLoaded', function() {
             <!-- TAB 3: BAAHUBALI 2D -->
             <div class="he-tab-pane" id="hePaneBaahubali">
                 <div class="he-admin-card">
-                    <h3 class="he-admin-card-title" id="admTitleBh">6. Baahubali 2D Manager</h3>
+                    <div class="he-admin-card-title">
+                        <span id="admTitleBh">6. Baahubali 2D Manager</span>
+                        <button type="button" class="he-preview-toggle-btn" id="admBtnPrevBh" onclick="toggleHePreview('baahubali')">👁️ <span id="admPrevBhTxt">Preview</span></button>
+                    </div>
                     <div class="he-field-grid two-col">
                         <div>
                             <label class="he-label" id="admLblBhThumb">Short Video Thumbnail URL</label>
@@ -9239,11 +9423,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         <textarea id="admBhEmbed" class="he-textarea" rows="2" placeholder="Paste Facebook <iframe ...></iframe> code"></textarea>
                     </div>
                     <button type="button" class="he-btn-primary" id="admBtnAddBhShort" onclick="admAddBaahubaliShort()">Add Baahubali 2D Short</button>
+                    <div class="he-preview-drawer" id="hePreviewBaahubali"></div>
 
                     <div style="margin-top:16px;padding-top:14px;border-top:1px dashed rgba(128,128,128,0.28);">
                         <label class="he-label" id="admLblBhFull">Baahubali 2D Full Episode Facebook Embed Code</label>
                         <textarea id="admBhFullEmbed" class="he-textarea" rows="2" placeholder="Paste 16:9 Facebook <iframe ...></iframe> code"></textarea>
                         <button type="button" class="he-btn-primary" id="admBtnSaveBhFull" onclick="admSaveBaahubaliFullEp()">Save Baahubali Full Episode</button>
+                        <button type="button" class="he-btn-danger" id="admBtnDelBhFull" onclick="admDeleteBaahubaliFullEp()">🗑️ Delete Baahubali Full Episode</button>
                     </div>
                 </div>
             </div>
@@ -9251,7 +9437,10 @@ document.addEventListener('DOMContentLoaded', function() {
             <!-- TAB 4: GALLERY -->
             <div class="he-tab-pane" id="hePaneGallery">
                 <div class="he-admin-card">
-                    <h3 class="he-admin-card-title" id="admTitlePhoto">7. Add New Gallery Photo</h3>
+                    <div class="he-admin-card-title">
+                        <span id="admTitlePhoto">7. Add New Gallery Photo</span>
+                        <button type="button" class="he-preview-toggle-btn" id="admBtnPrevGallery" onclick="toggleHePreview('gallery')">👁️ <span id="admPrevGalleryTxt">Preview</span></button>
+                    </div>
                     <div class="he-field-grid two-col">
                         <div>
                             <label class="he-label" id="admLblPhotoImg">Photo Image URL</label>
@@ -9285,6 +9474,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
                     <button type="button" class="he-btn-primary" id="admBtnAddPhoto" onclick="admAddNewPhoto()">Add New Photo</button>
+                    <div class="he-preview-drawer" id="hePreviewGallery"></div>
                 </div>
             </div>
 
@@ -9344,7 +9534,6 @@ const HONEY_ADMIN_STORAGE_KEY = "he_admin_live_config_v1";
 const HONEY_LOCKOUT_STORAGE_KEY = "he_admin_pin_lockout_v1";
 const HONEY_DEFAULT_PIN = "633038sajeeb";
 const HONEY_MASTER_KEY = "SajeebSaha";
-
 let heLiveConfig = {
     pin: HONEY_DEFAULT_PIN,
     logoUrl: "",
@@ -9352,13 +9541,23 @@ let heLiveConfig = {
     siteNameLine2: "",
     coverUrl: "",
     addedShorts: [],
+    deletedShorts: [],
     addedFullEpisodes: [],
+    deletedFullEpisodes: [],
     fullEpNewOverrides: {},
     addedBaahubaliShorts: [],
+    deletedBaahubaliShorts: [],
     baahubaliFullEmbed: null,
     addedPhotos: [],
+    deletedPhotos: [],
     fonts: { EN: {}, BN: {} }
 };
+
+const HE_BASE_SHORTS = (typeof originalFeedData !== "undefined") ? originalFeedData.slice() : [];
+const HE_BASE_FULL_EPS = (typeof welcomeVideoData !== "undefined") ? welcomeVideoData.slice() : [];
+const HE_BASE_BH_SHORTS = (typeof baahubaliFbShortsList !== "undefined") ? baahubaliFbShortsList.slice() : [];
+const HE_BASE_GALLERY = (window.galleryItems) ? window.galleryItems.slice() : [];
+const hePendingFonts = { EN: {}, BN: {} };
 
 /* ===== ALL GOOGLE FONTS LIST (ENGLISH & BANGLA) ===== */
 const HE_BANGLA_FONTS = [
@@ -9447,6 +9646,7 @@ function switchHeFontEditLang(langCode) {
     if (bnBtn) bnBtn.classList.toggle("active", heFontEditLang === "BN");
     renderHeFontControls();
 }
+
 function renderHeFontControls() {
     const grid = document.getElementById("heFontControlsGrid");
     if (!grid) return;
@@ -9454,36 +9654,43 @@ function renderHeFontControls() {
     const isSiteBN = (typeof currentLang !== "undefined" && currentLang === "BN");
     if (!heLiveConfig.fonts) heLiveConfig.fonts = { EN: {}, BN: {} };
     if (!heLiveConfig.fonts[heFontEditLang]) heLiveConfig.fonts[heFontEditLang] = {};
+    if (!hePendingFonts[heFontEditLang]) hePendingFonts[heFontEditLang] = {};
 
     const selectedMap = heLiveConfig.fonts[heFontEditLang];
+    const pendingMap = hePendingFonts[heFontEditLang];
     const visibleCategories = HE_FONT_CATEGORIES.filter(cat => !(heFontEditLang === "BN" && cat.enOnly));
 
     grid.innerHTML = visibleCategories.map(cat => {
-        const curVal = selectedMap[cat.key] || "";
+        const hasPending = Object.prototype.hasOwnProperty.call(pendingMap, cat.key);
+        const curVal = hasPending ? pendingMap[cat.key] : (selectedMap[cat.key] || "");
         const labelTxt = isSiteBN ? cat.bn : cat.en;
         const displayVal = curVal || t.fontDefault;
         if (curVal) loadHeGoogleFont(curVal);
         return `
             <div>
                 <label class="he-label">${labelTxt}</label>
-                <div class="he-font-dropdown" id="heFontDrop_${cat.key}">
-                    <div class="he-font-combo-wrap">
-                        <input type="text"
-                               readonly
-                               class="he-font-combo-input"
-                               id="heFontInput_${cat.key}"
-                               value="${displayVal.replace(/"/g, '&quot;')}"
-                               data-saved="${displayVal.replace(/"/g, '&quot;')}"
-                               placeholder="${t.fontSearchPh}"
-                               autocomplete="off"
-                               style="${curVal ? `font-family:'${curVal}',sans-serif;` : ''}"
-                               onclick="handleHeFontBoxTap('${cat.key}', this, event)"
-                               oninput="filterHeFontList('${cat.key}', this.value)">
-                        <span class="he-font-arrow">▾</span>
+                <div class="he-font-row-controls">
+                    <div class="he-font-dropdown" id="heFontDrop_${cat.key}">
+                        <div class="he-font-combo-wrap">
+                            <input type="text"
+                                   readonly
+                                   class="he-font-combo-input"
+                                   id="heFontInput_${cat.key}"
+                                   value="${displayVal.replace(/"/g, '&quot;')}"
+                                   data-saved="${displayVal.replace(/"/g, '&quot;')}"
+                                   placeholder="${t.fontSearchPh}"
+                                   autocomplete="off"
+                                   style="${curVal ? `font-family:'${curVal}',sans-serif;` : ''}"
+                                   onclick="handleHeFontBoxTap('${cat.key}', this, event)"
+                                   oninput="filterHeFontList('${cat.key}', this.value)">
+                            <span class="he-font-arrow">▾</span>
+                        </div>
+                        <div class="he-font-menu" onclick="event.stopPropagation()">
+                            <div class="he-font-list" id="heFontList_${cat.key}"></div>
+                        </div>
                     </div>
-                    <div class="he-font-menu" onclick="event.stopPropagation()">
-                        <div class="he-font-list" id="heFontList_${cat.key}"></div>
-                    </div>
+                    <button type="button" class="he-font-all-btn" onclick="admApplyFontToAll('${cat.key}')" title="${isSiteBN ? 'সব ক্যাটাগরিতে এই ফন্ট দিন' : 'Apply to all categories'}">${isSiteBN ? 'সব' : 'All'}</button>
+                    <button type="button" class="he-font-tick-btn ${hasPending ? 'pending' : ''}" id="heFontTick_${cat.key}" onclick="admConfirmFont('${cat.key}')" title="${isSiteBN ? 'কনফার্ম ও সেভ করুন' : 'Confirm & Save'}">✓</button>
                 </div>
             </div>
         `;
@@ -9493,12 +9700,15 @@ function renderHeFontControls() {
         populateHeFontOptions(cat.key, "");
     });
 }
+
 function populateHeFontOptions(catKey, query) {
     const listEl = document.getElementById("heFontList_" + catKey);
     if (!listEl) return;
     const t = getHeAdminLang();
     const fontList = (heFontEditLang === "BN") ? HE_BANGLA_FONTS : HE_ENGLISH_FONTS;
-    const curVal = (heLiveConfig.fonts && heLiveConfig.fonts[heFontEditLang] && heLiveConfig.fonts[heFontEditLang][catKey]) || "";
+    const pendingMap = hePendingFonts[heFontEditLang] || {};
+    const savedMap = (heLiveConfig.fonts && heLiveConfig.fonts[heFontEditLang]) || {};
+    const curVal = Object.prototype.hasOwnProperty.call(pendingMap, catKey) ? pendingMap[catKey] : (savedMap[catKey] || "");
     const q = (query || "").trim().toLowerCase();
 
     let matches = fontList.filter(f => !q || f.toLowerCase().includes(q));
@@ -9547,7 +9757,6 @@ function handleHeFontBoxTap(catKey, inp, ev) {
     const lastTap = Number(inp.dataset.lastTap || 0);
     inp.dataset.lastTap = String(now);
 
-    // ২য় ট্যাপ (Double Tap): কিবোর্ড উঠবে ও লিখে সার্চ করা যাবে
     if (now - lastTap < 420) {
         document.querySelectorAll(".he-font-dropdown.open").forEach(el => {
             if (el !== target) el.classList.remove("open");
@@ -9560,7 +9769,6 @@ function handleHeFontBoxTap(catKey, inp, ev) {
         return;
     }
 
-    // ১ম ট্যাপ (Single Tap): কিবোর্ড উঠবে না, শুধু ড্রপডাউন মেনু নামবে/বন্ধ হবে
     if (!inp.readOnly) return;
     inp.blur();
     const wasOpen = target.classList.contains("open");
@@ -9575,23 +9783,69 @@ function filterHeFontList(catKey, query) {
     populateHeFontOptions(catKey, query);
 }
 
-async function admSelectFont(catKey, fontName) {
+function admSelectFont(catKey, fontName) {
+    const t = getHeAdminLang();
+    if (!hePendingFonts[heFontEditLang]) hePendingFonts[heFontEditLang] = {};
+    hePendingFonts[heFontEditLang][catKey] = fontName;
+    if (fontName) loadHeGoogleFont(fontName);
+
+    const inp = document.getElementById("heFontInput_" + catKey);
+    if (inp) {
+        const displayVal = fontName || t.fontDefault;
+        inp.dataset.saved = displayVal;
+        inp.value = displayVal;
+        inp.style.fontFamily = fontName ? `'${fontName}',sans-serif` : "";
+    }
+    closeAllHeFontDropdowns();
+    const tickBtn = document.getElementById("heFontTick_" + catKey);
+    if (tickBtn) tickBtn.classList.add("pending");
+}
+
+async function admConfirmFont(catKey) {
     const t = getHeAdminLang();
     if (!heLiveConfig.fonts) heLiveConfig.fonts = { EN: {}, BN: {} };
     if (!heLiveConfig.fonts[heFontEditLang]) heLiveConfig.fonts[heFontEditLang] = {};
-    heLiveConfig.fonts[heFontEditLang][catKey] = fontName;
+    const pendingMap = hePendingFonts[heFontEditLang] || {};
+    const hasPending = Object.prototype.hasOwnProperty.call(pendingMap, catKey);
+    const fontName = hasPending ? pendingMap[catKey] : (heLiveConfig.fonts[heFontEditLang][catKey] || "");
 
-    closeAllHeFontDropdowns();
+    heLiveConfig.fonts[heFontEditLang][catKey] = fontName;
+    delete pendingMap[catKey];
+
     applyHeFontsToSite();
     renderHeFontControls();
     const ok = await saveHeLiveConfig();
     showHeAdminFeedback(ok ? t.okFontSaved : t.syncFail, ok);
 }
 
+async function admApplyFontToAll(catKey) {
+    const t = getHeAdminLang();
+    const isSiteBN = (typeof currentLang !== "undefined" && currentLang === "BN");
+    if (!heLiveConfig.fonts) heLiveConfig.fonts = { EN: {}, BN: {} };
+    if (!heLiveConfig.fonts[heFontEditLang]) heLiveConfig.fonts[heFontEditLang] = {};
+    const pendingMap = hePendingFonts[heFontEditLang] || {};
+    const fontName = Object.prototype.hasOwnProperty.call(pendingMap, catKey)
+        ? pendingMap[catKey]
+        : (heLiveConfig.fonts[heFontEditLang][catKey] || "");
+
+    HE_FONT_CATEGORIES.forEach(cat => {
+        if (heFontEditLang === "BN" && cat.enOnly) return;
+        heLiveConfig.fonts[heFontEditLang][cat.key] = fontName;
+        delete pendingMap[cat.key];
+    });
+
+    applyHeFontsToSite();
+    renderHeFontControls();
+    const ok = await saveHeLiveConfig();
+    const msg = isSiteBN ? "✅ এই ফন্টটি সব ক্যাটাগরিতে সেট হয়েছে!" : "✅ Font applied to all categories!";
+    showHeAdminFeedback(ok ? msg : t.syncFail, ok);
+}
+
 async function admResetFontsForLang() {
     const t = getHeAdminLang();
     if (!heLiveConfig.fonts) heLiveConfig.fonts = { EN: {}, BN: {} };
     heLiveConfig.fonts[heFontEditLang] = {};
+    hePendingFonts[heFontEditLang] = {};
     applyHeFontsToSite();
     renderHeFontControls();
     const ok = await saveHeLiveConfig();
@@ -10323,6 +10577,143 @@ function rerenderMainGalleryDom() {
         `);
     });
 }
+const getHeShortKey = s => `${s.ytId || ""}||${s.title || ""}`;
+const getHeBhKey = b => `${b.thumb || ""}||${b.caption || ""}`;
+const getHePhotoKey = p => `${p.img || ""}||${p.cap || ""}`;
+
+function toggleHePreview(type) {
+    const map = {
+        shorts: { box: "hePreviewShorts", btn: "admBtnPrevShorts" },
+        fullEp: { box: "hePreviewFullEp", btn: "admBtnPrevFullEp" },
+        baahubali: { box: "hePreviewBaahubali", btn: "admBtnPrevBh" },
+        gallery: { box: "hePreviewGallery", btn: "admBtnPrevGallery" }
+    };
+    const info = map[type];
+    if (!info) return;
+    const box = document.getElementById(info.box);
+    const btn = document.getElementById(info.btn);
+    if (!box) return;
+    const willOpen = !box.classList.contains("open");
+    box.classList.toggle("open", willOpen);
+    if (btn) btn.classList.toggle("active", willOpen);
+    if (willOpen) renderHePreviewGrid(type);
+}
+
+function renderHePreviewGrid(type) {
+    const isBN = (typeof currentLang !== "undefined" && currentLang === "BN");
+    const boxMap = { shorts: "hePreviewShorts", fullEp: "hePreviewFullEp", baahubali: "hePreviewBaahubali", gallery: "hePreviewGallery" };
+    const box = document.getElementById(boxMap[type]);
+    if (!box) return;
+
+    let items = [];
+    if (type === "shorts" && typeof originalFeedData !== "undefined") {
+        items = originalFeedData.map((s, idx) => ({ thumb: s.thumb, label: s.title || s.ytId, fn: `admDeleteShortVideo(${idx})` }));
+    } else if (type === "fullEp" && typeof welcomeVideoData !== "undefined") {
+        items = welcomeVideoData.map((v, idx) => ({
+            thumb: (typeof getWelcomeThumb === "function") ? getWelcomeThumb(v) : (v.thumb || ""),
+            label: `#${idx + 1} (${v.id})`,
+            fn: `admDeleteFullEpisode(${idx})`
+        }));
+    } else if (type === "baahubali" && typeof baahubaliFbShortsList !== "undefined") {
+        items = baahubaliFbShortsList.map((b, idx) => ({ thumb: b.thumb, label: b.caption || `Part ${idx + 1}`, fn: `admDeleteBaahubaliShort(${idx})` }));
+    } else if (type === "gallery" && window.galleryItems) {
+        items = window.galleryItems.map((p, idx) => ({ thumb: p.img, label: p.cap || `Photo #${idx + 1}`, fn: `admDeleteGalleryPhoto(${idx})` }));
+    }
+
+    const countTxt = isBN ? `মোট ${items.length}টি আইটেম` : `Total ${items.length} items`;
+    const delTitle = isBN ? "ডিলিট করুন" : "Delete";
+    const cardsHtml = items.map(it => `
+        <div class="he-preview-item">
+            <button type="button" class="he-preview-del-btn" onclick="${it.fn}; event.stopPropagation();" title="${delTitle}">🗑️</button>
+            <img src="${it.thumb}" alt="Preview" loading="lazy">
+            <div class="he-preview-cap" title="${(it.label || "").replace(/"/g, '&quot;')}">${it.label || ""}</div>
+        </div>
+    `).join("");
+
+    box.innerHTML = `<div class="he-preview-count">${countTxt}</div><div class="he-preview-grid">${cardsHtml}</div>`;
+}
+
+function refreshOpenHePreviews() {
+    if (document.getElementById("hePreviewShorts")?.classList.contains("open")) renderHePreviewGrid("shorts");
+    if (document.getElementById("hePreviewFullEp")?.classList.contains("open")) renderHePreviewGrid("fullEp");
+    if (document.getElementById("hePreviewBaahubali")?.classList.contains("open")) renderHePreviewGrid("baahubali");
+    if (document.getElementById("hePreviewGallery")?.classList.contains("open")) renderHePreviewGrid("gallery");
+}
+
+async function admDeleteShortVideo(idx) {
+    const isBN = (typeof currentLang !== "undefined" && currentLang === "BN");
+    const item = originalFeedData[idx];
+    if (!item) return;
+    const key = getHeShortKey(item);
+    heLiveConfig.addedShorts = (heLiveConfig.addedShorts || []).filter(s => getHeShortKey(s) !== key);
+    if (!heLiveConfig.deletedShorts) heLiveConfig.deletedShorts = [];
+    if (HE_BASE_SHORTS.some(s => getHeShortKey(s) === key) && !heLiveConfig.deletedShorts.includes(key)) {
+        heLiveConfig.deletedShorts.push(key);
+    }
+    applyHeLiveConfigToSite(heLiveConfig);
+    populateAdminControls();
+    refreshOpenHePreviews();
+    const ok = await saveHeLiveConfig();
+    showHeAdminFeedback(ok ? (isBN ? "✅ শর্টস ভিডিও ডিলিট হয়েছে!" : "✅ Short video deleted!") : getHeAdminLang().syncFail, ok);
+}
+
+async function admDeleteFullEpisode(idx) {
+    const isBN = (typeof currentLang !== "undefined" && currentLang === "BN");
+    const item = welcomeVideoData[idx];
+    if (!item) return;
+    heLiveConfig.addedFullEpisodes = (heLiveConfig.addedFullEpisodes || []).filter(v => v.id !== item.id);
+    if (!heLiveConfig.deletedFullEpisodes) heLiveConfig.deletedFullEpisodes = [];
+    if (HE_BASE_FULL_EPS.some(v => v.id === item.id) && !heLiveConfig.deletedFullEpisodes.includes(item.id)) {
+        heLiveConfig.deletedFullEpisodes.push(item.id);
+    }
+    applyHeLiveConfigToSite(heLiveConfig);
+    populateAdminControls();
+    refreshOpenHePreviews();
+    const ok = await saveHeLiveConfig();
+    showHeAdminFeedback(ok ? (isBN ? "✅ ফুল এপিসোড ডিলিট হয়েছে!" : "✅ Full Episode deleted!") : getHeAdminLang().syncFail, ok);
+}
+
+async function admDeleteBaahubaliShort(idx) {
+    const isBN = (typeof currentLang !== "undefined" && currentLang === "BN");
+    const item = baahubaliFbShortsList[idx];
+    if (!item) return;
+    const key = getHeBhKey(item);
+    heLiveConfig.addedBaahubaliShorts = (heLiveConfig.addedBaahubaliShorts || []).filter(b => getHeBhKey(b) !== key);
+    if (!heLiveConfig.deletedBaahubaliShorts) heLiveConfig.deletedBaahubaliShorts = [];
+    if (HE_BASE_BH_SHORTS.some(b => getHeBhKey(b) === key) && !heLiveConfig.deletedBaahubaliShorts.includes(key)) {
+        heLiveConfig.deletedBaahubaliShorts.push(key);
+    }
+    applyHeLiveConfigToSite(heLiveConfig);
+    refreshOpenHePreviews();
+    const ok = await saveHeLiveConfig();
+    showHeAdminFeedback(ok ? (isBN ? "✅ বাহুবলী শর্টস ডিলিট হয়েছে!" : "✅ Baahubali Short deleted!") : getHeAdminLang().syncFail, ok);
+}
+
+async function admDeleteBaahubaliFullEp() {
+    const isBN = (typeof currentLang !== "undefined" && currentLang === "BN");
+    heLiveConfig.baahubaliFullEmbed = "";
+    const ta = document.getElementById("admBhFullEmbed");
+    if (ta) ta.value = "";
+    applyHeLiveConfigToSite(heLiveConfig);
+    const ok = await saveHeLiveConfig();
+    showHeAdminFeedback(ok ? (isBN ? "✅ বাহুবলী ফুল এপিসোড ডিলিট হয়েছে!" : "✅ Baahubali Full Episode deleted!") : getHeAdminLang().syncFail, ok);
+}
+
+async function admDeleteGalleryPhoto(idx) {
+    const isBN = (typeof currentLang !== "undefined" && currentLang === "BN");
+    const item = window.galleryItems[idx];
+    if (!item) return;
+    const key = getHePhotoKey(item);
+    heLiveConfig.addedPhotos = (heLiveConfig.addedPhotos || []).filter(p => getHePhotoKey(p) !== key);
+    if (!heLiveConfig.deletedPhotos) heLiveConfig.deletedPhotos = [];
+    if (HE_BASE_GALLERY.some(p => getHePhotoKey(p) === key) && !heLiveConfig.deletedPhotos.includes(key)) {
+        heLiveConfig.deletedPhotos.push(key);
+    }
+    applyHeLiveConfigToSite(heLiveConfig);
+    refreshOpenHePreviews();
+    const ok = await saveHeLiveConfig();
+    showHeAdminFeedback(ok ? (isBN ? "✅ গ্যালারির ছবি ডিলিট হয়েছে!" : "✅ Gallery photo deleted!") : getHeAdminLang().syncFail, ok);
+}
 
 function applyHeLiveConfigToSite(cfg) {
     if (!cfg) return;
@@ -10341,13 +10732,19 @@ function applyHeLiveConfigToSite(cfg) {
         if (cov) cov.src = cfg.coverUrl;
     }
 
-    if (Array.isArray(cfg.addedShorts) && cfg.addedShorts.length && typeof originalFeedData !== "undefined") {
-        cfg.addedShorts.forEach(s => {
-            if (!originalFeedData.some(x => x.ytId === s.ytId && x.title === s.title)) {
-                const pos = Math.max(0, Math.min(originalFeedData.length, Number(s.pos) || 0));
-                originalFeedData.splice(pos, 0, { thumb: s.thumb, title: s.title, ytId: s.ytId, isNew: !!s.isNew });
-            }
-        });
+    if (typeof originalFeedData !== "undefined") {
+        const delShorts = new Set(cfg.deletedShorts || []);
+        const rebuiltShorts = HE_BASE_SHORTS.filter(s => !delShorts.has(getHeShortKey(s))).map(s => Object.assign({}, s));
+        if (Array.isArray(cfg.addedShorts)) {
+            cfg.addedShorts.forEach(s => {
+                if (!delShorts.has(getHeShortKey(s)) && !rebuiltShorts.some(x => getHeShortKey(x) === getHeShortKey(s))) {
+                    const pos = Math.max(0, Math.min(rebuiltShorts.length, Number(s.pos) || 0));
+                    rebuiltShorts.splice(pos, 0, { thumb: s.thumb, title: s.title, ytId: s.ytId, isNew: !!s.isNew });
+                }
+            });
+        }
+        originalFeedData.length = 0;
+        originalFeedData.push(...rebuiltShorts);
         if (typeof videoFeedData !== "undefined") {
             videoFeedData.length = 0;
             videoFeedData.push(...originalFeedData, ...originalFeedData, ...originalFeedData);
@@ -10356,51 +10753,66 @@ function applyHeLiveConfigToSite(cfg) {
     }
 
     if (typeof welcomeVideoData !== "undefined") {
-        if (Array.isArray(cfg.addedFullEpisodes) && cfg.addedFullEpisodes.length) {
+        const delFull = new Set(cfg.deletedFullEpisodes || []);
+        const rebuiltFull = HE_BASE_FULL_EPS.filter(v => !delFull.has(v.id)).map(v => Object.assign({}, v));
+        if (Array.isArray(cfg.addedFullEpisodes)) {
             for (let i = cfg.addedFullEpisodes.length - 1; i >= 0; i--) {
                 const ep = cfg.addedFullEpisodes[i];
-                if (!welcomeVideoData.some(x => x.id === ep.id)) {
-                    welcomeVideoData.unshift({ type: "youtube", id: ep.id, thumb: ep.thumb || "", isNew: !!ep.isNew });
+                if (!delFull.has(ep.id) && !rebuiltFull.some(x => x.id === ep.id)) {
+                    rebuiltFull.unshift({ type: "youtube", id: ep.id, thumb: ep.thumb || "", isNew: !!ep.isNew });
                 }
             }
         }
         if (cfg.fullEpNewOverrides) {
-            welcomeVideoData.forEach(v => {
+            rebuiltFull.forEach(v => {
                 if (Object.prototype.hasOwnProperty.call(cfg.fullEpNewOverrides, v.id)) {
                     v.isNew = !!cfg.fullEpNewOverrides[v.id];
                 }
             });
         }
+        welcomeVideoData.length = 0;
+        welcomeVideoData.push(...rebuiltFull);
         if (typeof renderWelcomeVideoGrid === "function") renderWelcomeVideoGrid();
     }
 
-    if (Array.isArray(cfg.addedBaahubaliShorts) && cfg.addedBaahubaliShorts.length && typeof baahubaliFbShortsList !== "undefined") {
-        cfg.addedBaahubaliShorts.forEach(b => {
-            if (!baahubaliFbShortsList.some(x => x.caption === b.caption && x.thumb === b.thumb)) {
-                baahubaliFbShortsList.push({ embedCode: b.embedCode, thumb: b.thumb, caption: b.caption });
-            }
-        });
+    if (typeof baahubaliFbShortsList !== "undefined") {
+        const delBh = new Set(cfg.deletedBaahubaliShorts || []);
+        const rebuiltBh = HE_BASE_BH_SHORTS.filter(b => !delBh.has(getHeBhKey(b))).map(b => Object.assign({}, b));
+        if (Array.isArray(cfg.addedBaahubaliShorts)) {
+            cfg.addedBaahubaliShorts.forEach(b => {
+                if (!delBh.has(getHeBhKey(b)) && !rebuiltBh.some(x => getHeBhKey(x) === getHeBhKey(b))) {
+                    rebuiltBh.push({ embedCode: b.embedCode, thumb: b.thumb, caption: b.caption });
+                }
+            });
+        }
+        baahubaliFbShortsList.length = 0;
+        baahubaliFbShortsList.push(...rebuiltBh);
         if (typeof renderDynamicBaahubaliShortsStack === "function") renderDynamicBaahubaliShortsStack();
     }
 
-    if (typeof cfg.baahubaliFullEmbed === "string" && cfg.baahubaliFullEmbed.trim() !== "") {
+    if (typeof cfg.baahubaliFullEmbed === "string") {
         BAAHUBALI_FULL_EPISODE_EMBED_CODE = cfg.baahubaliFullEmbed;
         if (typeof renderBaahubaliFullEpisodeSection === "function") renderBaahubaliFullEpisodeSection();
     }
 
-    if (Array.isArray(cfg.addedPhotos) && cfg.addedPhotos.length && window.galleryItems) {
-        let changed = false;
-        for (let i = cfg.addedPhotos.length - 1; i >= 0; i--) {
-            const p = cfg.addedPhotos[i];
-            if (!window.galleryItems.some(x => x.img === p.img && x.cap === p.cap)) {
-                window.galleryItems.unshift(p);
-                changed = true;
+    if (window.galleryItems) {
+        const delPhotos = new Set(cfg.deletedPhotos || []);
+        const rebuiltPhotos = HE_BASE_GALLERY.filter(p => !delPhotos.has(getHePhotoKey(p))).map(p => Object.assign({}, p));
+        if (Array.isArray(cfg.addedPhotos)) {
+            for (let i = cfg.addedPhotos.length - 1; i >= 0; i--) {
+                const p = cfg.addedPhotos[i];
+                if (!delPhotos.has(getHePhotoKey(p)) && !rebuiltPhotos.some(x => getHePhotoKey(x) === getHePhotoKey(p))) {
+                    rebuiltPhotos.unshift(p);
+                }
             }
         }
-        if (changed) rerenderMainGalleryDom();
+        window.galleryItems.length = 0;
+        window.galleryItems.push(...rebuiltPhotos);
+        rerenderMainGalleryDom();
     }
 
     applyHeFontsToSite();
+    refreshOpenHePreviews();
 }
 
 async function saveHeLiveConfig() {
