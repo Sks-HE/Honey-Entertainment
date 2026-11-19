@@ -3536,6 +3536,157 @@ html.tab-hidden *, html.tab-hidden *::before, html.tab-hidden *::after { animati
     padding: 14px;
     transition: background 0.4s ease;
 }
+@keyframes hePinInputGlow {
+    0% { opacity: 0; transform: translateY(8px) scale(0.96); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+#hePinModal.active .he-input-eye-wrap {
+    animation: hePinInputGlow 0.42s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+}
+/* অ্যাডমিন প্যানেল একদম পুরো পেজ জুড়ে (কোনো ফাঁকা জায়গা ছাড়া) */
+#heAdminDashboardModal {
+    padding: 0 !important;
+    background: var(--bg-color) !important;
+    overflow: hidden;
+}
+.he-admin-bg-wallpaper {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 22%;
+    filter: blur(28px) saturate(1.25) brightness(0.65);
+    transform: scale(1.12);
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 0;
+}
+body.light-mode .he-admin-bg-wallpaper {
+    filter: blur(28px) saturate(1.15) brightness(1.05);
+    opacity: 0.42;
+}
+body.honey-mode .he-admin-bg-wallpaper {
+    filter: blur(28px) saturate(1.2) brightness(0.95);
+    opacity: 0.48;
+}
+#heAdminDashboardModal .he-admin-panel {
+    position: relative;
+    z-index: 1;
+    width: 100% !important;
+    height: 100dvh !important;
+    max-width: 100% !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+/* Add ও Preview বাটনের রেসপন্সিভ সারি (ফোনে নিচে, ল্যাপটপে পাশে) */
+.he-action-btn-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 12px;
+}
+.he-action-btn-row .he-btn-primary,
+.he-action-btn-row .he-draft-preview-btn {
+    margin-top: 0 !important;
+}
+@media (min-width: 640px) {
+    .he-action-btn-row.has-preview {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+.he-draft-preview-btn {
+    width: 100%;
+    padding: 12px 18px;
+    border-radius: 14px;
+    border: 1.5px solid var(--accent);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-color);
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+.he-draft-preview-btn.visible {
+    display: flex;
+    animation: heSecFadeIn 0.25s ease;
+}
+.he-draft-preview-btn:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, var(--accent), #fb923c);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 8px 22px var(--glow-color);
+}
+.he-draft-preview-box {
+    display: none;
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.28);
+    border: 1.5px dashed var(--accent);
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: heSecFadeIn 0.25s ease;
+}
+body.light-mode .he-draft-preview-box,
+body.honey-mode .he-draft-preview-box {
+    background: rgba(255, 255, 255, 0.55);
+}
+.he-draft-preview-box.open {
+    display: flex;
+}
+.he-draft-preview-hint {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    text-align: center;
+}
+/* ফুলস্ক্রিন প্রিভিউ চলাকালে প্লেয়ার/গ্যালারি অ্যাডমিন প্যানেলের উপরে থাকবে */
+.he-preview-on-top {
+    z-index: 99995 !important;
+}
+.he-preview-menu-on-top {
+    z-index: 99997 !important;
+}
+.he-preview-mode-banner {
+    display: none;
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 99998;
+    padding: 7px 20px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, var(--accent), #fb923c);
+    color: #fff;
+    font-family: 'Hind Siliguri', 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.45), 0 0 16px var(--glow-color);
+    border: 1.5px solid rgba(255,255,255,0.75);
+    pointer-events: none;
+    white-space: nowrap;
+}
+.he-preview-mode-banner.active {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+html[data-he-f-admin="1"] .he-preview-mode-banner,
+html[data-he-f-admin="1"] .he-draft-preview-btn,
+html[data-he-f-admin="1"] .he-draft-preview-hint {
+    font-family: var(--he-f-admin) !important;
+}
 body.light-mode .he-sec-backdrop {
     background: rgba(255, 255, 255, 0.34);
 }
@@ -9243,6 +9394,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </button>
     </div>
 </div>
+<div id="hePreviewModeBanner" class="he-preview-mode-banner">👁️ <span id="hePreviewModeBannerText">Preview Video</span></div>
 <!-- ===== PIN ENTRY MODAL ===== -->
 <div class="he-sec-backdrop" id="hePinModal">
     <div class="he-pin-card" id="hePinCard" onclick="event.stopPropagation()">
@@ -9267,6 +9419,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- ===== ADMIN CONTROL PANEL MODAL ===== -->
 <div class="he-sec-backdrop" id="heAdminDashboardModal">
+    <img id="heAdminBgWallpaper" class="he-admin-bg-wallpaper" src="" alt="" aria-hidden="true">
     <div class="he-admin-panel" onclick="event.stopPropagation()">
         <div class="he-admin-header">
             <div class="he-admin-header-left">
@@ -9371,7 +9524,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
                     <label class="he-check-row"><input type="checkbox" id="admShortIsNew" checked> <span id="admLblShortNew">Show "NEW" Badge</span></label>
-                    <button type="button" class="he-btn-primary" id="admBtnAddShort" onclick="admAddShortVideo()">Add Short Video</button>
+                    <div class="he-action-btn-row" id="heRowShortBtn">
+                        <button type="button" class="he-btn-primary" id="admBtnAddShort" onclick="admAddShortVideo()">Add Short Video</button>
+                        <button type="button" class="he-draft-preview-btn" id="admBtnDraftPrevShort" onclick="toggleHeDraftPreview('short')">👁️ <span class="he-draft-prev-lbl">Preview</span></button>
+                    </div>
+                    <div class="he-draft-preview-box" id="heDraftPreviewShort"></div>
                     <div class="he-preview-drawer" id="hePreviewShorts"></div>
                 </div>
 
@@ -9391,7 +9548,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
                     <label class="he-check-row"><input type="checkbox" id="admFullEpIsNew" checked> <span id="admLblFullEpNew">Show "NEW" Badge</span></label>
-                    <button type="button" class="he-btn-primary" id="admBtnAddFullEp" onclick="admAddFullEpisode()">Add Full Episode</button>
+                    <div class="he-action-btn-row" id="heRowFullEpBtn">
+                        <button type="button" class="he-btn-primary" id="admBtnAddFullEp" onclick="admAddFullEpisode()">Add Full Episode</button>
+                        <button type="button" class="he-draft-preview-btn" id="admBtnDraftPrevFullEp" onclick="toggleHeDraftPreview('fullEp')">👁️ <span class="he-draft-prev-lbl">Preview</span></button>
+                    </div>
+                    <div class="he-draft-preview-box" id="heDraftPreviewFullEp"></div>
                     <div class="he-preview-drawer" id="hePreviewFullEp"></div>
 
                     <div style="margin-top:14px;">
@@ -9473,7 +9634,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="he-btn-primary" id="admBtnAddPhoto" onclick="admAddNewPhoto()">Add New Photo</button>
+                    <div class="he-action-btn-row" id="heRowPhotoBtn">
+                        <button type="button" class="he-btn-primary" id="admBtnAddPhoto" onclick="admAddNewPhoto()">Add New Photo</button>
+                        <button type="button" class="he-draft-preview-btn" id="admBtnDraftPrevPhoto" onclick="toggleHeDraftPreview('photo')">👁️ <span class="he-draft-prev-lbl">Preview</span></button>
+                    </div>
+                    <div class="he-draft-preview-box" id="heDraftPreviewPhoto"></div>
                     <div class="he-preview-drawer" id="hePreviewGallery"></div>
                 </div>
             </div>
@@ -11042,6 +11207,313 @@ async function admChangePin() {
         document.getElementById("admNewPin").value = "";
     }
 }
+
+/* ===== ADMIN FULL-PAGE WALLPAPER + DRAFT PREVIEW SYSTEM ===== */
+function syncHeAdminWallpaperBg() {
+    const bgImg = document.getElementById("heAdminBgWallpaper");
+    const mainCover = document.querySelector(".bottom-cover-photo-wrap img");
+    if (bgImg && mainCover && mainCover.src) {
+        bgImg.src = mainCover.src;
+    }
+}
+
+function showHePreviewBanner(isVideo) {
+    const banner = document.getElementById("hePreviewModeBanner");
+    const txt = document.getElementById("hePreviewModeBannerText");
+    const isBN = (typeof currentLang !== "undefined" && currentLang === "BN");
+    if (txt) {
+        txt.textContent = isVideo
+            ? (isBN ? "প্রিভিউ ভিডিও" : "Preview Video")
+            : (isBN ? "প্রিভিউ" : "Preview");
+    }
+    if (banner) banner.classList.add("active");
+}
+
+function hideHePreviewBanner() {
+    const banner = document.getElementById("hePreviewModeBanner");
+    if (banner) banner.classList.remove("active");
+}
+
+function updateHeDraftPreviewButtonsVisibility() {
+    const check = (cond, btnId, rowId, boxId) => {
+        const btn = document.getElementById(btnId);
+        const row = document.getElementById(rowId);
+        const box = document.getElementById(boxId);
+        if (btn) btn.classList.toggle("visible", !!cond);
+        if (row) row.classList.toggle("has-preview", !!cond);
+        if (!cond && box) {
+            box.classList.remove("open");
+            box.innerHTML = "";
+        }
+    };
+
+    const sYt = extractYtIdSmart(document.getElementById("admShortYt")?.value || "");
+    const sTh = (document.getElementById("admShortThumb")?.value || "").trim();
+    const sTi = (document.getElementById("admShortTitle")?.value || "").trim();
+    check(sYt && sTh && sTi, "admBtnDraftPrevShort", "heRowShortBtn", "heDraftPreviewShort");
+
+    const fYt = extractYtIdSmart(document.getElementById("admFullEpYt")?.value || "");
+    const fTh = (document.getElementById("admFullEpThumb")?.value || "").trim();
+    check(fYt && fTh, "admBtnDraftPrevFullEp", "heRowFullEpBtn", "heDraftPreviewFullEp");
+
+    const bhTh = (document.getElementById("admBhThumb")?.value || "").trim();
+    const bhTi = (document.getElementById("admBhTitle")?.value || "").trim();
+    const bhEm = (document.getElementById("admBhEmbed")?.value || "").trim();
+    check(bhTh && bhTi && bhEm, "admBtnDraftPrevBhShort", "heRowBhShortBtn", "heDraftPreviewBhShort");
+
+    const bhFull = (document.getElementById("admBhFullEmbed")?.value || "").trim();
+    check(!!bhFull, "admBtnDraftPrevBhFull", "heRowBhFullBtn", "heDraftPreviewBhFull");
+
+    const pImg = (document.getElementById("admPhotoImg")?.value || "").trim();
+    const pCap = (document.getElementById("admPhotoCap")?.value || "").trim();
+    check(pImg && pCap, "admBtnDraftPrevPhoto", "heRowPhotoBtn", "heDraftPreviewPhoto");
+}
+
+function toggleHeDraftPreview(type) {
+    const map = {
+        short: "heDraftPreviewShort",
+        fullEp: "heDraftPreviewFullEp",
+        bhShort: "heDraftPreviewBhShort",
+        bhFull: "heDraftPreviewBhFull",
+        photo: "heDraftPreviewPhoto"
+    };
+    const box = document.getElementById(map[type]);
+    if (!box) return;
+    if (box.classList.contains("open")) {
+        box.classList.remove("open");
+        return;
+    }
+    renderHeDraftPreviewCard(type, box);
+    box.classList.add("open");
+}
+
+function renderHeDraftPreviewCard(type, box) {
+    const isBN = (typeof currentLang !== "undefined" && currentLang === "BN");
+    const clickHint = isBN ? "ফুলস্ক্রিন প্রিভিউ দেখতে ক্লিক করুন" : "Click to view fullscreen preview";
+
+    if (type === "short") {
+        const thumb = document.getElementById("admShortThumb").value.trim();
+        const title = document.getElementById("admShortTitle").value.trim();
+        const isNew = document.getElementById("admShortIsNew").checked;
+        box.innerHTML = `
+            <div class="he-draft-preview-hint">▶ ${clickHint}</div>
+            <div class="feed-item" style="margin:4px auto;transform:scale(1);opacity:1;" onclick="openHeDraftFullscreen('short')">
+                <img src="${thumb}" alt="Preview">
+                ${isNew ? '<div class="new-badge">NEW</div>' : ''}
+                <div class="feed-item-title">${title}</div>
+            </div>
+        `;
+    } else if (type === "fullEp") {
+        const thumb = document.getElementById("admFullEpThumb").value.trim();
+        const isNew = document.getElementById("admFullEpIsNew").checked;
+        box.innerHTML = `
+            <div class="he-draft-preview-hint">▶ ${clickHint}</div>
+            <div class="welcome-video-card" style="width:100%;max-width:300px;" onclick="openHeDraftFullscreen('fullEp')">
+                <img class="welcome-video-thumbnail" src="${thumb}" alt="Preview">
+                ${isNew ? '<div class="new-badge">NEW</div>' : ''}
+                <div class="welcome-video-play-icon" style="opacity:1;"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+            </div>
+        `;
+    } else if (type === "bhShort") {
+        const thumb = document.getElementById("admBhThumb").value.trim();
+        const title = document.getElementById("admBhTitle").value.trim();
+        box.innerHTML = `
+            <div class="he-draft-preview-hint">▶ ${clickHint}</div>
+            <div class="baahubali-stack-layer layer-1" style="position:relative;width:170px;height:260px;cursor:pointer;" onclick="openHeDraftFullscreen('bhShort')">
+                <img src="${thumb}" alt="Preview">
+                <div class="baahubali-stack-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+                <div class="baahubali-stack-footer">${title}</div>
+            </div>
+        `;
+    } else if (type === "bhFull") {
+        const embed = document.getElementById("admBhFullEmbed").value.trim();
+        box.innerHTML = `
+            <div class="he-draft-preview-hint">▶ ${clickHint}</div>
+            <div class="baahubali-full-ep-box has-video" style="max-width:360px;cursor:pointer;" onclick="openHeDraftFullscreen('bhFull')">
+                ${prepareFacebookEmbedHtml(embed)}
+            </div>
+            <button type="button" class="he-draft-preview-btn visible" style="max-width:260px;" onclick="openHeDraftFullscreen('bhFull')">⛶ ${isBN ? 'ফুলস্ক্রিনে দেখুন' : 'View Fullscreen'}</button>
+        `;
+    } else if (type === "photo") {
+        const img = document.getElementById("admPhotoImg").value.trim();
+        const cap = document.getElementById("admPhotoCap").value.trim();
+        const date = document.getElementById("admPhotoDate").value.trim();
+        const time = document.getElementById("admPhotoTime").value.trim();
+        const dateDisplay = date ? `<span class="post-date">${formatDate(date)}</span>` : "";
+        const timeDisplay = time ? `<span class="post-time">${time}</span>` : "";
+        const dtHtml = (dateDisplay || timeDisplay) ? `<div class="post-datetime">${dateDisplay}${timeDisplay}</div>` : "";
+        box.innerHTML = `
+            <div class="he-draft-preview-hint">🖼️ ${clickHint}</div>
+            <div class="flex flex-col gap-2" style="width:170px;cursor:pointer;" onclick="openHeDraftFullscreen('photo')">
+                <p class="post-caption" style="pointer-events:none;">${cap}</p>
+                ${dtHtml}
+                <div class="collection-card">
+                    <div class="inner-img"><img src="${img}" alt="Preview"></div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+let heActiveDraftPreviewType = null;
+
+function openHeDraftFullscreen(type) {
+    heActiveDraftPreviewType = type;
+
+    if (type === "short") {
+        const ytId = extractYtIdSmart(document.getElementById("admShortYt").value);
+        const title = document.getElementById("admShortTitle").value.trim();
+        const overlay = document.getElementById("videoOverlay");
+        if (!overlay) return;
+        overlay.classList.add("he-preview-on-top", "active");
+        const wrapper = overlay.querySelector(".short-player-wrapper");
+        if (wrapper) wrapper.classList.remove("is-paused");
+        const iframeContainer = document.getElementById("videoFeedIframeContainer");
+        if (iframeContainer) iframeContainer.innerHTML = `<div id="feedPlayerTarget" style="width:100%;height:100%;"></div>`;
+        if (typeof feedYtPlayer !== "undefined" && feedYtPlayer && typeof feedYtPlayer.destroy === "function") {
+            try { feedYtPlayer.destroy(); } catch (e) {}
+        }
+        feedYtPlayer = new YT.Player("feedPlayerTarget", {
+            height: "100%", width: "100%", videoId: ytId,
+            playerVars: { autoplay: 1, controls: 0, modestbranding: 1, rel: 0, playsinline: 1, loop: 1, playlist: ytId },
+            events: {
+                onReady: function(ev) { ev.target.playVideo(); try { ev.target.unMute(); ev.target.setVolume(100); } catch (e) {} }
+            }
+        });
+        if (typeof animateShortCaption === "function") animateShortCaption(title);
+        const counter = document.getElementById("shortVideoCounter");
+        if (counter) counter.textContent = "PREVIEW";
+        showHePreviewBanner(true);
+    } else if (type === "fullEp" || type === "bhFull") {
+        const modal = document.getElementById("welcomeVideoModal");
+        const content = document.getElementById("welcomeVideoModalContent");
+        const holder = document.getElementById("welcomeIframeHolder");
+        if (!modal || !content || !holder) return;
+        if (modal.parentElement !== document.body) document.body.appendChild(modal);
+        isWelcomePopupMode = false;
+        modal.classList.remove("popup-mode");
+        modal.classList.add("he-preview-on-top", "active");
+        content.classList.remove("fullscreen-mode");
+        if (typeof resetWelcomePopupInlineStyles === "function") resetWelcomePopupInlineStyles(content);
+        if (type === "fullEp") {
+            const ytId = extractYtIdSmart(document.getElementById("admFullEpYt").value);
+            holder.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${ytId}?rel=0&modestbranding=1&playsinline=1&autoplay=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+        } else {
+            const embed = document.getElementById("admBhFullEmbed").value.trim();
+            holder.innerHTML = prepareFacebookEmbedHtml(embed);
+        }
+        showHePreviewBanner(true);
+    } else if (type === "bhShort") {
+        const embedCode = document.getElementById("admBhEmbed").value.trim();
+        const thumb = document.getElementById("admBhThumb").value.trim();
+        const caption = document.getElementById("admBhTitle").value.trim();
+        const overlay = document.getElementById("baahubaliReelsOverlay");
+        if (!overlay) return;
+        overlay.classList.add("he-preview-on-top", "active");
+        isBhReelsOverlayOpen = true;
+        const counter = document.getElementById("bhReelCounter");
+        const capBar = document.getElementById("bhReelCaptionBar");
+        if (counter) counter.textContent = "PREVIEW";
+        if (capBar) capBar.textContent = caption;
+        if (typeof renderAndAutoplayBhReel === "function") renderAndAutoplayBhReel({ embedCode, thumb, caption });
+        showHePreviewBanner(true);
+    } else if (type === "photo") {
+        const draftItem = {
+            img: document.getElementById("admPhotoImg").value.trim(),
+            cap: document.getElementById("admPhotoCap").value.trim(),
+            date: document.getElementById("admPhotoDate").value.trim(),
+            time: document.getElementById("admPhotoTime").value.trim(),
+            ytId: extractYtIdSmart(document.getElementById("admPhotoYt").value),
+            start: Number(document.getElementById("admPhotoStart").value) || 0,
+            end: Number(document.getElementById("admPhotoEnd").value) || 30
+        };
+        window.galleryItems.unshift(draftItem);
+        const fo = document.getElementById("fullscreenOverlay");
+        const pm = document.getElementById("photoDetailsMenu");
+        if (fo) fo.classList.add("he-preview-on-top");
+        if (pm) pm.classList.add("he-preview-menu-on-top");
+        openFull(0);
+        showHePreviewBanner(false);
+    }
+}
+
+(function hookHeDraftPreviewSystem() {
+    const _origOpenAdm = window.openHeAdminDashboard;
+    if (typeof _origOpenAdm === "function") {
+        window.openHeAdminDashboard = function() {
+            syncHeAdminWallpaperBg();
+            _origOpenAdm();
+            updateHeDraftPreviewButtonsVisibility();
+        };
+    }
+    const _origApplyLang = window.applyHeAdminLanguageUI;
+    if (typeof _origApplyLang === "function") {
+        window.applyHeAdminLanguageUI = function() {
+            _origApplyLang();
+            const isBN = (typeof currentLang !== "undefined" && currentLang === "BN");
+            document.querySelectorAll(".he-draft-prev-lbl").forEach(el => {
+                el.textContent = isBN ? "প্রিভিউ" : "Preview";
+            });
+            if (heActiveDraftPreviewType) {
+                showHePreviewBanner(heActiveDraftPreviewType !== "photo");
+            }
+        };
+    }
+    const _origCloseShort = window.closeVideoFeed;
+    if (typeof _origCloseShort === "function") {
+        window.closeVideoFeed = function() {
+            _origCloseShort();
+            const vo = document.getElementById("videoOverlay");
+            if (vo) vo.classList.remove("he-preview-on-top");
+            if (heActiveDraftPreviewType === "short") { heActiveDraftPreviewType = null; hideHePreviewBanner(); }
+        };
+    }
+    const _origCloseWelcome = window.closeWelcomeVideoModal;
+    if (typeof _origCloseWelcome === "function") {
+        window.closeWelcomeVideoModal = function() {
+            _origCloseWelcome();
+            const wm = document.getElementById("welcomeVideoModal");
+            if (wm) wm.classList.remove("he-preview-on-top");
+            if (heActiveDraftPreviewType === "fullEp" || heActiveDraftPreviewType === "bhFull") { heActiveDraftPreviewType = null; hideHePreviewBanner(); }
+        };
+    }
+    const _origCloseBh = window.closeBaahubaliReels;
+    if (typeof _origCloseBh === "function") {
+        window.closeBaahubaliReels = function() {
+            _origCloseBh();
+            const bo = document.getElementById("baahubaliReelsOverlay");
+            if (bo) bo.classList.remove("he-preview-on-top");
+            if (heActiveDraftPreviewType === "bhShort") { heActiveDraftPreviewType = null; hideHePreviewBanner(); }
+        };
+    }
+    const _origCloseFull = window.closeFull;
+    if (typeof _origCloseFull === "function") {
+        window.closeFull = function() {
+            const wasPhotoDraft = (heActiveDraftPreviewType === "photo");
+            _origCloseFull();
+            const fo = document.getElementById("fullscreenOverlay");
+            const pm = document.getElementById("photoDetailsMenu");
+            if (fo) fo.classList.remove("he-preview-on-top");
+            if (pm) pm.classList.remove("he-preview-menu-on-top");
+            if (wasPhotoDraft) {
+                window.galleryItems.shift();
+                heActiveDraftPreviewType = null;
+                hideHePreviewBanner();
+            }
+        };
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        ["admShortYt", "admShortThumb", "admShortTitle", "admFullEpYt", "admFullEpThumb", "admBhThumb", "admBhTitle", "admBhEmbed", "admBhFullEmbed", "admPhotoImg", "admPhotoCap", "admPhotoDate", "admPhotoTime", "admPhotoYt"].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener("input", updateHeDraftPreviewButtonsVisibility);
+                el.addEventListener("change", updateHeDraftPreviewButtonsVisibility);
+            }
+        });
+        syncHeAdminWallpaperBg();
+    });
+})();
 
 /* ===== AUTO-CLOSE ADMIN PANEL & PIN MODAL ON TAB SWITCH / BROWSER CLOSE ===== */
 function forceCloseHeSecurityOnLeave() {
