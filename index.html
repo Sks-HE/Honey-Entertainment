@@ -3540,9 +3540,24 @@ html.tab-hidden *, html.tab-hidden *::before, html.tab-hidden *::after { animati
     0% { opacity: 0; transform: translateY(8px) scale(0.96); }
     100% { opacity: 1; transform: translateY(0) scale(1); }
 }
-#hePinModal.active .he-input-eye-wrap {
-    animation: hePinInputGlow 0.42s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+/* ===== PIN ENTRY BOX MARVELOUS ANIMATIONS ===== */
+@keyframes hePinBorderGlow {
+    0%, 100% { box-shadow: 0 22px 55px rgba(0,0,0,0.5), 0 0 22px var(--glow-color); }
+    50% { box-shadow: 0 26px 65px rgba(0,0,0,0.6), 0 0 42px var(--accent); }
 }
+@keyframes hePinItemSlide {
+    0% { opacity: 0; transform: translateY(14px) scale(0.95); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+#hePinModal.active .he-pin-card {
+    animation: heCardPop 0.42s cubic-bezier(0.22, 1, 0.36, 1), hePinBorderGlow 2.8s ease-in-out infinite 0.5s;
+}
+#hePinModal.active .he-pin-title { animation: hePinItemSlide 0.38s ease 0.08s both; }
+#hePinModal.active .he-pin-sub { animation: hePinItemSlide 0.38s ease 0.14s both; }
+#hePinModal.active .he-input-eye-wrap {
+    animation: hePinInputGlow 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+}
+#hePinModal.active #heUnlockBtn { animation: hePinItemSlide 0.42s ease 0.28s both; }
 /* অ্যাডমিন প্যানেল একদম পুরো পেজ জুড়ে (কোনো ফাঁকা জায়গা ছাড়া) */
 #heAdminDashboardModal {
     padding: 0 !important;
@@ -3589,41 +3604,60 @@ body.honey-mode .he-admin-bg-wallpaper {
     margin-top: 12px;
 }
 .he-action-btn-row .he-btn-primary,
-.he-action-btn-row .he-draft-preview-btn {
-    margin-top: 0 !important;
+@keyframes heBtnSweep {
+    0% { left: -120%; }
+    45%, 100% { left: 140%; }
 }
-@media (min-width: 640px) {
-    .he-action-btn-row.has-preview {
-        grid-template-columns: 1fr 1fr;
-    }
+@keyframes hePreviewPulse {
+    0%, 100% { box-shadow: 0 4px 16px rgba(0,0,0,0.22), 0 0 10px var(--glow-color); }
+    50% { box-shadow: 0 6px 22px rgba(0,0,0,0.3), 0 0 22px var(--accent); }
 }
 .he-draft-preview-btn {
+    position: relative;
+    overflow: hidden;
     width: 100%;
     padding: 12px 18px;
     border-radius: 14px;
-    border: 1.5px solid var(--accent);
-    background: rgba(255, 255, 255, 0.08);
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    background: linear-gradient(135deg, rgba(244, 114, 182, 0.22), rgba(251, 146, 60, 0.22));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     color: var(--text-color);
     font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Inter', sans-serif;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 800;
+    letter-spacing: 0.4px;
     cursor: pointer;
     display: none;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), background 0.28s ease, box-shadow 0.28s ease;
+    animation: hePreviewPulse 2.4s ease-in-out infinite;
+}
+.he-draft-preview-btn::before,
+.he-preview-toggle-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 75%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    transform: skewX(-20deg);
+    animation: heBtnSweep 3.2s ease-in-out infinite;
+    pointer-events: none;
 }
 .he-draft-preview-btn.visible {
     display: flex;
-    animation: heSecFadeIn 0.25s ease;
+    animation: heSecFadeIn 0.28s ease, hePreviewPulse 2.4s ease-in-out infinite;
 }
 .he-draft-preview-btn:hover {
-    transform: translateY(-2px);
+    transform: translateY(-2.5px) scale(1.015);
     background: linear-gradient(135deg, var(--accent), #fb923c);
     color: #fff;
-    border-color: transparent;
-    box-shadow: 0 8px 22px var(--glow-color);
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 10px 26px var(--glow-color);
 }
 .he-draft-preview-box {
     display: none;
@@ -3657,33 +3691,52 @@ body.honey-mode .he-draft-preview-box {
 .he-preview-menu-on-top {
     z-index: 99997 !important;
 }
+/* একদম উপরে আলাদা প্রিভিউ লাইন/স্ট্রিপ — ক্যাপশন বা বাটন কিছুই ঢাকবে না */
 .he-preview-mode-banner {
     display: none;
     position: fixed;
-    top: 16px;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
     z-index: 99998;
-    padding: 7px 20px;
-    border-radius: 30px;
-    background: linear-gradient(135deg, var(--accent), #fb923c);
+    background: linear-gradient(90deg, rgba(15,15,22,0.92), var(--accent), #fb923c, var(--accent), rgba(15,15,22,0.92));
     color: #fff;
     font-family: 'Hind Siliguri', 'Orbitron', sans-serif;
-    font-size: 13px;
+    font-size: 14.5px;
     font-weight: 800;
-    letter-spacing: 0.8px;
-    box-shadow: 0 6px 22px rgba(0,0,0,0.45), 0 0 16px var(--glow-color);
-    border: 1.5px solid rgba(255,255,255,0.75);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.45);
+    border-bottom: 2px solid rgba(255,255,255,0.65);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.45), 0 0 18px var(--glow-color);
     pointer-events: none;
-    white-space: nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 .he-preview-mode-banner.active {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    display: flex;
+}
+/* প্রিভিউ লাইন চালু থাকলে নিচের ক্যাপশন, ক্লোজ ও মেনু বাটন একটু নিচে নামবে */
+body.he-preview-active #fullscreenOverlay .close-btn,
+body.he-preview-active #fullscreenOverlay .three-dot-btn {
+    top: 52px !important;
+}
+body.he-preview-active #fullscreenOverlay .caption-overlay {
+    top: 58px !important;
+}
+body.he-preview-active #fullscreenOverlay .top-decorative-bar {
+    top: 108px !important;
+}
+body.he-preview-active #videoOverlay,
+body.he-preview-active #baahubaliReelsOverlay,
+body.he-preview-active #welcomeVideoModal {
+    padding-top: 50px !important;
 }
 html[data-he-f-admin="1"] .he-preview-mode-banner,
 html[data-he-f-admin="1"] .he-draft-preview-btn,
+html[data-he-f-admin="1"] .he-preview-toggle-btn,
 html[data-he-f-admin="1"] .he-draft-preview-hint {
     font-family: var(--he-f-admin) !important;
 }
@@ -4614,19 +4667,23 @@ body.honey-mode .he-font-menu {
 
 /* ===== PREVIEW & DELETE SYSTEM ===== */
 .he-preview-toggle-btn {
+    position: relative;
+    overflow: hidden;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 13px;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.08);
+    padding: 7px 14px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(244, 114, 182, 0.18), rgba(251, 146, 60, 0.18));
     border: 1.5px solid var(--accent);
     color: var(--text-color);
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 800;
+    letter-spacing: 0.3px;
     cursor: pointer;
     transition: all 0.25s ease;
     flex-shrink: 0;
+    animation: hePreviewPulse 2.8s ease-in-out infinite;
 }
 .he-preview-toggle-btn:hover,
 .he-preview-toggle-btn.active {
@@ -8257,14 +8314,27 @@ function applyFilter(filterType, btnElement) {
 }
 
 window.addEventListener('resize', updateSwipeHintPosition);
-window.addEventListener('load', () => {
-const loader = document.getElementById('pageLoader');
-setTimeout(() => {
-loader.classList.add('hidden');
-setTimeout(() => { loader.style.display = 'none'; }, 600);
-}, 400);
-setTimeout(initScrollReveal, 100);
-});
+(function fastHidePageLoader() {
+    let loaderHidden = false;
+    function hideNow() {
+        if (loaderHidden) return;
+        loaderHidden = true;
+        const loader = document.getElementById('pageLoader');
+        if (loader) {
+            loader.style.transition = 'opacity 0.3s ease, visibility 0.3s ease';
+            loader.classList.add('hidden');
+            setTimeout(() => { loader.style.display = 'none'; }, 320);
+        }
+        setTimeout(initScrollReveal, 50);
+    }
+    if (document.readyState === 'interactive' || document.readyState === 'complete') {
+        setTimeout(hideNow, 250);
+    } else {
+        document.addEventListener('DOMContentLoaded', () => setTimeout(hideNow, 250), { once: true });
+    }
+    // সর্বোচ্চ ০.৭ সেকেন্ডের মধ্যে যেকোনো অবস্থায় লোডার সরে যাবে (মোট ১ সেকেন্ডের কম)
+    setTimeout(hideNow, 700);
+})();
 document.addEventListener('DOMContentLoaded', () => {
     renderVideoFeed();
         renderWelcomeVideoGrid();
@@ -9583,13 +9653,21 @@ document.addEventListener('DOMContentLoaded', function() {
                         <label class="he-label" id="admLblBhEmbed">Facebook Embed Code (&lt;iframe ...&gt;)</label>
                         <textarea id="admBhEmbed" class="he-textarea" rows="2" placeholder="Paste Facebook <iframe ...></iframe> code"></textarea>
                     </div>
-                    <button type="button" class="he-btn-primary" id="admBtnAddBhShort" onclick="admAddBaahubaliShort()">Add Baahubali 2D Short</button>
+                    <div class="he-action-btn-row" id="heRowBhShortBtn">
+                        <button type="button" class="he-btn-primary" id="admBtnAddBhShort" onclick="admAddBaahubaliShort()">Add Baahubali 2D Short</button>
+                        <button type="button" class="he-draft-preview-btn" id="admBtnDraftPrevBhShort" onclick="toggleHeDraftPreview('bhShort')">👁️ <span class="he-draft-prev-lbl">Preview</span></button>
+                    </div>
+                    <div class="he-draft-preview-box" id="heDraftPreviewBhShort"></div>
                     <div class="he-preview-drawer" id="hePreviewBaahubali"></div>
 
                     <div style="margin-top:16px;padding-top:14px;border-top:1px dashed rgba(128,128,128,0.28);">
                         <label class="he-label" id="admLblBhFull">Baahubali 2D Full Episode Facebook Embed Code</label>
                         <textarea id="admBhFullEmbed" class="he-textarea" rows="2" placeholder="Paste 16:9 Facebook <iframe ...></iframe> code"></textarea>
-                        <button type="button" class="he-btn-primary" id="admBtnSaveBhFull" onclick="admSaveBaahubaliFullEp()">Save Baahubali Full Episode</button>
+                        <div class="he-action-btn-row" id="heRowBhFullBtn">
+                            <button type="button" class="he-btn-primary" id="admBtnSaveBhFull" onclick="admSaveBaahubaliFullEp()">Save Baahubali Full Episode</button>
+                            <button type="button" class="he-draft-preview-btn" id="admBtnDraftPrevBhFull" onclick="toggleHeDraftPreview('bhFull')">👁️ <span class="he-draft-prev-lbl">Preview</span></button>
+                        </div>
+                        <div class="he-draft-preview-box" id="heDraftPreviewBhFull"></div>
                         <button type="button" class="he-btn-danger" id="admBtnDelBhFull" onclick="admDeleteBaahubaliFullEp()">🗑️ Delete Baahubali Full Episode</button>
                     </div>
                 </div>
@@ -11216,7 +11294,6 @@ function syncHeAdminWallpaperBg() {
         bgImg.src = mainCover.src;
     }
 }
-
 function showHePreviewBanner(isVideo) {
     const banner = document.getElementById("hePreviewModeBanner");
     const txt = document.getElementById("hePreviewModeBannerText");
@@ -11227,13 +11304,14 @@ function showHePreviewBanner(isVideo) {
             : (isBN ? "প্রিভিউ" : "Preview");
     }
     if (banner) banner.classList.add("active");
+    document.body.classList.add("he-preview-active");
 }
 
 function hideHePreviewBanner() {
     const banner = document.getElementById("hePreviewModeBanner");
     if (banner) banner.classList.remove("active");
+    document.body.classList.remove("he-preview-active");
 }
-
 function updateHeDraftPreviewButtonsVisibility() {
     const check = (cond, btnId, rowId, boxId) => {
         const btn = document.getElementById(btnId);
