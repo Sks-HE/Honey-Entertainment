@@ -13,6 +13,8 @@
 <link rel="preconnect" href="https://i.pinimg.com">
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Inter:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
 <script src="https://www.youtube.com/iframe_api" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
 /* ===== GLOBAL SMOOTHNESS ENHANCEMENTS ===== */
 html {
@@ -3747,12 +3749,12 @@ body.honey-mode .he-sec-backdrop {
     background: rgba(254, 243, 199, 0.32);
 }
 .he-sec-backdrop.active {
-    display: flex;
-    animation: heSecFadeIn 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+display: flex;
+animation: heSecFadeIn 0.15s ease-out forwards;
 }
 @keyframes heSecFadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+from { opacity: 0; transform: scale(0.98); }
+to { opacity: 1; transform: scale(1); }
 }
 @keyframes heCardPop {
     0% { opacity: 0; transform: scale(0.92) translateY(20px); }
@@ -9481,7 +9483,10 @@ document.addEventListener('DOMContentLoaded', function() {
 <button class="he-back-arrow-btn" id="heDeleteCancelTopBtn" style="position:absolute;top:14px;left:14px;width:36px;height:36px;" onclick="closeHeDeleteConfirm()" aria-label="Cancel">
 <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
 </button>
-<div class="he-shield-ring" style="background:linear-gradient(135deg,rgba(239,68,68,0.18),rgba(244,114,182,0.18));border-color:#ef4444;">
+<div style="position:absolute;top:14px;left:14px;width:56px;height:56px;border-radius:12px;overflow:hidden;border:2px solid var(--accent);box-shadow:0 4px 15px var(--glow-color);">
+<img id="heDeleteConfirmLogo" src="" alt="Logo" style="width:100%;height:100%;object-fit:cover;">
+</div>
+<div class="he-shield-ring" style="margin-top:70px;background:linear-gradient(135deg,rgba(239,68,68,0.18),rgba(244,114,182,0.18));border-color:#ef4444;">
 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="9" x2="12" y2="13"/><circle cx="12" cy="16" r="0.5" fill="#ef4444"/></svg>
 </div>
 <h3 class="he-pin-title" id="heDeleteConfirmTitle" style="background:linear-gradient(90deg,var(--text-color),#ef4444,#fb923c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Confirm Delete</h3>
@@ -10838,33 +10843,34 @@ function verifyHeAdminPin() {
         }
     }
 }
-
 function openHeAdminDashboard() {
-    const modal = document.getElementById("heAdminDashboardModal");
-    if (!modal) return;
-    const wasActive = modal.classList.contains("active");
-    document.body.classList.add("admin-panel-open");
-    closeHeAdmSettingsDrawer();
-    applyHeAdminLanguageUI();
-    populateAdminControls();
-    modal.classList.add("active");
-    if (!wasActive && typeof pushHeHistoryLayer === "function") {
-        pushHeHistoryLayer("heAdminDashboardModal");
-    }
+const modal = document.getElementById("heAdminDashboardModal");
+if (!modal) return;
+const wasActive = modal.classList.contains("active");
+document.body.classList.add("admin-panel-open");
+closeHeAdmSettingsDrawer();
+applyHeAdminLanguageUI();
+populateAdminControls();
+modal.classList.add("active");
+if (!wasActive && typeof pushHeHistoryLayer === "function") {
+pushHeHistoryLayer("heAdminDashboardModal");
 }
-
+// অ্যাডমিন প্যানেল খোলার সময় রিয়েল-টাইম সিঙ্ক নিশ্চিত করি
+startHeRealtimeSync();
+}
 function closeHeAdminDashboard() {
-    const modal = document.getElementById("heAdminDashboardModal");
-    const wasActive = modal && modal.classList.contains("active");
-    closeHeAdmSettingsDrawer();
-    if (modal) modal.classList.remove("active");
-    document.body.classList.remove("admin-panel-open");
-    if (wasActive && typeof popHeHistoryIfManual === "function") {
-        popHeHistoryIfManual();
-    }
-    if (typeof SOUNDS !== "undefined" && SOUNDS.imageClose) SOUNDS.imageClose();
+const modal = document.getElementById("heAdminDashboardModal");
+const wasActive = modal && modal.classList.contains("active");
+closeHeAdmSettingsDrawer();
+if (modal) modal.classList.remove("active");
+document.body.classList.remove("admin-panel-open");
+if (wasActive && typeof popHeHistoryIfManual === "function") {
+popHeHistoryIfManual();
 }
-
+if (typeof SOUNDS !== "undefined" && SOUNDS.imageClose) SOUNDS.imageClose();
+// অ্যাডমিন প্যানেল বন্ধ করলে রিয়েল-টাইম সিঙ্ক বন্ধ (সিকিউরিটি)
+stopHeRealtimeSync();
+}
 function populateAdminControls() {
     const t = getHeAdminLang();
     const posSelect = document.getElementById("admShortPos");
@@ -11057,8 +11063,12 @@ async function admDeleteGalleryPhoto(idx) {
     const ok = await saveHeLiveConfig();
     showHeAdminFeedback(ok ? (isBN ? "✅ গ্যালারির ছবি ডিলিট হয়েছে!" : "✅ Gallery photo deleted!") : getHeAdminLang().syncFail, ok);
 }
-
 function applyHeLiveConfigToSite(cfg) {
+if (!cfg) return;
+// Performance: Skip if config hasn't changed
+const cfgStr = JSON.stringify(cfg);
+if (window._lastAppliedConfig === cfgStr) return;
+window._lastAppliedConfig = cfgStr;
     if (!cfg) return;
     if (cfg.logoUrl) {
         document.querySelectorAll(".custom-logo-placeholder img").forEach(img => { img.src = cfg.logoUrl; });
@@ -11191,36 +11201,87 @@ shortNewOverrides: (r.shortNewOverrides && typeof r.shortNewOverrides === "objec
 reorderOverrides: (r.reorderOverrides && typeof r.reorderOverrides === "object") ? r.reorderOverrides : {}
 };
 }
-
 async function saveHeLiveConfig() {
-    const t = getHeAdminLang();
-    heLiveConfig = normalizeHeConfig(heLiveConfig);
-    try { localStorage.setItem(HONEY_ADMIN_STORAGE_KEY, JSON.stringify(heLiveConfig)); } catch (e) {}
-    const pill = document.getElementById("heSyncStatusPill");
-    if (HONEY_FIREBASE_DB_URL && HONEY_FIREBASE_DB_URL.startsWith("http")) {
-        try {
-            const url = HONEY_FIREBASE_DB_URL.replace(/\/$/, "") + "/honey_entertainment_config.json";
-            const res = await fetch(url, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(heLiveConfig)
-            });
-            if (res.ok) {
-                if (pill) pill.textContent = t.syncCloud;
-                return true;
-            }
-            if (pill) pill.textContent = `${t.syncFail} (${res.status})`;
-            return false;
-        } catch (e) {
-            if (pill) pill.textContent = t.syncFail;
-            return false;
-        }
-    } else {
-        if (pill) pill.textContent = t.syncLocal;
-        return true;
-    }
+const t = getHeAdminLang();
+heLiveConfig = normalizeHeConfig(heLiveConfig);
+try { localStorage.setItem(HONEY_ADMIN_STORAGE_KEY, JSON.stringify(heLiveConfig)); } catch (e) {}
+const pill = document.getElementById("heSyncStatusPill");
+if (HONEY_FIREBASE_DB_URL && HONEY_FIREBASE_DB_URL.startsWith("http")) {
+heIsSelfSaving = true;
+try {
+const url = HONEY_FIREBASE_DB_URL.replace(/\/$/, "") + "/honey_entertainment_config.json";
+const res = await fetch(url, {
+method: "PUT",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify(heLiveConfig),
+cache: "no-store"
+});
+if (res.ok) {
+if (pill) pill.textContent = t.syncCloud;
+setTimeout(() => { heIsSelfSaving = false; }, 800);
+return true;
 }
-
+if (pill) pill.textContent = `${t.syncFail} (${res.status})`;
+heIsSelfSaving = false;
+return false;
+} catch (e) {
+if (pill) pill.textContent = t.syncFail;
+heIsSelfSaving = false;
+return false;
+}
+} else {
+if (pill) pill.textContent = t.syncLocal;
+return true;
+}
+}
+// ===== REAL-TIME FIREBASE SYNC LISTENER =====
+let heRealtimeListener = null;
+let heIsSelfSaving = false; // নিজের সেভ হলে listener skip করবে
+function startHeRealtimeSync() {
+if (heRealtimeListener) return;
+if (!HONEY_FIREBASE_DB_URL || !HONEY_FIREBASE_DB_URL.startsWith("http")) return;
+if (typeof firebase === "undefined" || !firebase.database) return;
+try {
+if (!firebase.apps || !firebase.apps.length) {
+firebase.initializeApp({ databaseURL: HONEY_FIREBASE_DB_URL });
+}
+const dbRef = firebase.database().ref("honey_entertainment_config");
+heRealtimeListener = dbRef;
+let lastSyncTime = 0;
+dbRef.on("value", (snapshot) => {
+if (heIsSelfSaving) return;
+const now = Date.now();
+if (now - lastSyncTime < 500) return; // ৫০০ms এর মধ্যে duplicate sync skip
+lastSyncTime = now;
+const remote = snapshot.val();
+if (remote && typeof remote === "object") {
+heLiveConfig = normalizeHeConfig(remote);
+try { localStorage.setItem(HONEY_ADMIN_STORAGE_KEY, JSON.stringify(heLiveConfig)); } catch (e) {}
+requestAnimationFrame(() => {
+applyHeLiveConfigToSite(heLiveConfig);
+if (document.getElementById("heAdminDashboardModal")?.classList.contains("active")) {
+populateAdminControls();
+refreshOpenHePreviews();
+}
+const pill = document.getElementById("heSyncStatusPill");
+const t = getHeAdminLang();
+if (pill) pill.textContent = t.syncCloud;
+});
+}
+}, (error) => {
+console.warn("HE realtime sync error:", error);
+});
+} catch (e) {
+console.warn("HE realtime sync init failed:", e);
+}
+}
+function stopHeRealtimeSync() {
+if (heRealtimeListener) {
+try { heRealtimeListener.off(); } catch (e) {}
+heRealtimeListener = null;
+}
+}
+// ===== END REAL-TIME FIREBASE SYNC LISTENER =====
 async function loadHeLiveConfigOnBoot() {
     const t = getHeAdminLang();
     const pill = document.getElementById("heSyncStatusPill");
@@ -11248,14 +11309,18 @@ async function loadHeLiveConfigOnBoot() {
         }
     }
     applyHeLiveConfigToSite(heLiveConfig);
-    applyHeAdminLanguageUI();
+applyHeAdminLanguageUI();
+
+// রিয়েল-টাইম সিঙ্ক চালু করি - সব ডিভাইসে লাইভ আপডেটের জন্য
+setTimeout(() => {
+startHeRealtimeSync();
+}, 800);
 }
 // ===== ADMIN ACTION HANDLERS =====
 // ===== DELETE CONFIRMATION + PIN SYSTEM =====
 let hePendingDelete = null;
 let heDeletePinLockout = { wrongAttempts: 0, lockLevel: 0, lockUntil: 0 };
 let heDeletePinTimerInterval = null;
-
 function handleHeDelete(type, idx) {
 const t = getHeAdminLang();
 const isBN = (typeof currentLang !== "undefined" && currentLang === "BN");
@@ -11274,13 +11339,17 @@ itemName = isBN ? "বাহুবলী ফুল এপিসোড" : "Baahub
 hePendingDelete = { type, idx, name: itemName };
 const title = document.getElementById("heDeleteConfirmTitle");
 const msg = document.getElementById("heDeleteConfirmMsg");
+const logo = document.getElementById("heDeleteConfirmLogo");
 if (title) title.textContent = t.deleteConfirmTitle;
 if (msg) msg.innerHTML = (isBN ? `আপনি কি <b>"${itemName}"</b> ডিলিট করতে চাচ্ছেন?` : `Are you sure you want to delete <b>"${itemName}"</b>?`);
+if (logo) {
+const mainLogo = document.querySelector(".custom-logo-placeholder img");
+logo.src = mainLogo ? mainLogo.src : "";
+}
 const modal = document.getElementById("heDeleteConfirmModal");
 if (modal) modal.classList.add("active");
-if (typeof pushHeHistoryLayer === "function") pushHeHistoryLayer("heDeleteConfirmModal");
+if (typeof SOUNDS !== "undefined" && SOUNDS.click) SOUNDS.click();
 }
-
 function closeHeDeleteConfirm() {
 const modal = document.getElementById("heDeleteConfirmModal");
 if (modal) modal.classList.remove("active");
@@ -11473,26 +11542,30 @@ let draggedEl = null;
 let draggedIdx = -1;
 let touchStartX = 0, touchStartY = 0;
 let isTouchDragging = false;
-let placeholder = null;
-
+let rafId = null;
 items.forEach((item, i) => {
-// Desktop drag
 item.addEventListener("dragstart", (e) => {
 draggedEl = item;
 draggedIdx = Number(item.dataset.pos);
+requestAnimationFrame(() => {
 item.classList.add("dragging");
+});
 e.dataTransfer.effectAllowed = "move";
 try { e.dataTransfer.setData("text/plain", String(draggedIdx)); } catch (err) {}
 });
 item.addEventListener("dragend", () => {
-item.classList.remove("dragging");
+if (draggedEl) draggedEl.classList.remove("dragging");
 items.forEach(it => it.classList.remove("drag-over"));
 draggedEl = null;
 draggedIdx = -1;
 });
 item.addEventListener("dragover", (e) => {
 e.preventDefault();
-if (item !== draggedEl) item.classList.add("drag-over");
+if (item !== draggedEl) {
+requestAnimationFrame(() => {
+item.classList.add("drag-over");
+});
+}
 });
 item.addEventListener("dragleave", () => {
 item.classList.remove("drag-over");
@@ -11504,7 +11577,6 @@ if (!draggedEl || draggedEl === item) return;
 const targetIdx = Number(item.dataset.pos);
 reorderPreviewItems(type, draggedIdx, targetIdx);
 });
-// Mobile touch drag
 item.addEventListener("touchstart", (e) => {
 if (e.target.closest(".he-preview-del-btn")) return;
 touchStartX = e.touches[0].clientX;
@@ -11519,15 +11591,26 @@ const dx = Math.abs(e.touches[0].clientX - touchStartX);
 const dy = Math.abs(e.touches[0].clientY - touchStartY);
 if (dx > 10 || dy > 10) {
 isTouchDragging = true;
+if (rafId) cancelAnimationFrame(rafId);
+rafId = requestAnimationFrame(() => {
 draggedEl.classList.add("dragging");
-const touchEl = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+const touchX = e.touches[0].clientX;
+const touchY = e.touches[0].clientY;
+const touchEl = document.elementFromPoint(touchX, touchY);
 const targetItem = touchEl ? touchEl.closest(".he-preview-item") : null;
 items.forEach(it => it.classList.remove("drag-over"));
-if (targetItem && targetItem !== draggedEl) targetItem.classList.add("drag-over");
+if (targetItem && targetItem !== draggedEl) {
+targetItem.classList.add("drag-over");
+}
+});
 e.preventDefault();
 }
 }, { passive: false });
 item.addEventListener("touchend", (e) => {
+if (rafId) {
+cancelAnimationFrame(rafId);
+rafId = null;
+}
 if (!isTouchDragging || !draggedEl) {
 if (draggedEl) draggedEl.classList.remove("dragging");
 draggedEl = null;
@@ -11538,18 +11621,59 @@ const touchEl = document.elementFromPoint(touch.clientX, touch.clientY);
 const targetItem = touchEl ? touchEl.closest(".he-preview-item") : null;
 if (targetItem && targetItem !== draggedEl) {
 const targetIdx = Number(targetItem.dataset.pos);
+draggedEl.classList.remove("dragging");
+items.forEach(it => it.classList.remove("drag-over"));
 reorderPreviewItems(type, draggedIdx, targetIdx);
 } else {
 draggedEl.classList.remove("dragging");
-}
 items.forEach(it => it.classList.remove("drag-over"));
+}
 draggedEl = null;
 isTouchDragging = false;
 }, { passive: true });
 });
 }
-
 async function reorderPreviewItems(type, fromIdx, toIdx) {
+if (fromIdx === toIdx) return;
+const t = getHeAdminLang();
+const isBN = (typeof currentLang !== "undefined" && currentLang === "BN");
+let arr = null;
+let cfgKey = null;
+if (type === "shorts") { arr = originalFeedData; cfgKey = "shortsReorder"; }
+else if (type === "fullEp") { arr = welcomeVideoData; cfgKey = "fullEpReorder"; }
+else if (type === "baahubali") { arr = baahubaliFbShortsList; cfgKey = "baahubaliReorder"; }
+else if (type === "gallery") { arr = window.galleryItems; cfgKey = "galleryReorder"; }
+if (!arr) return;
+const [moved] = arr.splice(fromIdx, 1);
+arr.splice(toIdx, 0, moved);
+if (!heLiveConfig.reorderOverrides) heLiveConfig.reorderOverrides = {};
+heLiveConfig.reorderOverrides[cfgKey] = arr.map((item, i) => {
+if (type === "shorts") return getHeShortKey(item);
+if (type === "fullEp") return item.id;
+if (type === "baahubali") return getHeBhKey(item);
+if (type === "gallery") return getHePhotoKey(item);
+return i;
+});
+// Instant UI update
+requestAnimationFrame(() => {
+if (type === "shorts") {
+if (typeof videoFeedData !== "undefined") {
+videoFeedData.length = 0;
+videoFeedData.push(...originalFeedData, ...originalFeedData, ...originalFeedData);
+}
+if (typeof renderVideoFeed === "function") renderVideoFeed();
+} else if (type === "fullEp") {
+if (typeof renderWelcomeVideoGrid === "function") renderWelcomeVideoGrid();
+} else if (type === "baahubali") {
+if (typeof renderDynamicBaahubaliShortsStack === "function") renderDynamicBaahubaliShortsStack();
+} else if (type === "gallery") {
+if (typeof rerenderMainGalleryDom === "function") rerenderMainGalleryDom();
+}
+refreshOpenHePreviews();
+});
+const ok = await saveHeLiveConfig();
+showHeAdminFeedback(ok ? (isBN ? "✅ ক্রম পরিবর্তন হয়েছে!" : "✅ Order updated!") : t.syncFail, ok);
+}
 if (fromIdx === toIdx) return;
 const t = getHeAdminLang();
 const isBN = (typeof currentLang !== "undefined" && currentLang === "BN");
@@ -12041,14 +12165,16 @@ function openHeDraftFullscreen(type) {
 
 /* ===== AUTO-CLOSE ADMIN PANEL & PIN MODAL ON TAB SWITCH / BROWSER CLOSE ===== */
 function forceCloseHeSecurityOnLeave() {
-    const adm = document.getElementById("heAdminDashboardModal");
-    if (adm && adm.classList.contains("active")) {
-        closeHeAdminDashboard();
-    }
-    const pin = document.getElementById("hePinModal");
-    if (pin && pin.classList.contains("active")) {
-        closeHePinModal();
-    }
+const adm = document.getElementById("heAdminDashboardModal");
+if (adm && adm.classList.contains("active")) {
+closeHeAdminDashboard();
+}
+const pin = document.getElementById("hePinModal");
+if (pin && pin.classList.contains("active")) {
+closeHePinModal();
+}
+// সিকিউরিটির জন্য রিয়েল-টাইম সিঙ্ক বন্ধ
+stopHeRealtimeSync();
 }
 document.addEventListener("visibilitychange", () => {
     if (document.hidden) forceCloseHeSecurityOnLeave();
