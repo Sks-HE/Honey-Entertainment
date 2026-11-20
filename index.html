@@ -4745,27 +4745,37 @@ body.honey-mode .he-preview-item {
     text-overflow: ellipsis;
 }
 .he-preview-del-btn {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.45);
-    background: rgba(220, 38, 38, 0.92);
-    color: #fff;
-    font-size: 12px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
-    transition: transform 0.2s ease, background 0.2s ease;
-    z-index: 3;
+position: absolute;
+top: 5px;
+right: 5px;
+width: 26px;
+height: 26px;
+border-radius: 50%;
+border: 1px solid rgba(255, 255, 255, 0.45);
+background: rgba(220, 38, 38, 0.92);
+color: #fff;
+font-size: 16px;
+font-weight: 700;
+line-height: 1;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+transition: transform 0.2s ease, background 0.2s ease;
+z-index: 3;
 }
 .he-preview-del-btn:hover {
-    transform: scale(1.12);
-    background: #ef4444;
+transform: scale(1.12) rotate(90deg);
+background: #ef4444;
+}
+.he-preview-item.dragging {
+opacity: 0.4;
+transform: scale(0.95);
+}
+.he-preview-item.drag-over {
+border-color: var(--accent) !important;
+box-shadow: 0 0 15px var(--glow-color);
 }
 .he-btn-danger {
     width: 100%;
@@ -9465,6 +9475,41 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 </div>
 <div id="hePreviewModeBanner" class="he-preview-mode-banner">👁️ <span id="hePreviewModeBannerText">Preview Video</span></div>
+<!-- ===== DELETE CONFIRMATION MODAL ===== -->
+<div class="he-sec-backdrop" id="heDeleteConfirmModal">
+<div class="he-pin-card" id="heDeleteConfirmCard" onclick="event.stopPropagation()" style="max-width:420px;">
+<button class="he-back-arrow-btn" id="heDeleteCancelTopBtn" style="position:absolute;top:14px;left:14px;width:36px;height:36px;" onclick="closeHeDeleteConfirm()" aria-label="Cancel">
+<svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+</button>
+<div class="he-shield-ring" style="background:linear-gradient(135deg,rgba(239,68,68,0.18),rgba(244,114,182,0.18));border-color:#ef4444;">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="9" x2="12" y2="13"/><circle cx="12" cy="16" r="0.5" fill="#ef4444"/></svg>
+</div>
+<h3 class="he-pin-title" id="heDeleteConfirmTitle" style="background:linear-gradient(90deg,var(--text-color),#ef4444,#fb923c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Confirm Delete</h3>
+<p class="he-pin-sub" id="heDeleteConfirmMsg" style="font-size:14px;line-height:1.6;">Are you sure you want to delete this item?</p>
+<div style="display:flex;gap:10px;margin-top:18px;">
+<button type="button" class="he-btn-primary" id="heDeleteYesBtn" onclick="onHeDeleteConfirmYes()" style="background:linear-gradient(135deg,#ef4444,#dc2626);flex:1;">✓ <span id="heDeleteYesTxt">Yes</span></button>
+<button type="button" class="he-btn-primary" id="heDeleteNoBtn" onclick="closeHeDeleteConfirm()" style="background:linear-gradient(135deg,rgba(128,128,128,0.2),rgba(128,128,128,0.1));border:1.5px solid rgba(128,128,128,0.3);color:var(--text-color);flex:1;">✕ <span id="heDeleteNoTxt">No</span></button>
+</div>
+</div>
+</div>
+<!-- ===== DELETE PIN MODAL ===== -->
+<div class="he-sec-backdrop" id="heDeletePinModal">
+<div class="he-pin-card" id="heDeletePinCard" onclick="event.stopPropagation()" style="max-width:420px;">
+<div style="position:absolute;top:14px;left:14px;width:56px;height:56px;border-radius:12px;overflow:hidden;border:2px solid var(--accent);box-shadow:0 4px 15px var(--glow-color);">
+<img id="heDeletePinLogo" src="" alt="Logo" style="width:100%;height:100%;object-fit:cover;">
+</div>
+<div class="he-shield-ring" style="margin-top:70px;background:linear-gradient(135deg,rgba(239,68,68,0.18),rgba(244,114,182,0.18));border-color:#ef4444;">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+</div>
+<h3 class="he-pin-title" id="heDeletePinTitle" style="background:linear-gradient(90deg,var(--text-color),#ef4444,#fb923c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Security Verification</h3>
+<p class="he-pin-sub" id="heDeletePinSub">Enter your PIN to confirm deletion</p>
+<div class="he-input-eye-wrap">
+<input type="password" id="heDeletePinInput" class="he-sec-input" maxlength="16" placeholder="Enter PIN" autocomplete="off" onpaste="return false;" ondrop="return false;" onkeydown="if(event.key==='Enter') verifyHeDeletePin();">
+</div>
+<div class="he-pin-error" id="heDeletePinError"></div>
+<button type="button" class="he-btn-primary" id="heDeletePinSubmitBtn" onclick="verifyHeDeletePin()" style="background:linear-gradient(135deg,#ef4444,#dc2626);">🔓 <span id="heDeletePinSubmitTxt">Confirm Delete</span></button>
+</div>
+</div>
 <!-- ===== PIN ENTRY MODAL ===== -->
 <div class="he-sec-backdrop" id="hePinModal">
     <div class="he-pin-card" id="hePinCard" onclick="event.stopPropagation()">
@@ -9595,11 +9640,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     <label class="he-check-row"><input type="checkbox" id="admShortIsNew" checked> <span id="admLblShortNew">Show "NEW" Badge</span></label>
                     <div class="he-action-btn-row" id="heRowShortBtn">
-                        <button type="button" class="he-btn-primary" id="admBtnAddShort" onclick="admAddShortVideo()">Add Short Video</button>
-                        <button type="button" class="he-draft-preview-btn" id="admBtnDraftPrevShort" onclick="toggleHeDraftPreview('short')">👁️ <span class="he-draft-prev-lbl">Preview</span></button>
-                    </div>
-                    <div class="he-draft-preview-box" id="heDraftPreviewShort"></div>
-                    <div class="he-preview-drawer" id="hePreviewShorts"></div>
+<button type="button" class="he-btn-primary" id="admBtnAddShort" onclick="admAddShortVideo()">Add Short Video</button>
+<button type="button" class="he-draft-preview-btn" id="admBtnDraftPrevShort" onclick="toggleHeDraftPreview('short')">👁️ <span class="he-draft-prev-lbl">Preview</span></button>
+</div>
+<div class="he-draft-preview-box" id="heDraftPreviewShort"></div>
+<div class="he-preview-drawer" id="hePreviewShorts"></div>
+<button type="button" class="he-btn-primary" id="admBtnShortBadgeCtrl" onclick="toggleHeShortBadgeController()" style="margin-top:10px;background:linear-gradient(135deg,rgba(244,114,182,0.18),rgba(251,146,60,0.18));border:1.5px solid var(--accent);color:var(--text-color);">🏷️ <span id="admShortBadgeCtrlTxt">New Badge Controller</span></button>
+<div class="he-preview-drawer" id="heShortBadgeCtrlDrawer" style="margin-top:10px;"></div>
                 </div>
 
                 <div class="he-admin-card">
@@ -9624,11 +9671,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     <div class="he-draft-preview-box" id="heDraftPreviewFullEp"></div>
                     <div class="he-preview-drawer" id="hePreviewFullEp"></div>
-
-                    <div style="margin-top:14px;">
-                        <label class="he-label" id="admLblManageNew">Manage "NEW" Badge on Existing Full Episodes</label>
-                        <div class="he-ep-new-list" id="admFullEpManageList"></div>
-                    </div>
+<div style="margin-top:14px;">
+<button type="button" class="he-btn-primary" id="admBtnManageFullEpNew" onclick="toggleHeFullEpManageList()" style="background:linear-gradient(135deg,rgba(244,114,182,0.18),rgba(251,146,60,0.18));border:1.5px solid var(--accent);color:var(--text-color);">🏷️ <span id="admManageFullEpNewTxt">Manage NEW Badge</span></button>
+<div class="he-preview-drawer" id="heFullEpManageDrawer" style="margin-top:10px;">
+<label class="he-label" id="admLblManageNew">Manage "NEW" Badge on Existing Full Episodes</label>
+<div class="he-ep-new-list" id="admFullEpManageList"></div>
+</div>
+</div>
                 </div>
             </div>
 
@@ -9668,7 +9717,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             <button type="button" class="he-draft-preview-btn" id="admBtnDraftPrevBhFull" onclick="toggleHeDraftPreview('bhFull')">👁️ <span class="he-draft-prev-lbl">Preview</span></button>
                         </div>
                         <div class="he-draft-preview-box" id="heDraftPreviewBhFull"></div>
-                        <button type="button" class="he-btn-danger" id="admBtnDelBhFull" onclick="admDeleteBaahubaliFullEp()">🗑️ Delete Baahubali Full Episode</button>
+                        <div class="he-action-btn-row" id="heRowBhFullDelBtn">
+<button type="button" class="he-btn-danger" id="admBtnDelBhFull" onclick="handleHeDelete('bhFull')" style="display:none;">✕ <span id="admDelBhFullTxt">Delete Baahubali Full Episode</span></button>
+<button type="button" class="he-draft-preview-btn" id="admBtnDraftDelBhFull" onclick="toggleHeDraftPreview('bhFullDelete')" style="display:none;">👁️ <span class="he-draft-prev-lbl">Preview</span></button>
+</div>
+<div class="he-draft-preview-box" id="heDraftPreviewBhFullDelete"></div>
                     </div>
                 </div>
             </div>
@@ -9793,7 +9846,9 @@ let heLiveConfig = {
     baahubaliFullEmbed: null,
     addedPhotos: [],
     deletedPhotos: [],
-    fonts: { EN: {}, BN: {} }
+   fonts: { EN: {}, BN: {} },
+shortNewOverrides: {},
+reorderOverrides: {}
 };
 
 const HE_BASE_SHORTS = (typeof originalFeedData !== "undefined") ? originalFeedData.slice() : [];
@@ -10220,9 +10275,22 @@ const HE_ADMIN_I18N = {
         errNewPin: "⚠️ New PIN must be 1 to 10 characters.",
         okPinChanged: "✅ PIN updated successfully!",
         wrongPinWarn: (used, max) => `❌ Incorrect PIN! (${used}/${max} attempts used)`,
-        lockedMsg: (timeStr, hrs) => `⏳ Too many wrong PINs! Blocked for ${hrs} hour(s). Try again in ${timeStr}`
-    },
-    BN: {
+        lockedMsg: (timeStr, hrs) => `⏳ Too many wrong PINs! Blocked for ${hrs} hour(s). Try again in ${timeStr}`,
+deleteConfirmTitle: "Confirm Delete",
+deletePinTitle: "Security Verification",
+deletePinSub: "Enter your PIN to confirm deletion",
+deleteYes: "Yes",
+deleteNo: "No",
+deleteConfirmSubmit: "Confirm Delete",
+deleteWrongPinWarn: (used, max) => `❌ Wrong PIN! (${used}/${max} attempts)`,
+deleteLockedMsg: (timeStr, hrs) => `⏳ Too many wrong PINs! Blocked for ${hrs} hour(s). Try again in ${timeStr}`,
+shortBadgeCtrl: "New Badge Controller",
+manageFullEpNew: "Manage NEW Badge",
+okToggleNewShort: "✅ NEW badge status updated!",
+reorderSuccess: "✅ Order updated!",
+delBhFull: "Delete Baahubali Full Episode"
+},
+BN: {
         lockTip: "অ্যাডমিন অ্যাক্সেস",
         pinTitle: "সিকিউরিটি অ্যাক্সেস",
         pinSub: "অ্যাডমিন কন্ট্রোল প্যানেল খুলতে আপনার পিন দিন",
@@ -10341,8 +10409,21 @@ const HE_ADMIN_I18N = {
         errNewPin: "⚠️ নতুন পিন ১ থেকে ১০ অক্ষরের মধ্যে হতে হবে।",
         okPinChanged: "✅ পিন সফলভাবে পরিবর্তন হয়েছে!",
         wrongPinWarn: (used, max) => `❌ ভুল পিন! (${used}/${max} বার ভুল হয়েছে)`,
-        lockedMsg: (timeStr, hrs) => `⏳ অনেকবার ভুল পিন দিয়েছেন! ${hrs} ঘণ্টার জন্য লক করা হয়েছে। বাকি সময়: ${timeStr}`
-    }
+       lockedMsg: (timeStr, hrs) => `⏳ অনেকবার ভুল পিন দিয়েছেন! ${hrs} ঘণ্টার জন্য লক করা হয়েছে। বাকি সময়: ${timeStr}`,
+deleteConfirmTitle: "ডিলিট নিশ্চিত করুন",
+deletePinTitle: "সিকিউরিটি ভেরিফিকেশন",
+deletePinSub: "ডিলিট নিশ্চিত করতে আপনার পিন দিন",
+deleteYes: "হ্যাঁ",
+deleteNo: "না",
+deleteConfirmSubmit: "ডিলিট নিশ্চিত করুন",
+deleteWrongPinWarn: (used, max) => `❌ ভুল পিন! (${used}/${max} বার ভুল)`,
+deleteLockedMsg: (timeStr, hrs) => `⏳ অনেকবার ভুল পিন! ${hrs} ঘণ্টার জন্য লক। বাকি সময়: ${timeStr}`,
+shortBadgeCtrl: "নিউ ব্যাজ কন্ট্রোলার",
+manageFullEpNew: "নিউ ব্যাজ ম্যানেজ করুন",
+okToggleNewShort: "✅ NEW ব্যাজ আপডেট হয়েছে!",
+reorderSuccess: "✅ ক্রম পরিবর্তন হয়েছে!",
+delBhFull: "বাহুবলী ফুল এপিসোড ডিলিট"
+}
 };
 
 function getHeAdminLang() {
@@ -10644,6 +10725,26 @@ function applyHeAdminLanguageUI() {
     setPh("admOldPin", t.pOldPin);
     setPh("admMasterKey", t.pMaster);
     setPh("admNewPin", t.pNewPin);
+    // Delete confirmation texts
+const delTitle = document.getElementById("heDeleteConfirmTitle");
+if (delTitle) delTitle.textContent = t.deleteConfirmTitle;
+const delMsg = document.getElementById("heDeletePinTitle");
+if (delMsg) delMsg.textContent = t.deletePinTitle;
+const delSub = document.getElementById("heDeletePinSub");
+if (delSub) delSub.textContent = t.deletePinSub;
+const yesTxt = document.getElementById("heDeleteYesTxt");
+if (yesTxt) yesTxt.textContent = t.deleteYes;
+const noTxt = document.getElementById("heDeleteNoTxt");
+if (noTxt) noTxt.textContent = t.deleteNo;
+const submitTxt = document.getElementById("heDeletePinSubmitTxt");
+if (submitTxt) submitTxt.textContent = t.deleteConfirmSubmit;
+// Short badge controller
+const sBadgeTxt = document.getElementById("admShortBadgeCtrlTxt");
+if (sBadgeTxt) sBadgeTxt.textContent = t.shortBadgeCtrl;
+const mFullTxt = document.getElementById("admManageFullEpNewTxt");
+if (mFullTxt) mFullTxt.textContent = t.manageFullEpNew;
+const delBhFullTxt = document.getElementById("admDelBhFullTxt");
+if (delBhFullTxt) delBhFullTxt.textContent = t.delBhFull;
 
     syncHeAdmQuickControls();
     refreshHeLockoutUI();
@@ -10841,39 +10942,38 @@ function toggleHePreview(type) {
     if (btn) btn.classList.toggle("active", willOpen);
     if (willOpen) renderHePreviewGrid(type);
 }
-
 function renderHePreviewGrid(type) {
-    const isBN = (typeof currentLang !== "undefined" && currentLang === "BN");
-    const boxMap = { shorts: "hePreviewShorts", fullEp: "hePreviewFullEp", baahubali: "hePreviewBaahubali", gallery: "hePreviewGallery" };
-    const box = document.getElementById(boxMap[type]);
-    if (!box) return;
-
-    let items = [];
-    if (type === "shorts" && typeof originalFeedData !== "undefined") {
-        items = originalFeedData.map((s, idx) => ({ thumb: s.thumb, label: s.title || s.ytId, fn: `admDeleteShortVideo(${idx})` }));
-    } else if (type === "fullEp" && typeof welcomeVideoData !== "undefined") {
-        items = welcomeVideoData.map((v, idx) => ({
-            thumb: (typeof getWelcomeThumb === "function") ? getWelcomeThumb(v) : (v.thumb || ""),
-            label: `#${idx + 1} (${v.id})`,
-            fn: `admDeleteFullEpisode(${idx})`
-        }));
-    } else if (type === "baahubali" && typeof baahubaliFbShortsList !== "undefined") {
-        items = baahubaliFbShortsList.map((b, idx) => ({ thumb: b.thumb, label: b.caption || `Part ${idx + 1}`, fn: `admDeleteBaahubaliShort(${idx})` }));
-    } else if (type === "gallery" && window.galleryItems) {
-        items = window.galleryItems.map((p, idx) => ({ thumb: p.img, label: p.cap || `Photo #${idx + 1}`, fn: `admDeleteGalleryPhoto(${idx})` }));
-    }
-
-    const countTxt = isBN ? `মোট ${items.length}টি আইটেম` : `Total ${items.length} items`;
-    const delTitle = isBN ? "ডিলিট করুন" : "Delete";
-    const cardsHtml = items.map(it => `
-        <div class="he-preview-item">
-            <button type="button" class="he-preview-del-btn" onclick="${it.fn}; event.stopPropagation();" title="${delTitle}">🗑️</button>
-            <img src="${it.thumb}" alt="Preview" loading="lazy">
-            <div class="he-preview-cap" title="${(it.label || "").replace(/"/g, '&quot;')}">${it.label || ""}</div>
-        </div>
-    `).join("");
-
-    box.innerHTML = `<div class="he-preview-count">${countTxt}</div><div class="he-preview-grid">${cardsHtml}</div>`;
+const isBN = (typeof currentLang !== "undefined" && currentLang === "BN");
+const boxMap = { shorts: "hePreviewShorts", fullEp: "hePreviewFullEp", baahubali: "hePreviewBaahubali", gallery: "hePreviewGallery" };
+const box = document.getElementById(boxMap[type]);
+if (!box) return;
+let items = [];
+if (type === "shorts" && typeof originalFeedData !== "undefined") {
+items = originalFeedData.map((s, idx) => ({ thumb: s.thumb, label: s.title || s.ytId, deleteType: "short", deleteIdx: idx }));
+} else if (type === "fullEp" && typeof welcomeVideoData !== "undefined") {
+items = welcomeVideoData.map((v, idx) => ({
+thumb: (typeof getWelcomeThumb === "function") ? getWelcomeThumb(v) : (v.thumb || ""),
+label: `#${idx + 1} (${v.id})`,
+deleteType: "fullEp",
+deleteIdx: idx
+}));
+} else if (type === "baahubali" && typeof baahubaliFbShortsList !== "undefined") {
+items = baahubaliFbShortsList.map((b, idx) => ({ thumb: b.thumb, label: b.caption || `Part ${idx + 1}`, deleteType: "baahubali", deleteIdx: idx }));
+} else if (type === "gallery" && window.galleryItems) {
+items = window.galleryItems.map((p, idx) => ({ thumb: p.img, label: p.cap || `Photo #${idx + 1}`, deleteType: "gallery", deleteIdx: idx }));
+}
+const countTxt = isBN ? `মোট ${items.length}টি আইটেম` : `Total ${items.length} items`;
+const delTitle = isBN ? "ডিলিট করুন" : "Delete";
+const dragHint = isBN ? "✋ ধরে সরাও" : "✋ Drag to reorder";
+const cardsHtml = items.map((it, i) => `
+<div class="he-preview-item" draggable="true" data-type="${it.deleteType}" data-idx="${it.deleteIdx}" data-pos="${i}">
+<button type="button" class="he-preview-del-btn" onclick="handleHeDelete('${it.deleteType}', ${it.deleteIdx}); event.stopPropagation();" title="${delTitle}">×</button>
+<img src="${it.thumb}" alt="Preview" loading="lazy" draggable="false">
+<div class="he-preview-cap" title="${(it.label || "").replace(/"/g, '&quot;')}">${it.label || ""}</div>
+</div>
+`).join("");
+box.innerHTML = `<div class="he-preview-count">${countTxt} • <span style="opacity:0.7;font-size:11px;">${dragHint}</span></div><div class="he-preview-grid" id="hePreviewGrid_${type}">${cardsHtml}</div>`;
+attachHePreviewDragDrop(type);
 }
 
 function refreshOpenHePreviews() {
@@ -10986,8 +11086,16 @@ function applyHeLiveConfigToSite(cfg) {
                 }
             });
         }
-        originalFeedData.length = 0;
-        originalFeedData.push(...rebuiltShorts);
+        if (cfg.shortNewOverrides) {
+rebuiltShorts.forEach(s => {
+const k = getHeShortKey(s);
+if (Object.prototype.hasOwnProperty.call(cfg.shortNewOverrides, k)) {
+s.isNew = !!cfg.shortNewOverrides[k];
+}
+});
+}
+originalFeedData.length = 0;
+originalFeedData.push(...rebuiltShorts);
         if (typeof videoFeedData !== "undefined") {
             videoFeedData.length = 0;
             videoFeedData.push(...originalFeedData, ...originalFeedData, ...originalFeedData);
@@ -11076,10 +11184,12 @@ function normalizeHeConfig(raw) {
         addedPhotos: Array.isArray(r.addedPhotos) ? r.addedPhotos : [],
         deletedPhotos: Array.isArray(r.deletedPhotos) ? r.deletedPhotos : [],
         fonts: {
-            EN: (r.fonts && r.fonts.EN && typeof r.fonts.EN === "object") ? r.fonts.EN : {},
-            BN: (r.fonts && r.fonts.BN && typeof r.fonts.BN === "object") ? r.fonts.BN : {}
-        }
-    };
+EN: (r.fonts && r.fonts.EN && typeof r.fonts.EN === "object") ? r.fonts.EN : {},
+BN: (r.fonts && r.fonts.BN && typeof r.fonts.BN === "object") ? r.fonts.BN : {}
+},
+shortNewOverrides: (r.shortNewOverrides && typeof r.shortNewOverrides === "object") ? r.shortNewOverrides : {},
+reorderOverrides: (r.reorderOverrides && typeof r.reorderOverrides === "object") ? r.reorderOverrides : {}
+};
 }
 
 async function saveHeLiveConfig() {
@@ -11141,6 +11251,342 @@ async function loadHeLiveConfigOnBoot() {
     applyHeAdminLanguageUI();
 }
 // ===== ADMIN ACTION HANDLERS =====
+// ===== DELETE CONFIRMATION + PIN SYSTEM =====
+let hePendingDelete = null;
+let heDeletePinLockout = { wrongAttempts: 0, lockLevel: 0, lockUntil: 0 };
+let heDeletePinTimerInterval = null;
+
+function handleHeDelete(type, idx) {
+const t = getHeAdminLang();
+const isBN = (typeof currentLang !== "undefined" && currentLang === "BN");
+let itemName = "";
+if (type === "short" && typeof originalFeedData !== "undefined" && originalFeedData[idx]) {
+itemName = originalFeedData[idx].title || originalFeedData[idx].ytId;
+} else if (type === "fullEp" && typeof welcomeVideoData !== "undefined" && welcomeVideoData[idx]) {
+itemName = `#${idx + 1} (${welcomeVideoData[idx].id})`;
+} else if (type === "baahubali" && typeof baahubaliFbShortsList !== "undefined" && baahubaliFbShortsList[idx]) {
+itemName = baahubaliFbShortsList[idx].caption || `Part ${idx + 1}`;
+} else if (type === "gallery" && window.galleryItems && window.galleryItems[idx]) {
+itemName = window.galleryItems[idx].cap || `Photo #${idx + 1}`;
+} else if (type === "bhFull") {
+itemName = isBN ? "বাহুবলী ফুল এপিসোড" : "Baahubali Full Episode";
+}
+hePendingDelete = { type, idx, name: itemName };
+const title = document.getElementById("heDeleteConfirmTitle");
+const msg = document.getElementById("heDeleteConfirmMsg");
+if (title) title.textContent = t.deleteConfirmTitle;
+if (msg) msg.innerHTML = (isBN ? `আপনি কি <b>"${itemName}"</b> ডিলিট করতে চাচ্ছেন?` : `Are you sure you want to delete <b>"${itemName}"</b>?`);
+const modal = document.getElementById("heDeleteConfirmModal");
+if (modal) modal.classList.add("active");
+if (typeof pushHeHistoryLayer === "function") pushHeHistoryLayer("heDeleteConfirmModal");
+}
+
+function closeHeDeleteConfirm() {
+const modal = document.getElementById("heDeleteConfirmModal");
+if (modal) modal.classList.remove("active");
+hePendingDelete = null;
+if (typeof popHeHistoryIfManual === "function") popHeHistoryIfManual();
+}
+
+function onHeDeleteConfirmYes() {
+closeHeDeleteConfirm();
+openHeDeletePinModal();
+}
+
+function openHeDeletePinModal() {
+const modal = document.getElementById("heDeletePinModal");
+const inp = document.getElementById("heDeletePinInput");
+const err = document.getElementById("heDeletePinError");
+const logo = document.getElementById("heDeletePinLogo");
+const t = getHeAdminLang();
+if (logo) {
+const mainLogo = document.querySelector(".custom-logo-placeholder img");
+logo.src = mainLogo ? mainLogo.src : "";
+}
+if (inp) { inp.value = ""; inp.type = "password"; }
+if (err) err.textContent = "";
+const title = document.getElementById("heDeletePinTitle");
+const sub = document.getElementById("heDeletePinSub");
+if (title) title.textContent = t.deletePinTitle;
+if (sub) sub.textContent = t.deletePinSub;
+if (modal) modal.classList.add("active");
+if (typeof pushHeHistoryLayer === "function") pushHeHistoryLayer("heDeletePinModal");
+clearInterval(heDeletePinTimerInterval);
+heDeletePinTimerInterval = setInterval(refreshHeDeletePinLockoutUI, 1000);
+refreshHeDeletePinLockoutUI();
+setTimeout(() => { if (inp) inp.focus(); }, 150);
+}
+
+function closeHeDeletePinModal() {
+const modal = document.getElementById("heDeletePinModal");
+if (modal) modal.classList.remove("active");
+hePendingDelete = null;
+clearInterval(heDeletePinTimerInterval);
+if (typeof popHeHistoryIfManual === "function") popHeHistoryIfManual();
+}
+
+function refreshHeDeletePinLockoutUI() {
+const t = getHeAdminLang();
+const inp = document.getElementById("heDeletePinInput");
+const btn = document.getElementById("heDeletePinSubmitBtn");
+const err = document.getElementById("heDeletePinError");
+const now = Date.now();
+if (heDeletePinLockout.lockUntil > now) {
+if (inp) inp.disabled = true;
+if (btn) btn.disabled = true;
+if (err) {
+err.style.color = "#ef4444";
+err.textContent = t.deleteLockedMsg(formatCountdownMs(heDeletePinLockout.lockUntil - now), heDeletePinLockout.lockLevel || 1);
+}
+return true;
+} else if (heDeletePinLockout.lockUntil > 0 && now >= heDeletePinLockout.lockUntil) {
+heDeletePinLockout = { wrongAttempts: 0, lockLevel: 0, lockUntil: 0 };
+if (inp) inp.disabled = false;
+if (btn) btn.disabled = false;
+if (err) err.textContent = "";
+} else {
+if (inp) inp.disabled = false;
+if (btn) btn.disabled = false;
+}
+return false;
+}
+
+function verifyHeDeletePin() {
+if (refreshHeDeletePinLockoutUI()) return;
+const t = getHeAdminLang();
+const inp = document.getElementById("heDeletePinInput");
+const card = document.getElementById("heDeletePinCard");
+const err = document.getElementById("heDeletePinError");
+const entered = inp ? inp.value : "";
+const activePin = heLiveConfig.pin || HONEY_DEFAULT_PIN;
+if (entered === activePin) {
+heDeletePinLockout = { wrongAttempts: 0, lockLevel: 0, lockUntil: 0 };
+closeHeDeletePinModal();
+executeHePendingDelete();
+if (typeof SOUNDS !== "undefined" && SOUNDS.success) SOUNDS.success();
+} else {
+heDeletePinLockout.wrongAttempts += 1;
+const maxAllowed = (heDeletePinLockout.lockLevel === 0) ? 2 : 1;
+if (heDeletePinLockout.wrongAttempts > maxAllowed) {
+heDeletePinLockout.lockLevel = (heDeletePinLockout.lockLevel === 0) ? 1 : (heDeletePinLockout.lockLevel + 1);
+heDeletePinLockout.lockUntil = Date.now() + (heDeletePinLockout.lockLevel * 60 * 60 * 1000);
+heDeletePinLockout.wrongAttempts = 0;
+refreshHeDeletePinLockoutUI();
+} else {
+if (err) {
+err.style.color = "#ef4444";
+err.textContent = t.deleteWrongPinWarn(heDeletePinLockout.wrongAttempts, 2);
+}
+}
+if (card) {
+card.classList.remove("shake");
+void card.offsetWidth;
+card.classList.add("shake");
+}
+}
+}
+
+async function executeHePendingDelete() {
+if (!hePendingDelete) return;
+const { type, idx } = hePendingDelete;
+if (type === "short") await admDeleteShortVideo(idx);
+else if (type === "fullEp") await admDeleteFullEpisode(idx);
+else if (type === "baahubali") await admDeleteBaahubaliShort(idx);
+else if (type === "gallery") await admDeleteGalleryPhoto(idx);
+else if (type === "bhFull") await admDeleteBaahubaliFullEp();
+hePendingDelete = null;
+}
+
+// ===== SHORT VIDEO BADGE CONTROLLER =====
+function toggleHeShortBadgeController() {
+const drawer = document.getElementById("heShortBadgeCtrlDrawer");
+if (!drawer) return;
+const isOpen = drawer.classList.contains("open");
+if (isOpen) {
+drawer.classList.remove("open");
+drawer.innerHTML = "";
+} else {
+renderHeShortBadgeController();
+drawer.classList.add("open");
+}
+if (typeof SOUNDS !== "undefined" && SOUNDS.click) SOUNDS.click();
+}
+
+function renderHeShortBadgeController() {
+const drawer = document.getElementById("heShortBadgeCtrlDrawer");
+if (!drawer || typeof originalFeedData === "undefined") return;
+const isBN = (typeof currentLang !== "undefined" && currentLang === "BN");
+const label = isBN ? "শর্ট ভিডিওগুলোর NEW ব্যাজ চালু/বন্ধ করুন" : 'Toggle "NEW" Badge on Short Videos';
+const listHtml = originalFeedData.map((s, idx) => {
+const thumb = s.thumb || "";
+const title = (s.title || s.ytId || "").substring(0, 40);
+const isNew = !!s.isNew;
+return `
+<div class="he-ep-new-row">
+<div style="display:flex;align-items:center;gap:8px;min-width:0;">
+<img src="${thumb}" alt="Short">
+<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">#${idx + 1} — ${title}</span>
+</div>
+<label class="he-check-row" style="margin:0;flex-shrink:0;">
+<input type="checkbox" ${isNew ? "checked" : ""} onchange="admToggleExistingShortNew(${idx}, this.checked)">
+<span>NEW</span>
+</label>
+</div>
+`;
+}).join("");
+drawer.innerHTML = `<label class="he-label">${label}</label><div class="he-ep-new-list">${listHtml}</div>`;
+}
+
+async function admToggleExistingShortNew(idx, checked) {
+const t = getHeAdminLang();
+const item = originalFeedData[idx];
+if (!item) return;
+item.isNew = !!checked;
+const key = getHeShortKey(item);
+if (!heLiveConfig.shortNewOverrides) heLiveConfig.shortNewOverrides = {};
+heLiveConfig.shortNewOverrides[key] = !!checked;
+if (typeof renderVideoFeed === "function") renderVideoFeed();
+const ok = await saveHeLiveConfig();
+showHeAdminFeedback(ok ? t.okToggleNewShort : t.syncFail, ok);
+}
+
+// ===== FULL EPISODE MANAGE LIST TOGGLE =====
+function toggleHeFullEpManageList() {
+const drawer = document.getElementById("heFullEpManageDrawer");
+if (!drawer) return;
+const isOpen = drawer.classList.contains("open");
+if (isOpen) {
+drawer.classList.remove("open");
+} else {
+drawer.classList.add("open");
+if (typeof populateAdminControls === "function") populateAdminControls();
+}
+if (typeof SOUNDS !== "undefined" && SOUNDS.click) SOUNDS.click();
+}
+
+// ===== PREVIEW DRAG & DROP REORDER =====
+function attachHePreviewDragDrop(type) {
+const grid = document.getElementById("hePreviewGrid_" + type);
+if (!grid) return;
+const items = grid.querySelectorAll(".he-preview-item");
+let draggedEl = null;
+let draggedIdx = -1;
+let touchStartX = 0, touchStartY = 0;
+let isTouchDragging = false;
+let placeholder = null;
+
+items.forEach((item, i) => {
+// Desktop drag
+item.addEventListener("dragstart", (e) => {
+draggedEl = item;
+draggedIdx = Number(item.dataset.pos);
+item.classList.add("dragging");
+e.dataTransfer.effectAllowed = "move";
+try { e.dataTransfer.setData("text/plain", String(draggedIdx)); } catch (err) {}
+});
+item.addEventListener("dragend", () => {
+item.classList.remove("dragging");
+items.forEach(it => it.classList.remove("drag-over"));
+draggedEl = null;
+draggedIdx = -1;
+});
+item.addEventListener("dragover", (e) => {
+e.preventDefault();
+if (item !== draggedEl) item.classList.add("drag-over");
+});
+item.addEventListener("dragleave", () => {
+item.classList.remove("drag-over");
+});
+item.addEventListener("drop", (e) => {
+e.preventDefault();
+item.classList.remove("drag-over");
+if (!draggedEl || draggedEl === item) return;
+const targetIdx = Number(item.dataset.pos);
+reorderPreviewItems(type, draggedIdx, targetIdx);
+});
+// Mobile touch drag
+item.addEventListener("touchstart", (e) => {
+if (e.target.closest(".he-preview-del-btn")) return;
+touchStartX = e.touches[0].clientX;
+touchStartY = e.touches[0].clientY;
+draggedEl = item;
+draggedIdx = Number(item.dataset.pos);
+isTouchDragging = false;
+}, { passive: true });
+item.addEventListener("touchmove", (e) => {
+if (!draggedEl) return;
+const dx = Math.abs(e.touches[0].clientX - touchStartX);
+const dy = Math.abs(e.touches[0].clientY - touchStartY);
+if (dx > 10 || dy > 10) {
+isTouchDragging = true;
+draggedEl.classList.add("dragging");
+const touchEl = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+const targetItem = touchEl ? touchEl.closest(".he-preview-item") : null;
+items.forEach(it => it.classList.remove("drag-over"));
+if (targetItem && targetItem !== draggedEl) targetItem.classList.add("drag-over");
+e.preventDefault();
+}
+}, { passive: false });
+item.addEventListener("touchend", (e) => {
+if (!isTouchDragging || !draggedEl) {
+if (draggedEl) draggedEl.classList.remove("dragging");
+draggedEl = null;
+return;
+}
+const touch = e.changedTouches[0];
+const touchEl = document.elementFromPoint(touch.clientX, touch.clientY);
+const targetItem = touchEl ? touchEl.closest(".he-preview-item") : null;
+if (targetItem && targetItem !== draggedEl) {
+const targetIdx = Number(targetItem.dataset.pos);
+reorderPreviewItems(type, draggedIdx, targetIdx);
+} else {
+draggedEl.classList.remove("dragging");
+}
+items.forEach(it => it.classList.remove("drag-over"));
+draggedEl = null;
+isTouchDragging = false;
+}, { passive: true });
+});
+}
+
+async function reorderPreviewItems(type, fromIdx, toIdx) {
+if (fromIdx === toIdx) return;
+const t = getHeAdminLang();
+const isBN = (typeof currentLang !== "undefined" && currentLang === "BN");
+let arr = null;
+let cfgKey = null;
+if (type === "shorts") { arr = originalFeedData; cfgKey = "shortsReorder"; }
+else if (type === "fullEp") { arr = welcomeVideoData; cfgKey = "fullEpReorder"; }
+else if (type === "baahubali") { arr = baahubaliFbShortsList; cfgKey = "baahubaliReorder"; }
+else if (type === "gallery") { arr = window.galleryItems; cfgKey = "galleryReorder"; }
+if (!arr) return;
+const [moved] = arr.splice(fromIdx, 1);
+arr.splice(toIdx, 0, moved);
+if (!heLiveConfig.reorderOverrides) heLiveConfig.reorderOverrides = {};
+heLiveConfig.reorderOverrides[cfgKey] = arr.map((item, i) => {
+if (type === "shorts") return getHeShortKey(item);
+if (type === "fullEp") return item.id;
+if (type === "baahubali") return getHeBhKey(item);
+if (type === "gallery") return getHePhotoKey(item);
+return i;
+});
+if (type === "shorts") {
+if (typeof videoFeedData !== "undefined") {
+videoFeedData.length = 0;
+videoFeedData.push(...originalFeedData, ...originalFeedData, ...originalFeedData);
+}
+if (typeof renderVideoFeed === "function") renderVideoFeed();
+} else if (type === "fullEp") {
+if (typeof renderWelcomeVideoGrid === "function") renderWelcomeVideoGrid();
+} else if (type === "baahubali") {
+if (typeof renderDynamicBaahubaliShortsStack === "function") renderDynamicBaahubaliShortsStack();
+} else if (type === "gallery") {
+if (typeof rerenderMainGalleryDom === "function") rerenderMainGalleryDom();
+}
+refreshOpenHePreviews();
+const ok = await saveHeLiveConfig();
+showHeAdminFeedback(ok ? (isBN ? "✅ ক্রম পরিবর্তন হয়েছে!" : "✅ Order updated!") : t.syncFail, ok);
+}
 async function admSaveLogo() {
     const t = getHeAdminLang();
     const url = document.getElementById("admLogoUrl").value.trim();
@@ -11641,11 +12087,21 @@ window.addEventListener("pagehide", forceCloseHeSecurityOnLeave);
                 return true;
             }
             const pinModal = document.getElementById("hePinModal");
-            if (pinModal && pinModal.classList.contains("active")) {
-                closeHePinModal();
-                return true;
-            }
-            return _origBackAction();
+if (pinModal && pinModal.classList.contains("active")) {
+closeHePinModal();
+return true;
+}
+const delConfirmModal = document.getElementById("heDeleteConfirmModal");
+if (delConfirmModal && delConfirmModal.classList.contains("active")) {
+closeHeDeleteConfirm();
+return true;
+}
+const delPinModal = document.getElementById("heDeletePinModal");
+if (delPinModal && delPinModal.classList.contains("active")) {
+closeHeDeletePinModal();
+return true;
+}
+return _origBackAction();
         };
     }
     document.addEventListener("DOMContentLoaded", () => {
