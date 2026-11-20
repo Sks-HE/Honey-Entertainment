@@ -11654,46 +11654,6 @@ if (type === "baahubali") return getHeBhKey(item);
 if (type === "gallery") return getHePhotoKey(item);
 return i;
 });
-// Instant UI update
-requestAnimationFrame(() => {
-if (type === "shorts") {
-if (typeof videoFeedData !== "undefined") {
-videoFeedData.length = 0;
-videoFeedData.push(...originalFeedData, ...originalFeedData, ...originalFeedData);
-}
-if (typeof renderVideoFeed === "function") renderVideoFeed();
-} else if (type === "fullEp") {
-if (typeof renderWelcomeVideoGrid === "function") renderWelcomeVideoGrid();
-} else if (type === "baahubali") {
-if (typeof renderDynamicBaahubaliShortsStack === "function") renderDynamicBaahubaliShortsStack();
-} else if (type === "gallery") {
-if (typeof rerenderMainGalleryDom === "function") rerenderMainGalleryDom();
-}
-refreshOpenHePreviews();
-});
-const ok = await saveHeLiveConfig();
-showHeAdminFeedback(ok ? (isBN ? "✅ ক্রম পরিবর্তন হয়েছে!" : "✅ Order updated!") : t.syncFail, ok);
-}
-if (fromIdx === toIdx) return;
-const t = getHeAdminLang();
-const isBN = (typeof currentLang !== "undefined" && currentLang === "BN");
-let arr = null;
-let cfgKey = null;
-if (type === "shorts") { arr = originalFeedData; cfgKey = "shortsReorder"; }
-else if (type === "fullEp") { arr = welcomeVideoData; cfgKey = "fullEpReorder"; }
-else if (type === "baahubali") { arr = baahubaliFbShortsList; cfgKey = "baahubaliReorder"; }
-else if (type === "gallery") { arr = window.galleryItems; cfgKey = "galleryReorder"; }
-if (!arr) return;
-const [moved] = arr.splice(fromIdx, 1);
-arr.splice(toIdx, 0, moved);
-if (!heLiveConfig.reorderOverrides) heLiveConfig.reorderOverrides = {};
-heLiveConfig.reorderOverrides[cfgKey] = arr.map((item, i) => {
-if (type === "shorts") return getHeShortKey(item);
-if (type === "fullEp") return item.id;
-if (type === "baahubali") return getHeBhKey(item);
-if (type === "gallery") return getHePhotoKey(item);
-return i;
-});
 if (type === "shorts") {
 if (typeof videoFeedData !== "undefined") {
 videoFeedData.length = 0;
