@@ -9477,11 +9477,8 @@ document.addEventListener('DOMContentLoaded', function() {
         <h3 class="he-pin-title" id="hePinTitle">Security Access</h3>
         <p class="he-pin-sub" id="hePinSub">Type your PIN to open Admin Control Panel</p>
         <div class="he-input-eye-wrap">
-            <input type="password" id="heLoginPinInput" class="he-sec-input" maxlength="16" placeholder="Enter PIN" autocomplete="off" onpaste="return false;" ondrop="return false;" onkeydown="if(event.key==='Enter') verifyHeAdminPin();">
-            <button type="button" class="he-eye-btn" id="heLoginEyeBtn" onclick="toggleHeEye('heLoginPinInput')" title="Show / Hide PIN">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-            </button>
-        </div>
+<input type="password" id="heLoginPinInput" class="he-sec-input" maxlength="16" placeholder="Enter PIN" autocomplete="off" onpaste="return false;" ondrop="return false;" onkeydown="if(event.key==='Enter') verifyHeAdminPin();" style="padding-right:14px;">
+</div>
         <div class="he-pin-error" id="hePinErrorMsg"></div>
         <button type="button" class="he-btn-primary" id="heUnlockBtn" onclick="verifyHeAdminPin()">Unlock Panel</button>
     </div>
@@ -9744,21 +9741,21 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div>
                             <label class="he-label" id="admLblOldPin">Current PIN</label>
                             <div class="he-input-eye-wrap">
-                                <input type="password" id="admOldPin" class="he-sec-input" maxlength="16" placeholder="Type current PIN" autocomplete="off" onpaste="return false;" ondrop="return false;">
+                                <input type="password" id="admOldPin" class="he-sec-input" maxlength="20" placeholder="Type current PIN" autocomplete="off" onpaste="return false;" ondrop="return false;">
                                 <button type="button" class="he-eye-btn" id="admEyeOldPin" onclick="toggleHeEye('admOldPin')">👁</button>
                             </div>
                         </div>
                         <div>
-                            <label class="he-label" id="admLblMaster">Master Key (Max 10 chars)</label>
+                            <label class="he-label" id="admLblMaster">Master Key (Max 20 chars)</label>
                             <div class="he-input-eye-wrap">
-                                <input type="password" id="admMasterKey" class="he-sec-input" maxlength="10" placeholder="Type Master Key" autocomplete="off" onpaste="return false;" ondrop="return false;">
+                                <input type="password" id="admMasterKey" class="he-sec-input" maxlength="20" placeholder="Type Master Key" autocomplete="off" onpaste="return false;" ondrop="return false;">
                                 <button type="button" class="he-eye-btn" id="admEyeMasterKey" onclick="toggleHeEye('admMasterKey')">👁</button>
                             </div>
                         </div>
                         <div>
-                            <label class="he-label" id="admLblNewPin">New PIN (Max 10 chars)</label>
+                            <label class="he-label" id="admLblNewPin">New PIN (Max 20 chars)</label>
                             <div class="he-input-eye-wrap">
-                                <input type="password" id="admNewPin" class="he-sec-input" maxlength="10" placeholder="Type new PIN" autocomplete="off" onpaste="return false;" ondrop="return false;">
+                                <input type="password" id="admNewPin" class="he-sec-input" maxlength="20" placeholder="Type new PIN" autocomplete="off" onpaste="return false;" ondrop="return false;">
                                 <button type="button" class="he-eye-btn" id="admEyeNewPin" onclick="toggleHeEye('admNewPin')">👁</button>
                             </div>
                         </div>
@@ -10179,8 +10176,8 @@ const HE_ADMIN_I18N = {
         bAddPhoto: "Add New Photo",
         tSecurity: "9. Security — Change PIN",
         lOldPin: "Current PIN",
-        lMaster: "Master Key (Max 10 chars)",
-        lNewPin: "New PIN (Max 10 chars)",
+        lMaster: "Master Key (Max 20 chars)",
+        lNewPin: "New PIN (Max 20 chars)",
         bChangePin: "Change PIN",
         pLogoUrl: "https://example.com/logo.jpg",
         pLine1: "HONEY",
@@ -10217,7 +10214,7 @@ const HE_ADMIN_I18N = {
         okPhoto: "✅ New Photo added to Gallery!",
         errOldPin: "❌ Current PIN is incorrect.",
         errMaster: "❌ Invalid Master Key.",
-        errNewPin: "⚠️ New PIN must be 1 to 10 characters.",
+        errNewPin: "⚠️ New PIN must be 1 to 20 characters.",
         okPinChanged: "✅ PIN updated successfully!",
         wrongPinWarn: (used, max) => `❌ Incorrect PIN! (${used}/${max} attempts used)`,
         lockedMsg: (timeStr, hrs) => `⏳ Too many wrong PINs! Blocked for ${hrs} hour(s). Try again in ${timeStr}`
@@ -10300,8 +10297,8 @@ const HE_ADMIN_I18N = {
         bAddPhoto: "নতুন ছবি যোগ করুন",
         tSecurity: "৯. সিকিউরিটি — পিন পরিবর্তন",
         lOldPin: "বর্তমান পিন",
-        lMaster: "মাস্টার কী (সর্বোচ্চ ১০ অক্ষর)",
-        lNewPin: "নতুন পিন (সর্বোচ্চ ১০ অক্ষর)",
+        lMaster: "মাস্টার কী (সর্বোচ্চ ২০ অক্ষর)",
+        lNewPin: "নতুন পিন (সর্বোচ্চ ২০ অক্ষর)",
         bChangePin: "পিন পরিবর্তন করুন",
         pLogoUrl: "https://example.com/logo.jpg",
         pLine1: "HONEY",
@@ -10338,7 +10335,7 @@ const HE_ADMIN_I18N = {
         okPhoto: "✅ নতুন ছবি গ্যালারিতে যোগ হয়েছে!",
         errOldPin: "❌ বর্তমান পিনটি সঠিক নয়।",
         errMaster: "❌ মাস্টার কী সঠিক নয়।",
-        errNewPin: "⚠️ নতুন পিন ১ থেকে ১০ অক্ষরের মধ্যে হতে হবে।",
+        errNewPin: "⚠️ নতুন পিন ১ থেকে ২০ অক্ষরের মধ্যে হতে হবে।",
         okPinChanged: "✅ পিন সফলভাবে পরিবর্তন হয়েছে!",
         wrongPinWarn: (used, max) => `❌ ভুল পিন! (${used}/${max} বার ভুল হয়েছে)`,
         lockedMsg: (timeStr, hrs) => `⏳ অনেকবার ভুল পিন দিয়েছেন! ${hrs} ঘণ্টার জন্য লক করা হয়েছে। বাকি সময়: ${timeStr}`
@@ -11269,7 +11266,7 @@ async function admChangePin() {
         msg.textContent = t.errMaster;
         return showHeAdminFeedback(t.errMaster, false);
     }
-    if (!newPin || newPin.length > 10) {
+    if (!newPin || newPin.length > 20) {
         msg.style.color = "#ef4444";
         msg.textContent = t.errNewPin;
         return showHeAdminFeedback(t.errNewPin, false);
